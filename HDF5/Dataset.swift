@@ -50,13 +50,33 @@ public class Dataset {
         return Dataspace(id: H5Dget_space(id))
     }
 
-    public func read(inout data: [Double]) -> Bool {
+    public func readDouble(inout data: [Double]) -> Bool {
         let status = H5Dread(id, H5T_NATIVE_DOUBLE_g, 0, 0, 0, &data)
         return status >= 0
     }
 
-    public func write(data: [Double]) -> Bool {
+    public func writeDouble(data: [Double]) -> Bool {
         let status = H5Dwrite(id, H5T_NATIVE_DOUBLE_g, 0, 0, 0, data);
+        return status >= 0
+    }
+
+    public func readFloat(inout data: [Float]) -> Bool {
+        let status = H5Dread(id, H5T_NATIVE_FLOAT_g, 0, 0, 0, &data)
+        return status >= 0
+    }
+
+    public func writeFloat(data: [Float]) -> Bool {
+        let status = H5Dwrite(id, H5T_NATIVE_FLOAT_g, 0, 0, 0, data);
+        return status >= 0
+    }
+
+    public func readInt(inout data: [Int]) -> Bool {
+        let status = H5Dread(id, H5T_NATIVE_INT_g, 0, 0, 0, &data)
+        return status >= 0
+    }
+
+    public func writeInt(data: [Int]) -> Bool {
+        let status = H5Dwrite(id, H5T_NATIVE_INT_g, 0, 0, 0, data);
         return status >= 0
     }
 }

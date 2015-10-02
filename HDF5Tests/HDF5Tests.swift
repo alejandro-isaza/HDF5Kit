@@ -6,6 +6,7 @@ import XCTest
 class HDF5Tests: XCTestCase {
     let width = UInt64(100)
     let height = UInt64(100)
+    let datasetName = "MyData"
 
     func tempFilePath() -> String {
         let fileName = NSProcessInfo.processInfo().globallyUniqueString + ".hdf"
@@ -35,20 +36,20 @@ class HDF5Tests: XCTestCase {
         let datatype = Datatype.copy(type: .Double)
         datatype.order = .LittleEndian
 
-        let dataset = Dataset.create(file: file, name: "MyData", datatype: datatype, dataspace: dataspace)
+        let dataset = Dataset.create(file: file, name: datasetName, datatype: datatype, dataspace: dataspace)
         XCTAssertEqual(UInt64(data.count), dataspace.size)
-        XCTAssert(dataset.write(data))
+        XCTAssert(dataset.writeDouble(data))
     }
 
     func readData(filePath: String, inout data: [Double]) {
         let file = openFile(filePath)
 
-        guard let dataset = Dataset.open(file: file, name: "MyData") else {
+        guard let dataset = Dataset.open(file: file, name: datasetName) else {
             XCTFail("Failed to open Dataset")
             return
         }
         XCTAssertEqual(UInt64(data.count), dataset.space.size)
-        XCTAssert(dataset.read(&data))
+        XCTAssert(dataset.readDouble(&data))
     }
 
     func testCreateDataset() {
@@ -62,19 +63,41 @@ class HDF5Tests: XCTestCase {
         
         let datatype = Datatype.copy(type: .Double)
         datatype.order = .LittleEndian
-        let dataset = Dataset.create(file: file, name: "MyData", datatype: datatype, dataspace: dataspace)
+        let dataset = Dataset.create(file: file, name: datasetName, datatype: datatype, dataspace: dataspace)
         XCTAssertNil(dataset.offset)
     }
 
     func testWriteRead() {
-        let expected = (0..<width*height).map{ _ in return Double(arc4random()) / Double(UINT32_MAX) }
-
         let filePath = tempFilePath()
+
+        let expected = (0..<width*height).map{ _ in return Double(arc4random()) / Double(UINT32_MAX) }
         writeData(filePath, data: expected)
 
         var actual = [Double](count: Int(width*height), repeatedValue: 0.0)
         readData(filePath, data: &actual)
 
         XCTAssertEqual(expected, actual)
+    }
+
+    func testConvert() {
+        let filePath = tempFilePath()
+
+        // Write as Double
+        let expected = (0..<width*height).map{ _ in return Double(arc4random()) / Double(UINT32_MAX) }
+        writeData(filePath, data: expected)
+
+        let file = openFile(filePath)
+        guard let dataset = Dataset.open(file: file, name: datasetName) else {
+            XCTFail("Failed to open Dataset")
+            return
+        }
+
+        // Read as Float
+        var actual = [Float](count: Int(width*height), repeatedValue: 0.0)
+        XCTAssert(dataset.readFloat(&actual))
+
+        for i in 0..<expected.count {
+            XCTAssertEqual(actual[i], Float(expected[i]))
+        }
     }
 }

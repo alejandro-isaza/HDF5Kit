@@ -369,6 +369,7 @@
 		61B317971BBDE74400F63C45 /* Dataspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B317961BBDE74400F63C45 /* Dataspace.swift */; settings = {ASSET_TAGS = (); }; };
 		61B317991BBDEAD700F63C45 /* Datatype.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B317981BBDEAD700F63C45 /* Datatype.swift */; settings = {ASSET_TAGS = (); }; };
 		61B3179B1BBDF1C900F63C45 /* Dataset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B3179A1BBDF1C900F63C45 /* Dataset.swift */; settings = {ASSET_TAGS = (); }; };
+		61B3179D1BBE21CE00F63C45 /* NativeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B3179C1BBE21CE00F63C45 /* NativeType.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -748,6 +749,7 @@
 		61B317961BBDE74400F63C45 /* Dataspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dataspace.swift; sourceTree = "<group>"; };
 		61B317981BBDEAD700F63C45 /* Datatype.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Datatype.swift; sourceTree = "<group>"; };
 		61B3179A1BBDF1C900F63C45 /* Dataset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dataset.swift; sourceTree = "<group>"; };
+		61B3179C1BBE21CE00F63C45 /* NativeType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeType.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -799,6 +801,7 @@
 				61B317961BBDE74400F63C45 /* Dataspace.swift */,
 				61B317981BBDEAD700F63C45 /* Datatype.swift */,
 				61B3179A1BBDF1C900F63C45 /* Dataset.swift */,
+				61B3179C1BBE21CE00F63C45 /* NativeType.swift */,
 			);
 			path = HDF5;
 			sourceTree = "<group>";
@@ -1397,6 +1400,7 @@
 			files = (
 				61B317531BBDBA8E00F63C45 /* H5system.c in Sources */,
 				61B317241BBDBA8E00F63C45 /* H5PL.c in Sources */,
+				61B3179D1BBE21CE00F63C45 /* NativeType.swift in Sources */,
 				61B316C81BBDBA8E00F63C45 /* H5HFstat.c in Sources */,
 				61B3168C1BBDBA8E00F63C45 /* H5FL.c in Sources */,
 				61B316FD1BBDBA8E00F63C45 /* H5Ocopy.c in Sources */,
@@ -1558,7 +1562,6 @@
 				61B316831BBDBA8E00F63C45 /* H5FDspace.c in Sources */,
 				61B3162A1BBDBA8E00F63C45 /* H5Adeprec.c in Sources */,
 				61B316EF1BBDBA8E00F63C45 /* H5MP.c in Sources */,
-				61B317931BBDDCD600F63C45 /* Constants.swift in Sources */,
 				61B316231BBDBA8E00F63C45 /* H5A.c in Sources */,
 				61B317191BBDBA8E00F63C45 /* H5P.c in Sources */,
 				61B3168A1BBDBA8E00F63C45 /* H5Fint.c in Sources */,

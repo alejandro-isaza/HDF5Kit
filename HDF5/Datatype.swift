@@ -17,57 +17,6 @@ public enum DataClass: Int32 {
     case Array     = 10	 // Array types
 }
 
-public enum NativeType {
-    case Byte
-    case UByte
-    case Short
-    case UShort
-    case Int
-    case UInt
-    case Long
-    case ULong
-    case LongLong
-    case ULongLong
-    case Float
-    case Double
-    case LongDouble
-    case Int8
-    case UInt8
-    case Int16
-    case UInt16
-    case Int32
-    case UInt32
-    case Int64
-    case UInt64
-    case Opaque
-
-    public var rawValue: Swift.Int32 {
-        switch self {
-        case Byte: return H5T_NATIVE_SCHAR_g
-        case UByte: return H5T_NATIVE_UCHAR_g
-        case Short: return H5T_NATIVE_SHORT_g
-        case UShort: return H5T_NATIVE_USHORT_g
-        case Int: return H5T_NATIVE_INT_g
-        case UInt: return H5T_NATIVE_UINT_g
-        case Long: return H5T_NATIVE_LONG_g
-        case ULong: return H5T_NATIVE_ULONG_g
-        case LongLong: return H5T_NATIVE_LLONG_g
-        case ULongLong: return H5T_NATIVE_ULLONG_g
-        case Float: return H5T_NATIVE_FLOAT_g
-        case Double: return H5T_NATIVE_DOUBLE_g
-        case LongDouble: return H5T_NATIVE_LDOUBLE_g
-        case Int8: return H5T_NATIVE_INT8_g
-        case UInt8: return H5T_NATIVE_UINT8_g
-        case Int16: return H5T_NATIVE_INT16_g
-        case UInt16: return H5T_NATIVE_UINT16_g
-        case Int32: return H5T_NATIVE_INT32_g
-        case UInt32: return H5T_NATIVE_UINT32_g
-        case Int64: return H5T_NATIVE_INT64_g
-        case UInt64: return H5T_NATIVE_UINT64_g
-        case Opaque: return H5T_NATIVE_OPAQUE_g
-        }
-    }
-}
 
 public class Datatype {
     var id: Int32
