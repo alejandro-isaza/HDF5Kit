@@ -12,6 +12,11 @@ public class Dataspace {
         }
     }
 
+    deinit {
+        let status = H5Sclose(id)
+        assert(status >= 0, "Failed to close Dataspace")
+    }
+
     public init(dims: [UInt64]) {
         id = H5Screate_simple(Int32(dims.count), dims, nil)
         guard id >= 0 else {
@@ -19,13 +24,12 @@ public class Dataspace {
         }
     }
 
-    deinit {
-        let status = H5Sclose(id)
-        assert(status >= 0, "Failed to close Dataspace")
-    }
-
-    public var size: Int64 {
-        return H5Sget_simple_extent_npoints(id)
+    public var size: UInt64 {
+        let result = H5Sget_simple_extent_npoints(id)
+        guard result >= 0 else {
+            fatalError("Failed to get Dataspace size")
+        }
+        return UInt64(result)
     }
 
     public var dims: [UInt64] {

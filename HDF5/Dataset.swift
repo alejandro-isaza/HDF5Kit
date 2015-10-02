@@ -5,13 +5,36 @@ import Foundation
 public class Dataset {
     var id: Int32 = -1
 
-    public init(file: File, name: String, datatype: Datatype, dataspace: Dataspace) {
+    init(id: Int32) {
+        precondition(id >= 0, "Dataset ID needs to be non-negative")
+        self.id = id
+    }
+
+    deinit {
+        let status = H5Dclose(id)
+        assert(status >= 0, "Failed to close Dataset")
+    }
+
+    public class func create(file file: File, name: String, datatype: Datatype, dataspace: Dataspace) -> Dataset {
+        var id: Int32 = -1
         name.withCString{ name in
             id = H5Dcreate2(file.id, name, datatype.id, dataspace.id, 0, 0, 0)
         }
         guard id >= 0 else {
             fatalError("Failed to create Dataset")
         }
+        return Dataset(id: id)
+    }
+
+    public class func open(file file: File, name: String) -> Dataset? {
+        var id: Int32 = -1
+        name.withCString{ name in
+            id = H5Dopen2(file.id, name, 0)
+        }
+        guard id >= 0 else {
+            return nil
+        }
+        return Dataset(id: id)
     }
 
     /// The address in the file of the dataset or `nil` if the offset is undefined. That address is expressed as the offset in bytes from the beginning of the file.

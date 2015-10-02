@@ -4,48 +4,77 @@ import XCTest
 @testable import HDF5
 
 class HDF5Tests: XCTestCase {
+    let width = UInt64(100)
+    let height = UInt64(100)
 
-    var filePath: String {
+    func tempFilePath() -> String {
         let fileName = NSProcessInfo.processInfo().globallyUniqueString + ".hdf"
         return NSTemporaryDirectory() + "/" + fileName
     }
 
-    func testCreateDataset() {
+    func createFile(filePath: String) -> File {
         guard let file = File.create(filePath, mode: .Truncate) else {
-            XCTFail("Failed to create file")
+            fatalError("Failed to create file")
+        }
+        return file
+    }
+
+    func openFile(filePath: String) -> File {
+        guard let file = File.open(filePath, mode: .ReadOnly) else {
+            fatalError("Failed to open file")
+        }
+        return file
+    }
+
+    func writeData(filePath: String, data: [Double]) {
+        let file = createFile(filePath)
+
+        let dims: [UInt64] = [width, height]
+        let dataspace = Dataspace(dims: dims)
+
+        let datatype = Datatype.copy(type: .Double)
+        datatype.order = .LittleEndian
+
+        let dataset = Dataset.create(file: file, name: "MyData", datatype: datatype, dataspace: dataspace)
+        XCTAssertEqual(UInt64(data.count), dataspace.size)
+        XCTAssert(dataset.write(data))
+    }
+
+    func readData(filePath: String, inout data: [Double]) {
+        let file = openFile(filePath)
+
+        guard let dataset = Dataset.open(file: file, name: "MyData") else {
+            XCTFail("Failed to open Dataset")
             return
         }
+        XCTAssertEqual(UInt64(data.count), dataset.space.size)
+        XCTAssert(dataset.read(&data))
+    }
 
-        let dims: [UInt64] = [100, 100]
+    func testCreateDataset() {
+        let filePath = tempFilePath()
+
+        let file = createFile(filePath)
+        let dims: [UInt64] = [width, height]
         let dataspace = Dataspace(dims: dims)
-        XCTAssertEqual(dataspace.size, 100*100)
+        XCTAssertEqual(dataspace.size, width * height)
         XCTAssertEqual(dataspace.dims, dims)
         
-        let datatype = Datatype.copy(.Double)
+        let datatype = Datatype.copy(type: .Double)
         datatype.order = .LittleEndian
-        let dataset = Dataset(file: file, name: "MyData", datatype: datatype, dataspace: dataspace)
+        let dataset = Dataset.create(file: file, name: "MyData", datatype: datatype, dataspace: dataspace)
         XCTAssertNil(dataset.offset)
     }
 
     func testWriteRead() {
-        guard let file = File.create(filePath, mode: .Truncate) else {
-            XCTFail("Failed to create file")
-            return
-        }
+        let expected = (0..<width*height).map{ _ in return Double(arc4random()) / Double(UINT32_MAX) }
 
-        let dims: [UInt64] = [10, 10]
-        let dataspace = Dataspace(dims: dims)
+        let filePath = tempFilePath()
+        writeData(filePath, data: expected)
 
-        let datatype = Datatype.copy(.Double)
-        datatype.order = .LittleEndian
+        var actual = [Double](count: Int(width*height), repeatedValue: 0.0)
+        readData(filePath, data: &actual)
 
-        let writtenData = (0..<10*10).map{ _ in return Double(arc4random()) / Double(UINT32_MAX) }
-        let dataset = Dataset(file: file, name: "MyData", datatype: datatype, dataspace: dataspace)
-        XCTAssert(dataset.write(writtenData))
-
-        var readData = [Double](count: 10*10, repeatedValue: 0.0)
-        XCTAssert(dataset.read(&readData))
-
-        XCTAssertEqual(writtenData, readData)
+        XCTAssertEqual(expected, actual)
     }
 }

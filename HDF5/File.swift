@@ -8,6 +8,11 @@ public class File {
         case Exclusive = 0x04 // Fail if file already exists
     }
 
+    public enum OpenMode: UInt32 {
+        case ReadOnly  = 0x00
+        case ReadWrite = 0x01
+    }
+
     public class func create(filePath: String, mode: CreateMode) -> File? {
         var id: Int32 = -1
         filePath.withCString { filePath in
@@ -17,11 +22,6 @@ public class File {
             return nil
         }
         return File(id: id)
-    }
-
-    public enum OpenMode: UInt32 {
-        case ReadOnly  = 0x00
-        case ReadWrite = 0x01
     }
 
     public class func open(filePath: String, mode: OpenMode) -> File? {
