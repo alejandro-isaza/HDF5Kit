@@ -37,8 +37,8 @@ public enum NativeType {
 
     public var rawValue: Swift.Int32 {
         switch self {
-        case Int: return H5T_NATIVE_INT_g
-        case UInt: return H5T_NATIVE_UINT_g
+        case Int: return H5T_NATIVE_LONG_g
+        case UInt: return H5T_NATIVE_ULONG_g
         case Float: return H5T_NATIVE_FLOAT_g
         case Double: return H5T_NATIVE_DOUBLE_g
         case Int8: return H5T_NATIVE_INT8_g
