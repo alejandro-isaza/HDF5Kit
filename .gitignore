@@ -11,3 +11,6 @@ xcuserdata/
 *.lo
 .deps/
 .libs/
+
+# Carthage
+Carthage/
