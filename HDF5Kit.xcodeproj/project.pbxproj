@@ -57,7 +57,6 @@
 		61B3164F1BBDBA8E00F63C45 /* H5Ddbg.c in Sources */ = {isa = PBXBuildFile; fileRef = 61B314E71BBDBA8D00F63C45 /* H5Ddbg.c */; settings = {ASSET_TAGS = (); }; };
 		61B316501BBDBA8E00F63C45 /* H5Ddeprec.c in Sources */ = {isa = PBXBuildFile; fileRef = 61B314E81BBDBA8D00F63C45 /* H5Ddeprec.c */; settings = {ASSET_TAGS = (); }; };
 		61B316511BBDBA8E00F63C45 /* H5Defl.c in Sources */ = {isa = PBXBuildFile; fileRef = 61B314E91BBDBA8D00F63C45 /* H5Defl.c */; settings = {ASSET_TAGS = (); }; };
-		61B316521BBDBA8E00F63C45 /* H5detect.c in Sources */ = {isa = PBXBuildFile; fileRef = 61B314EA1BBDBA8D00F63C45 /* H5detect.c */; settings = {ASSET_TAGS = (); }; };
 		61B316531BBDBA8E00F63C45 /* H5Dfill.c in Sources */ = {isa = PBXBuildFile; fileRef = 61B314EB1BBDBA8D00F63C45 /* H5Dfill.c */; settings = {ASSET_TAGS = (); }; };
 		61B316541BBDBA8E00F63C45 /* H5Dint.c in Sources */ = {isa = PBXBuildFile; fileRef = 61B314EC1BBDBA8D00F63C45 /* H5Dint.c */; settings = {ASSET_TAGS = (); }; };
 		61B316551BBDBA8E00F63C45 /* H5Dio.c in Sources */ = {isa = PBXBuildFile; fileRef = 61B314ED1BBDBA8D00F63C45 /* H5Dio.c */; settings = {ASSET_TAGS = (); }; };
@@ -1628,7 +1627,6 @@
 				61B3170F1BBDBA8E00F63C45 /* H5Orefcount.c in Sources */,
 				61B316AA1BBDBA8E00F63C45 /* H5Gint.c in Sources */,
 				61B316FF1BBDBA8E00F63C45 /* H5Odrvinfo.c in Sources */,
-				61B316521BBDBA8E00F63C45 /* H5detect.c in Sources */,
 				61B316351BBDBA8E00F63C45 /* H5B2hdr.c in Sources */,
 				61B317691BBDBA8E00F63C45 /* H5Tprecis.c in Sources */,
 				61B316D51BBDBA8E00F63C45 /* H5HLint.c in Sources */,

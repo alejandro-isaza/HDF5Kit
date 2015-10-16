@@ -12,6 +12,7 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/aleph7/HDF5Kit.git", :tag => "0.0.2" }
   s.source_files = "Source", "dist/src/*.{c,h}",
+  s.exclude_files = "dist/src/H5detect.c"
 
   s.public_header_files = "Source/HDF5Kit.h",
                           "dist/src/*public.h",
