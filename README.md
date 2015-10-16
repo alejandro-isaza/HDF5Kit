@@ -1,4 +1,4 @@
-# HDF5Swift
+# HDF5Kit
 
 This is a Swift wrapper for HDF5. The objective is to make it easy to read and write HDF5 files from Swift, in particular Playgrounds.
 
