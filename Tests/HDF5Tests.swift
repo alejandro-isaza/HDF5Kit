@@ -1,7 +1,7 @@
 //  Copyright © 2015 Venture Media Labs. All rights reserved.
 
 import XCTest
-@testable import HDF5
+@testable import HDF5Kit
 
 class HDF5Tests: XCTestCase {
     let width = UInt64(100)

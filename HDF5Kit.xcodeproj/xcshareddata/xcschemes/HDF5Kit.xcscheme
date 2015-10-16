@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "61B3149C1BBDBA3100F63C45"
-               BuildableName = "HDF5.framework"
-               BlueprintName = "HDF5"
-               ReferencedContainer = "container:HDF5.xcodeproj">
+               BuildableName = "HDF5Kit.framework"
+               BlueprintName = "HDF5Kit"
+               ReferencedContainer = "container:HDF5Kit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "61B314A61BBDBA3200F63C45"
-               BuildableName = "HDF5Tests.xctest"
-               BlueprintName = "HDF5Tests"
-               ReferencedContainer = "container:HDF5.xcodeproj">
+               BuildableName = "HDF5KitTests.xctest"
+               BlueprintName = "HDF5KitTests"
+               ReferencedContainer = "container:HDF5Kit.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -43,9 +43,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "61B3149C1BBDBA3100F63C45"
-            BuildableName = "HDF5.framework"
-            BlueprintName = "HDF5"
-            ReferencedContainer = "container:HDF5.xcodeproj">
+            BuildableName = "HDF5Kit.framework"
+            BlueprintName = "HDF5Kit"
+            ReferencedContainer = "container:HDF5Kit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -65,9 +65,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "61B3149C1BBDBA3100F63C45"
-            BuildableName = "HDF5.framework"
-            BlueprintName = "HDF5"
-            ReferencedContainer = "container:HDF5.xcodeproj">
+            BuildableName = "HDF5Kit.framework"
+            BlueprintName = "HDF5Kit"
+            ReferencedContainer = "container:HDF5Kit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -83,9 +83,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "61B3149C1BBDBA3100F63C45"
-            BuildableName = "HDF5.framework"
-            BlueprintName = "HDF5"
-            ReferencedContainer = "container:HDF5.xcodeproj">
+            BuildableName = "HDF5Kit.framework"
+            BlueprintName = "HDF5Kit"
+            ReferencedContainer = "container:HDF5Kit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

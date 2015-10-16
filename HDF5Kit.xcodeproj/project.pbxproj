@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		61B314A11BBDBA3100F63C45 /* HDF5.h in Headers */ = {isa = PBXBuildFile; fileRef = 61B314A01BBDBA3100F63C45 /* HDF5.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		61B314A81BBDBA3200F63C45 /* HDF5.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61B3149D1BBDBA3100F63C45 /* HDF5.framework */; settings = {ASSET_TAGS = (); }; };
+		61B314A11BBDBA3100F63C45 /* HDF5Kit.h in Headers */ = {isa = PBXBuildFile; fileRef = 61B314A01BBDBA3100F63C45 /* HDF5Kit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		61B314A81BBDBA3200F63C45 /* HDF5Kit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61B3149D1BBDBA3100F63C45 /* HDF5Kit.framework */; settings = {ASSET_TAGS = (); }; };
 		61B314AD1BBDBA3200F63C45 /* HDF5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B314AC1BBDBA3200F63C45 /* HDF5Tests.swift */; };
 		61B316221BBDBA8E00F63C45 /* H5.c in Sources */ = {isa = PBXBuildFile; fileRef = 61B314BA1BBDBA8D00F63C45 /* H5.c */; settings = {ASSET_TAGS = (); }; };
 		61B316231BBDBA8E00F63C45 /* H5A.c in Sources */ = {isa = PBXBuildFile; fileRef = 61B314BB1BBDBA8D00F63C45 /* H5A.c */; settings = {ASSET_TAGS = (); }; };
@@ -383,10 +383,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		61B3149D1BBDBA3100F63C45 /* HDF5.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HDF5.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		61B314A01BBDBA3100F63C45 /* HDF5.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HDF5.h; sourceTree = "<group>"; };
+		61B3149D1BBDBA3100F63C45 /* HDF5Kit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HDF5Kit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		61B314A01BBDBA3100F63C45 /* HDF5Kit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HDF5Kit.h; sourceTree = "<group>"; };
 		61B314A21BBDBA3100F63C45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		61B314A71BBDBA3200F63C45 /* HDF5Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HDF5Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		61B314A71BBDBA3200F63C45 /* HDF5KitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HDF5KitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		61B314AC1BBDBA3200F63C45 /* HDF5Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDF5Tests.swift; sourceTree = "<group>"; };
 		61B314AE1BBDBA3200F63C45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		61B314B91BBDBA8D00F63C45 /* COPYING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
@@ -765,7 +765,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				61B314A81BBDBA3200F63C45 /* HDF5.framework in Frameworks */,
+				61B314A81BBDBA3200F63C45 /* HDF5Kit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -775,10 +775,11 @@
 		61B314931BBDBA3100F63C45 = {
 			isa = PBXGroup;
 			children = (
+				61B314A21BBDBA3100F63C45 /* Info.plist */,
 				61B3178C1BBDBC6E00F63C45 /* libz.tbd */,
 				61B314B71BBDBA8D00F63C45 /* src */,
-				61B3149F1BBDBA3100F63C45 /* HDF5 */,
-				61B314AB1BBDBA3200F63C45 /* HDF5Tests */,
+				61B3149F1BBDBA3100F63C45 /* Source */,
+				61B314AB1BBDBA3200F63C45 /* Tests */,
 				61B3149E1BBDBA3100F63C45 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -786,33 +787,32 @@
 		61B3149E1BBDBA3100F63C45 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				61B3149D1BBDBA3100F63C45 /* HDF5.framework */,
-				61B314A71BBDBA3200F63C45 /* HDF5Tests.xctest */,
+				61B3149D1BBDBA3100F63C45 /* HDF5Kit.framework */,
+				61B314A71BBDBA3200F63C45 /* HDF5KitTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		61B3149F1BBDBA3100F63C45 /* HDF5 */ = {
+		61B3149F1BBDBA3100F63C45 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				61B314A01BBDBA3100F63C45 /* HDF5.h */,
-				61B314A21BBDBA3100F63C45 /* Info.plist */,
+				61B314A01BBDBA3100F63C45 /* HDF5Kit.h */,
 				61B317941BBDE23200F63C45 /* File.swift */,
 				61B317961BBDE74400F63C45 /* Dataspace.swift */,
 				61B317981BBDEAD700F63C45 /* Datatype.swift */,
 				61B3179A1BBDF1C900F63C45 /* Dataset.swift */,
 				61B3179C1BBE21CE00F63C45 /* NativeType.swift */,
 			);
-			path = HDF5;
+			path = Source;
 			sourceTree = "<group>";
 		};
-		61B314AB1BBDBA3200F63C45 /* HDF5Tests */ = {
+		61B314AB1BBDBA3200F63C45 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				61B314AC1BBDBA3200F63C45 /* HDF5Tests.swift */,
 				61B314AE1BBDBA3200F63C45 /* Info.plist */,
 			);
-			path = HDF5Tests;
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		61B314B71BBDBA8D00F63C45 /* src */ = {
@@ -1281,7 +1281,7 @@
 				61B317681BBDBA8E00F63C45 /* H5Tpkg.h in Headers */,
 				61B3172C1BBDBA8E00F63C45 /* H5Ppkg.h in Headers */,
 				61B316C31BBDBA8E00F63C45 /* H5HFpkg.h in Headers */,
-				61B314A11BBDBA3100F63C45 /* HDF5.h in Headers */,
+				61B314A11BBDBA3100F63C45 /* HDF5Kit.h in Headers */,
 				61B3167D1BBDBA8E00F63C45 /* H5FDmulti.h in Headers */,
 				61B317471BBDBA8E00F63C45 /* H5SMpkg.h in Headers */,
 				61B316D61BBDBA8E00F63C45 /* H5HLpkg.h in Headers */,
@@ -1304,9 +1304,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		61B3149C1BBDBA3100F63C45 /* HDF5 */ = {
+		61B3149C1BBDBA3100F63C45 /* HDF5Kit */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 61B314B11BBDBA3200F63C45 /* Build configuration list for PBXNativeTarget "HDF5" */;
+			buildConfigurationList = 61B314B11BBDBA3200F63C45 /* Build configuration list for PBXNativeTarget "HDF5Kit" */;
 			buildPhases = (
 				61B314981BBDBA3100F63C45 /* Sources */,
 				61B314991BBDBA3100F63C45 /* Frameworks */,
@@ -1317,14 +1317,14 @@
 			);
 			dependencies = (
 			);
-			name = HDF5;
+			name = HDF5Kit;
 			productName = HDF5;
-			productReference = 61B3149D1BBDBA3100F63C45 /* HDF5.framework */;
+			productReference = 61B3149D1BBDBA3100F63C45 /* HDF5Kit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		61B314A61BBDBA3200F63C45 /* HDF5Tests */ = {
+		61B314A61BBDBA3200F63C45 /* HDF5KitTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 61B314B41BBDBA3200F63C45 /* Build configuration list for PBXNativeTarget "HDF5Tests" */;
+			buildConfigurationList = 61B314B41BBDBA3200F63C45 /* Build configuration list for PBXNativeTarget "HDF5KitTests" */;
 			buildPhases = (
 				61B314A31BBDBA3200F63C45 /* Sources */,
 				61B314A41BBDBA3200F63C45 /* Frameworks */,
@@ -1335,9 +1335,9 @@
 			dependencies = (
 				61B314AA1BBDBA3200F63C45 /* PBXTargetDependency */,
 			);
-			name = HDF5Tests;
+			name = HDF5KitTests;
 			productName = HDF5Tests;
-			productReference = 61B314A71BBDBA3200F63C45 /* HDF5Tests.xctest */;
+			productReference = 61B314A71BBDBA3200F63C45 /* HDF5KitTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -1358,7 +1358,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 61B314971BBDBA3100F63C45 /* Build configuration list for PBXProject "HDF5" */;
+			buildConfigurationList = 61B314971BBDBA3100F63C45 /* Build configuration list for PBXProject "HDF5Kit" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -1370,8 +1370,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				61B3149C1BBDBA3100F63C45 /* HDF5 */,
-				61B314A61BBDBA3200F63C45 /* HDF5Tests */,
+				61B3149C1BBDBA3100F63C45 /* HDF5Kit */,
+				61B314A61BBDBA3200F63C45 /* HDF5KitTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1661,7 +1661,7 @@
 /* Begin PBXTargetDependency section */
 		61B314AA1BBDBA3200F63C45 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 61B3149C1BBDBA3100F63C45 /* HDF5 */;
+			target = 61B3149C1BBDBA3100F63C45 /* HDF5Kit */;
 			targetProxy = 61B314A91BBDBA3200F63C45 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1762,7 +1762,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = HDF5/Info.plist;
+				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.venturemedia.HDF5;
@@ -1783,7 +1783,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = HDF5/Info.plist;
+				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.venturemedia.HDF5;
@@ -1796,7 +1796,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = HDF5Tests/Info.plist;
+				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.venturemedia.HDF5Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1807,7 +1807,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = HDF5Tests/Info.plist;
+				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.venturemedia.HDF5Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1817,7 +1817,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		61B314971BBDBA3100F63C45 /* Build configuration list for PBXProject "HDF5" */ = {
+		61B314971BBDBA3100F63C45 /* Build configuration list for PBXProject "HDF5Kit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				61B314AF1BBDBA3200F63C45 /* Debug */,
@@ -1826,7 +1826,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		61B314B11BBDBA3200F63C45 /* Build configuration list for PBXNativeTarget "HDF5" */ = {
+		61B314B11BBDBA3200F63C45 /* Build configuration list for PBXNativeTarget "HDF5Kit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				61B314B21BBDBA3200F63C45 /* Debug */,
@@ -1835,7 +1835,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		61B314B41BBDBA3200F63C45 /* Build configuration list for PBXNativeTarget "HDF5Tests" */ = {
+		61B314B41BBDBA3200F63C45 /* Build configuration list for PBXNativeTarget "HDF5KitTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				61B314B51BBDBA3200F63C45 /* Debug */,
