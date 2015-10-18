@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "61B3149C1BBDBA3100F63C45"
+               BlueprintIdentifier = "6185A7AA1BD3395200CD5FC5"
                BuildableName = "HDF5Kit.framework"
-               BlueprintName = "HDF5Kit"
+               BlueprintName = "HDF5Kit-iOS"
                ReferencedContainer = "container:HDF5Kit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "61B314A61BBDBA3200F63C45"
+               BlueprintIdentifier = "6185A7B31BD3395200CD5FC5"
                BuildableName = "HDF5KitTests.xctest"
-               BlueprintName = "HDF5KitTests"
+               BlueprintName = "HDF5KitTests-iOS"
                ReferencedContainer = "container:HDF5Kit.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -42,9 +42,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "61B3149C1BBDBA3100F63C45"
+            BlueprintIdentifier = "6185A7AA1BD3395200CD5FC5"
             BuildableName = "HDF5Kit.framework"
-            BlueprintName = "HDF5Kit"
+            BlueprintName = "HDF5Kit-iOS"
             ReferencedContainer = "container:HDF5Kit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -64,9 +64,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "61B3149C1BBDBA3100F63C45"
+            BlueprintIdentifier = "6185A7AA1BD3395200CD5FC5"
             BuildableName = "HDF5Kit.framework"
-            BlueprintName = "HDF5Kit"
+            BlueprintName = "HDF5Kit-iOS"
             ReferencedContainer = "container:HDF5Kit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -82,9 +82,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "61B3149C1BBDBA3100F63C45"
+            BlueprintIdentifier = "6185A7AA1BD3395200CD5FC5"
             BuildableName = "HDF5Kit.framework"
-            BlueprintName = "HDF5Kit"
+            BlueprintName = "HDF5Kit-iOS"
             ReferencedContainer = "container:HDF5Kit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
