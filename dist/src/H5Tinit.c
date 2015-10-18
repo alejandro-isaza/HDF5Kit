@@ -280,7 +280,7 @@ H5TN_init_interface(void)
         HGOTO_ERROR(H5E_DATATYPE, H5E_NOSPACE, FAIL, "datatype allocation failed")
     dt->shared->state = H5T_STATE_IMMUTABLE;
     dt->shared->type = H5T_INTEGER;
-    dt->shared->size = 8;
+    dt->shared->size = sizeof(long);
     dt->shared->u.atomic.order = H5T_ORDER_LE;
     dt->shared->u.atomic.offset = 0;
     dt->shared->u.atomic.prec = 64;
@@ -303,7 +303,7 @@ H5TN_init_interface(void)
         HGOTO_ERROR(H5E_DATATYPE, H5E_NOSPACE, FAIL, "datatype allocation failed")
     dt->shared->state = H5T_STATE_IMMUTABLE;
     dt->shared->type = H5T_INTEGER;
-    dt->shared->size = 8;
+    dt->shared->size = sizeof(unsigned long);
     dt->shared->u.atomic.order = H5T_ORDER_LE;
     dt->shared->u.atomic.offset = 0;
     dt->shared->u.atomic.prec = 64;
@@ -817,7 +817,7 @@ H5TN_init_interface(void)
         HGOTO_ERROR(H5E_DATATYPE, H5E_NOSPACE, FAIL, "datatype allocation failed")
     dt->shared->state = H5T_STATE_IMMUTABLE;
     dt->shared->type = H5T_INTEGER;
-    dt->shared->size = 8;
+    dt->shared->size = sizeof(long long);
     dt->shared->u.atomic.order = H5T_ORDER_LE;
     dt->shared->u.atomic.offset = 0;
     dt->shared->u.atomic.prec = 64;
@@ -840,7 +840,7 @@ H5TN_init_interface(void)
         HGOTO_ERROR(H5E_DATATYPE, H5E_NOSPACE, FAIL, "datatype allocation failed")
     dt->shared->state = H5T_STATE_IMMUTABLE;
     dt->shared->type = H5T_INTEGER;
-    dt->shared->size = 8;
+    dt->shared->size = sizeof(unsigned long long);
     dt->shared->u.atomic.order = H5T_ORDER_LE;
     dt->shared->u.atomic.offset = 0;
     dt->shared->u.atomic.prec = 64;
@@ -861,7 +861,7 @@ H5TN_init_interface(void)
         HGOTO_ERROR(H5E_DATATYPE, H5E_NOSPACE, FAIL, "datatype allocation failed")
     dt->shared->state = H5T_STATE_IMMUTABLE;
     dt->shared->type = H5T_FLOAT;
-    dt->shared->size = 4;
+    dt->shared->size = sizeof(float);
     dt->shared->u.atomic.order = H5T_ORDER_LE;
     dt->shared->u.atomic.offset = 0;
     dt->shared->u.atomic.prec = 32;
@@ -892,7 +892,7 @@ H5TN_init_interface(void)
         HGOTO_ERROR(H5E_DATATYPE, H5E_NOSPACE, FAIL, "datatype allocation failed")
     dt->shared->state = H5T_STATE_IMMUTABLE;
     dt->shared->type = H5T_FLOAT;
-    dt->shared->size = 8;
+    dt->shared->size = sizeof(double);
     dt->shared->u.atomic.order = H5T_ORDER_LE;
     dt->shared->u.atomic.offset = 0;
     dt->shared->u.atomic.prec = 64;
@@ -927,7 +927,7 @@ H5TN_init_interface(void)
         HGOTO_ERROR(H5E_DATATYPE, H5E_NOSPACE, FAIL, "datatype allocation failed")
     dt->shared->state = H5T_STATE_IMMUTABLE;
     dt->shared->type = H5T_FLOAT;
-    dt->shared->size = 16;
+    dt->shared->size = sizeof(long double);
     dt->shared->u.atomic.order = H5T_ORDER_LE;
     dt->shared->u.atomic.offset = 0;
     dt->shared->u.atomic.prec = 80;

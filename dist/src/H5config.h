@@ -476,6 +476,15 @@
 /* The size of `int_least8_t', as computed by sizeof. */
 #define SIZEOF_INT_LEAST8_T 1
 
+/* The size of `off64_t', as computed by sizeof. */
+#define SIZEOF_OFF64_T 0
+
+/* The size of `off_t', as computed by sizeof. */
+#define SIZEOF_OFF_T 8
+
+
+#ifdef __LP64__
+
 /* The size of `long', as computed by sizeof. */
 #define SIZEOF_LONG 8
 
@@ -485,23 +494,40 @@
 /* The size of `long long', as computed by sizeof. */
 #define SIZEOF_LONG_LONG 8
 
-/* The size of `off64_t', as computed by sizeof. */
-#define SIZEOF_OFF64_T 0
-
-/* The size of `off_t', as computed by sizeof. */
-#define SIZEOF_OFF_T 8
-
 /* The size of `ptrdiff_t', as computed by sizeof. */
 #define SIZEOF_PTRDIFF_T 8
-
-/* The size of `short', as computed by sizeof. */
-#define SIZEOF_SHORT 2
 
 /* The size of `size_t', as computed by sizeof. */
 #define SIZEOF_SIZE_T 8
 
 /* The size of `ssize_t', as computed by sizeof. */
 #define SIZEOF_SSIZE_T 8
+
+#else
+
+/* The size of `long', as computed by sizeof. */
+#define SIZEOF_LONG 4
+
+/* The size of `long double', as computed by sizeof. */
+#define SIZEOF_LONG_DOUBLE 16
+
+/* The size of `long long', as computed by sizeof. */
+#define SIZEOF_LONG_LONG 8
+
+/* The size of `ptrdiff_t', as computed by sizeof. */
+#define SIZEOF_PTRDIFF_T 4
+
+/* The size of `size_t', as computed by sizeof. */
+#define SIZEOF_SIZE_T 4
+
+/* The size of `ssize_t', as computed by sizeof. */
+#define SIZEOF_SSIZE_T 4
+
+#endif
+
+
+/* The size of `short', as computed by sizeof. */
+#define SIZEOF_SHORT 2
 
 /* The size of `uint16_t', as computed by sizeof. */
 #define SIZEOF_UINT16_T 2

@@ -2665,6 +2665,7 @@
 				6185A7BD1BD3395200CD5FC5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6185A7C11BD3395200CD5FC5 /* Build configuration list for PBXNativeTarget "HDF5KitTests-iOS" */ = {
 			isa = XCConfigurationList;
@@ -2673,6 +2674,7 @@
 				6185A7BF1BD3395200CD5FC5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		61B314971BBDBA3100F63C45 /* Build configuration list for PBXProject "HDF5Kit" */ = {
 			isa = XCConfigurationList;
