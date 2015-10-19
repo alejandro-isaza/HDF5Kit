@@ -1,7 +1,5 @@
 //  Copyright © 2015 Venture Media Labs. All rights reserved.
 
-import Foundation
-
 public class Dataset {
     var id: Int32 = -1
 

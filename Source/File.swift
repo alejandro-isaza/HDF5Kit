@@ -1,7 +1,5 @@
 //  Copyright © 2015 Venture Media Labs. All rights reserved.
 
-import Foundation
-
 public class File {
     public enum CreateMode: UInt32 {
         case Truncate  = 0x02 // Overwrite existing files

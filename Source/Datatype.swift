@@ -1,7 +1,5 @@
 //  Copyright © 2015 Venture Media Labs. All rights reserved.
 
-import Foundation
-
 public enum DataClass: Int32 {
     case NoClass   = -1  // error
     case Integer   = 0   // integer types
