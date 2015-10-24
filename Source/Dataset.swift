@@ -13,6 +13,7 @@ public class Dataset {
         assert(status >= 0, "Failed to close Dataset")
     }
 
+    /// Create a Dataset
     public class func create(file file: File, name: String, datatype: Datatype, dataspace: Dataspace) -> Dataset {
         var id: Int32 = -1
         name.withCString{ name in
@@ -24,6 +25,25 @@ public class Dataset {
         return Dataset(id: id)
     }
 
+    /// Create a Double Dataset and write data
+    public class func createAndWrite(file file: File, name: String, dims: [Int], data: [Double]) -> Dataset {
+        let type = Datatype.createDouble()
+        let space = Dataspace.init(dims: dims)
+        let set = create(file: file, name: name, datatype: type, dataspace: space)
+        set.writeDouble(data)
+        return set
+    }
+
+    /// Create an Int Dataset and write data
+    public class func createAndWrite(file file: File, name: String, dims: [Int], data: [Int]) -> Dataset {
+        let type = Datatype.createInt()
+        let space = Dataspace.init(dims: dims)
+        let set = create(file: file, name: name, datatype: type, dataspace: space)
+        set.writeInt(data)
+        return set
+    }
+
+    /// Open a Dataset from a file
     public class func open(file file: File, name: String) -> Dataset? {
         var id: Int32 = -1
         name.withCString{ name in

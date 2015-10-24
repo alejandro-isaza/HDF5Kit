@@ -30,14 +30,9 @@ class HDF5Tests: XCTestCase {
     func writeData(filePath: String, data: [Double]) {
         let file = createFile(filePath)
 
-        let dims: [UInt64] = [width, height]
-        let dataspace = Dataspace(dims: dims)
-
-        let datatype = Datatype.copy(type: .Double)
-        datatype.order = .LittleEndian
-
-        let dataset = Dataset.create(file: file, name: datasetName, datatype: datatype, dataspace: dataspace)
-        XCTAssertEqual(UInt64(data.count), dataspace.size)
+        let dims: [Int] = [Int(width), Int(height)]
+        let dataset = Dataset.createAndWrite(file: file, name: datasetName, dims: dims, data: data)
+        XCTAssertEqual(UInt64(data.count), dataset.space.size)
         XCTAssert(dataset.writeDouble(data))
     }
 

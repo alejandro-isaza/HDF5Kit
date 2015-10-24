@@ -46,6 +46,14 @@ public class Datatype {
         return Datatype(id: id)
     }
 
+    public class func createDouble() -> Datatype {
+        return copy(type: .Double)
+    }
+
+    public class func createInt() -> Datatype {
+        return copy(type: .Int)
+    }
+
     public enum Order: Int32 {
         case Error        = -1
         case LittleEndian = 0

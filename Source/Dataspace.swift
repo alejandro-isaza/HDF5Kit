@@ -15,6 +15,10 @@ public class Dataspace {
         assert(status >= 0, "Failed to close Dataspace")
     }
 
+    public convenience init(dims: [Int]) {
+        self.init(dims: dims.map{ UInt64($0) })
+    }
+
     public init(dims: [UInt64]) {
         id = H5Screate_simple(Int32(dims.count), dims, nil)
         guard id >= 0 else {
