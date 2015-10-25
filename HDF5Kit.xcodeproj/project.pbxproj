@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		616B83AA1BDC61A600B28545 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616B83A91BDC61A600B28545 /* Group.swift */; };
+		616B83AB1BDC61A600B28545 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616B83A91BDC61A600B28545 /* Group.swift */; };
+		616B83AD1BDD493200B28545 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616B83AC1BDD493200B28545 /* Object.swift */; };
+		616B83AE1BDD493200B28545 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616B83AC1BDD493200B28545 /* Object.swift */; };
+		616B83B01BDD5A8500B28545 /* GroupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616B83AF1BDD5A8500B28545 /* GroupTests.swift */; };
+		616B83B11BDD5A8500B28545 /* GroupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616B83AF1BDD5A8500B28545 /* GroupTests.swift */; };
+		616B83B31BDD5B9700B28545 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616B83B21BDD5B9700B28545 /* Helpers.swift */; };
+		616B83B41BDD5B9700B28545 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616B83B21BDD5B9700B28545 /* Helpers.swift */; };
 		6185A7B51BD3395200CD5FC5 /* HDF5Kit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6185A7AB1BD3395200CD5FC5 /* HDF5Kit.framework */; };
 		6185A8B31BD339FD00CD5FC5 /* H5.c in Sources */ = {isa = PBXBuildFile; fileRef = 61B314BA1BBDBA8D00F63C45 /* H5.c */; };
 		6185A8B41BD339FD00CD5FC5 /* H5A.c in Sources */ = {isa = PBXBuildFile; fileRef = 61B314BB1BBDBA8D00F63C45 /* H5A.c */; };
@@ -255,7 +263,7 @@
 		6185A9A71BD33A0C00CD5FC5 /* Dataset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B3179A1BBDF1C900F63C45 /* Dataset.swift */; };
 		6185A9A81BD33A0C00CD5FC5 /* NativeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B3179C1BBE21CE00F63C45 /* NativeType.swift */; };
 		6185A9A91BD33A1000CD5FC5 /* HDF5Kit.h in Headers */ = {isa = PBXBuildFile; fileRef = 61B314A01BBDBA3100F63C45 /* HDF5Kit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6185A9AA1BD33A1800CD5FC5 /* HDF5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B314AC1BBDBA3200F63C45 /* HDF5Tests.swift */; };
+		6185A9AA1BD33A1800CD5FC5 /* FileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B314AC1BBDBA3200F63C45 /* FileTests.swift */; };
 		6185A9AB1BD33A8300CD5FC5 /* H5ACpublic.h in Headers */ = {isa = PBXBuildFile; fileRef = 61B314C01BBDBA8D00F63C45 /* H5ACpublic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6185A9AC1BD33A8300CD5FC5 /* H5Apublic.h in Headers */ = {isa = PBXBuildFile; fileRef = 61B314C71BBDBA8D00F63C45 /* H5Apublic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6185A9AD1BD33A8300CD5FC5 /* H5B2public.h in Headers */ = {isa = PBXBuildFile; fileRef = 61B314D11BBDBA8D00F63C45 /* H5B2public.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -328,7 +336,7 @@
 		6185A9F11BD33B2D00CD5FC5 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6185A9F01BD33B2D00CD5FC5 /* libz.tbd */; };
 		61B314A11BBDBA3100F63C45 /* HDF5Kit.h in Headers */ = {isa = PBXBuildFile; fileRef = 61B314A01BBDBA3100F63C45 /* HDF5Kit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		61B314A81BBDBA3200F63C45 /* HDF5Kit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61B3149D1BBDBA3100F63C45 /* HDF5Kit.framework */; };
-		61B314AD1BBDBA3200F63C45 /* HDF5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B314AC1BBDBA3200F63C45 /* HDF5Tests.swift */; };
+		61B314AD1BBDBA3200F63C45 /* FileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B314AC1BBDBA3200F63C45 /* FileTests.swift */; };
 		61B316221BBDBA8E00F63C45 /* H5.c in Sources */ = {isa = PBXBuildFile; fileRef = 61B314BA1BBDBA8D00F63C45 /* H5.c */; };
 		61B316231BBDBA8E00F63C45 /* H5A.c in Sources */ = {isa = PBXBuildFile; fileRef = 61B314BB1BBDBA8D00F63C45 /* H5A.c */; };
 		61B316241BBDBA8E00F63C45 /* H5Abtree2.c in Sources */ = {isa = PBXBuildFile; fileRef = 61B314BC1BBDBA8D00F63C45 /* H5Abtree2.c */; };
@@ -708,6 +716,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		616B83A91BDC61A600B28545 /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
+		616B83AC1BDD493200B28545 /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
+		616B83AF1BDD5A8500B28545 /* GroupTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupTests.swift; sourceTree = "<group>"; };
+		616B83B21BDD5B9700B28545 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		6185A7AB1BD3395200CD5FC5 /* HDF5Kit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HDF5Kit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6185A7B41BD3395200CD5FC5 /* HDF5KitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HDF5KitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6185A9F01BD33B2D00CD5FC5 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.0.sdk/usr/lib/libz.tbd; sourceTree = DEVELOPER_DIR; };
@@ -715,7 +727,7 @@
 		61B314A01BBDBA3100F63C45 /* HDF5Kit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HDF5Kit.h; sourceTree = "<group>"; };
 		61B314A21BBDBA3100F63C45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		61B314A71BBDBA3200F63C45 /* HDF5KitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HDF5KitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		61B314AC1BBDBA3200F63C45 /* HDF5Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDF5Tests.swift; sourceTree = "<group>"; };
+		61B314AC1BBDBA3200F63C45 /* FileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTests.swift; sourceTree = "<group>"; };
 		61B314AE1BBDBA3200F63C45 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		61B314B91BBDBA8D00F63C45 /* COPYING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
 		61B314BA1BBDBA8D00F63C45 /* H5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = H5.c; sourceTree = "<group>"; };
@@ -1155,7 +1167,9 @@
 				61B317961BBDE74400F63C45 /* Dataspace.swift */,
 				61B317981BBDEAD700F63C45 /* Datatype.swift */,
 				61B3179A1BBDF1C900F63C45 /* Dataset.swift */,
+				616B83A91BDC61A600B28545 /* Group.swift */,
 				61B3179C1BBE21CE00F63C45 /* NativeType.swift */,
+				616B83AC1BDD493200B28545 /* Object.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -1163,7 +1177,9 @@
 		61B314AB1BBDBA3200F63C45 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				61B314AC1BBDBA3200F63C45 /* HDF5Tests.swift */,
+				616B83B21BDD5B9700B28545 /* Helpers.swift */,
+				61B314AC1BBDBA3200F63C45 /* FileTests.swift */,
+				616B83AF1BDD5A8500B28545 /* GroupTests.swift */,
 				61B314AE1BBDBA3200F63C45 /* Info.plist */,
 			);
 			path = Tests;
@@ -1892,6 +1908,7 @@
 				6185A93F1BD339FD00CD5FC5 /* H5Ocache.c in Sources */,
 				6185A9081BD339FD00CD5FC5 /* H5Gint.c in Sources */,
 				6185A8C31BD339FD00CD5FC5 /* H5Bcache.c in Sources */,
+				616B83AB1BDC61A600B28545 /* Group.swift in Sources */,
 				6185A90C1BD339FD00CD5FC5 /* H5Gnode.c in Sources */,
 				6185A97C1BD339FD00CD5FC5 /* H5ST.c in Sources */,
 				6185A8C41BD339FD00CD5FC5 /* H5Bdbg.c in Sources */,
@@ -1907,6 +1924,7 @@
 				6185A9241BD339FD00CD5FC5 /* H5HGcache.c in Sources */,
 				6185A8F41BD339FD00CD5FC5 /* H5Fmpi.c in Sources */,
 				6185A9311BD339FD00CD5FC5 /* H5MF.c in Sources */,
+				616B83AE1BDD493200B28545 /* Object.swift in Sources */,
 				6185A9531BD339FD00CD5FC5 /* H5Oshared.c in Sources */,
 				6185A90E1BD339FD00CD5FC5 /* H5Goh.c in Sources */,
 				6185A9271BD339FD00CD5FC5 /* H5HL.c in Sources */,
@@ -2139,7 +2157,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6185A9AA1BD33A1800CD5FC5 /* HDF5Tests.swift in Sources */,
+				6185A9AA1BD33A1800CD5FC5 /* FileTests.swift in Sources */,
+				616B83B41BDD5B9700B28545 /* Helpers.swift in Sources */,
+				616B83B11BDD5A8500B28545 /* GroupTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2153,6 +2173,7 @@
 				61B316C81BBDBA8E00F63C45 /* H5HFstat.c in Sources */,
 				61B3168C1BBDBA8E00F63C45 /* H5FL.c in Sources */,
 				61B316FD1BBDBA8E00F63C45 /* H5Ocopy.c in Sources */,
+				616B83AA1BDC61A600B28545 /* Group.swift in Sources */,
 				61B317101BBDBA8E00F63C45 /* H5Osdspace.c in Sources */,
 				61B316B51BBDBA8E00F63C45 /* H5Gstab.c in Sources */,
 				61B3174C1BBDBA8E00F63C45 /* H5Spoint.c in Sources */,
@@ -2168,6 +2189,7 @@
 				61B317431BBDBA8E00F63C45 /* H5SMbtree2.c in Sources */,
 				61B3166F1BBDBA8E00F63C45 /* H5FDcore.c in Sources */,
 				61B316DF1BBDBA8E00F63C45 /* H5Itest.c in Sources */,
+				616B83AD1BDD493200B28545 /* Object.swift in Sources */,
 				61B3165D1BBDBA8E00F63C45 /* H5Dselect.c in Sources */,
 				61B317111BBDBA8E00F63C45 /* H5Oshared.c in Sources */,
 				61B316CB1BBDBA8E00F63C45 /* H5HG.c in Sources */,
@@ -2400,7 +2422,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				61B314AD1BBDBA3200F63C45 /* HDF5Tests.swift in Sources */,
+				61B314AD1BBDBA3200F63C45 /* FileTests.swift in Sources */,
+				616B83B31BDD5B9700B28545 /* Helpers.swift in Sources */,
+				616B83B01BDD5A8500B28545 /* GroupTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

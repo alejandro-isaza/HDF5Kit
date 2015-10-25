@@ -7,35 +7,16 @@
 import XCTest
 @testable import HDF5Kit
 
-class HDF5Tests: XCTestCase {
+class FileTests: XCTestCase {
     let width = UInt64(100)
     let height = UInt64(100)
     let datasetName = "MyData"
-
-    func tempFilePath() -> String {
-        let fileName = NSProcessInfo.processInfo().globallyUniqueString + ".hdf"
-        return NSTemporaryDirectory() + "/" + fileName
-    }
-
-    func createFile(filePath: String) -> File {
-        guard let file = File.create(filePath, mode: .Truncate) else {
-            fatalError("Failed to create file")
-        }
-        return file
-    }
-
-    func openFile(filePath: String) -> File {
-        guard let file = File.open(filePath, mode: .ReadOnly) else {
-            fatalError("Failed to open file")
-        }
-        return file
-    }
 
     func writeData(filePath: String, data: [Double]) {
         let file = createFile(filePath)
 
         let dims: [Int] = [Int(width), Int(height)]
-        let dataset = Dataset.createAndWrite(file: file, name: datasetName, dims: dims, data: data)
+        let dataset = file.createAndWriteDataset(datasetName, dims: dims, data: data)
         XCTAssertEqual(UInt64(data.count), dataset.space.size)
         XCTAssert(dataset.writeDouble(data))
     }
@@ -43,7 +24,7 @@ class HDF5Tests: XCTestCase {
     func readData(filePath: String, inout data: [Double]) {
         let file = openFile(filePath)
 
-        guard let dataset = Dataset.open(file: file, name: datasetName) else {
+        guard let dataset = file.openDataset(datasetName) else {
             XCTFail("Failed to open Dataset")
             return
         }
@@ -59,10 +40,8 @@ class HDF5Tests: XCTestCase {
         let dataspace = Dataspace(dims: dims)
         XCTAssertEqual(dataspace.size, width * height)
         XCTAssertEqual(dataspace.dims, dims)
-        
-        let datatype = Datatype.copy(type: .Double)
-        datatype.order = .LittleEndian
-        let dataset = Dataset.create(file: file, name: datasetName, datatype: datatype, dataspace: dataspace)
+
+        let dataset = file.createDataset(datasetName, datatype: Datatype.createDouble(), dataspace: dataspace)
         XCTAssertNil(dataset.offset)
     }
 
@@ -86,7 +65,7 @@ class HDF5Tests: XCTestCase {
         writeData(filePath, data: expected)
 
         let file = openFile(filePath)
-        guard let dataset = Dataset.open(file: file, name: datasetName) else {
+        guard let dataset = file.openDataset(datasetName) else {
             XCTFail("Failed to open Dataset")
             return
         }

@@ -20,21 +20,7 @@ public enum DataClass: Int32 {
 }
 
 
-public class Datatype {
-    var id: Int32
-
-    init(id: Int32) {
-        self.id = id
-        guard id >= 0 else {
-            fatalError("Failed to create Datatype")
-        }
-    }
-
-    deinit {
-        let status = H5Tclose(id)
-        assert(status >= 0, "Failed to close Datatype")
-    }
-
+public class Datatype : Object {
     /// Create a Datatype from a class and a size
     public class func create(dataClass: DataClass, size: Int) -> Datatype {
         let id = H5Tcreate(H5T_class_t(dataClass.rawValue), size)

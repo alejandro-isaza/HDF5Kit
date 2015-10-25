@@ -4,61 +4,7 @@
 // terms governing use, modification, and redistribution, is contained in the
 // file LICENSE at the root of the source code distribution tree.
 
-public class Dataset {
-    var id: Int32 = -1
-
-    init(id: Int32) {
-        precondition(id >= 0, "Dataset ID needs to be non-negative")
-        self.id = id
-    }
-
-    deinit {
-        let status = H5Dclose(id)
-        assert(status >= 0, "Failed to close Dataset")
-    }
-
-    /// Create a Dataset
-    public class func create(file file: File, name: String, datatype: Datatype, dataspace: Dataspace) -> Dataset {
-        var id: Int32 = -1
-        name.withCString{ name in
-            id = H5Dcreate2(file.id, name, datatype.id, dataspace.id, 0, 0, 0)
-        }
-        guard id >= 0 else {
-            fatalError("Failed to create Dataset")
-        }
-        return Dataset(id: id)
-    }
-
-    /// Create a Double Dataset and write data
-    public class func createAndWrite(file file: File, name: String, dims: [Int], data: [Double]) -> Dataset {
-        let type = Datatype.createDouble()
-        let space = Dataspace.init(dims: dims)
-        let set = create(file: file, name: name, datatype: type, dataspace: space)
-        set.writeDouble(data)
-        return set
-    }
-
-    /// Create an Int Dataset and write data
-    public class func createAndWrite(file file: File, name: String, dims: [Int], data: [Int]) -> Dataset {
-        let type = Datatype.createInt()
-        let space = Dataspace.init(dims: dims)
-        let set = create(file: file, name: name, datatype: type, dataspace: space)
-        set.writeInt(data)
-        return set
-    }
-
-    /// Open a Dataset from a file
-    public class func open(file file: File, name: String) -> Dataset? {
-        var id: Int32 = -1
-        name.withCString{ name in
-            id = H5Dopen2(file.id, name, 0)
-        }
-        guard id >= 0 else {
-            return nil
-        }
-        return Dataset(id: id)
-    }
-
+public class Dataset : Object {
     /// The address in the file of the dataset or `nil` if the offset is undefined. That address is expressed as the offset in bytes from the beginning of the file.
     public var offset: UInt64? {
         let offset = H5Dget_offset(id)
