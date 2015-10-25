@@ -1,0 +1,4 @@
+language: objective-c
+xcode_project: HDF5Kit.xcodeproj
+xcode_scheme: HDF5Kit-OSX
+osx_image: xcode7
