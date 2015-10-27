@@ -14,8 +14,7 @@ Pod::Spec.new do |s|
   s.source_files = "Source", "dist/src/*.{c,h}",
   s.exclude_files = "dist/src/H5detect.c"
 
-  s.public_header_files = "Source/HDF5Kit.h",
-                          "dist/src/*public.h",
+  s.public_header_files = "dist/src/*public.h",
                           "dist/src/H5Epubgen.h",
                           "dist/src/H5api_adpt.h",
                           "dist/src/H5version.h",
