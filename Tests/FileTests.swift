@@ -8,8 +8,8 @@ import XCTest
 @testable import HDF5Kit
 
 class FileTests: XCTestCase {
-    let width = UInt64(100)
-    let height = UInt64(100)
+    let width = 100
+    let height = 100
     let datasetName = "MyData"
 
     func writeData(filePath: String, data: [Double]) {
@@ -36,10 +36,10 @@ class FileTests: XCTestCase {
         let filePath = tempFilePath()
 
         let file = createFile(filePath)
-        let dims: [UInt64] = [width, height]
+        let dims = [width, height]
         let dataspace = Dataspace(dims: dims)
-        XCTAssertEqual(dataspace.size, width * height)
-        XCTAssertEqual(dataspace.dims, dims)
+        XCTAssertEqual(Int(dataspace.size), width * height)
+        XCTAssertEqual(dataspace.dims.map{ Int($0) }, dims)
 
         let dataset = file.createDataset(datasetName, datatype: Datatype.createDouble(), dataspace: dataspace)
         XCTAssertNil(dataset.offset)
@@ -71,7 +71,7 @@ class FileTests: XCTestCase {
         }
 
         // Read as Float
-        var actual = [Float](count: Int(width*height), repeatedValue: 0.0)
+        var actual = [Float](count: width*height, repeatedValue: 0.0)
         XCTAssert(dataset.readFloat(&actual))
 
         for i in 0..<expected.count {
