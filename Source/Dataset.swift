@@ -50,8 +50,10 @@ public class Dataset : Object {
 
     public func readString() -> [String]? {
         let size = space.size
+        let type = Datatype.createString()
+
         var data = [UnsafePointer<CChar>](count: Int(size), repeatedValue: nil)
-        guard H5Dread(id, H5T_C_S1_g, 0, 0, 0, &data) >= 0 else {
+        guard H5Dread(id, type.id, 0, 0, 0, &data) >= 0 else {
             return nil
         }
 
@@ -61,7 +63,7 @@ public class Dataset : Object {
             strings.append(String.fromCString(pointer) ?? "")
         }
 
-        H5Dvlen_reclaim(H5T_C_S1_g, space.id, 0, &data);
+        H5Dvlen_reclaim(type.id, space.id, 0, &data);
         return strings
     }
 
@@ -72,7 +74,8 @@ public class Dataset : Object {
             data.append(s.withCString{ $0 })
         }
 
-        guard H5Dwrite(id, H5T_C_S1_g, 0, 0, 0, data) >= 0 else {
+        let type = Datatype.createString()
+        guard H5Dwrite(id, type.id, 0, 0, 0, data) >= 0 else {
             return false
         }
 
