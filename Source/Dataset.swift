@@ -47,4 +47,35 @@ public class Dataset : Object {
         let status = H5Dwrite(id, NativeType.Int.rawValue, 0, 0, 0, data);
         return status >= 0
     }
+
+    public func readString() -> [String]? {
+        let size = space.size
+        var data = [UnsafePointer<CChar>](count: Int(size), repeatedValue: nil)
+        guard H5Dread(id, H5T_C_S1_g, 0, 0, 0, &data) >= 0 else {
+            return nil
+        }
+
+        var strings = [String]()
+        strings.reserveCapacity(Int(size))
+        for pointer in data {
+            strings.append(String.fromCString(pointer) ?? "")
+        }
+
+        H5Dvlen_reclaim(H5T_C_S1_g, space.id, 0, &data);
+        return strings
+    }
+
+    public func writeString(strings: [String]) -> Bool {
+        var data = [UnsafePointer<CChar>]()
+        data.reserveCapacity(strings.count)
+        for s in strings {
+            data.append(s.withCString{ $0 })
+        }
+
+        guard H5Dwrite(id, H5T_C_S1_g, 0, 0, 0, data) >= 0 else {
+            return false
+        }
+
+        return true
+    }
 }

@@ -44,6 +44,12 @@ public class Datatype : Object {
         return copy(type: .Int)
     }
 
+    public class func createString() -> Datatype {
+        let id = H5Tcopy(H5T_C_S1_g)
+        H5Tset_size(id, -1)
+        return Datatype(id: id)
+    }
+
     public enum Order: Int32 {
         case Error        = -1
         case LittleEndian = 0
