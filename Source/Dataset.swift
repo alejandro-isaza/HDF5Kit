@@ -68,14 +68,30 @@ public class Dataset : Object {
     }
 
     public func writeString(strings: [String]) -> Bool {
-        var data = [UnsafePointer<CChar>]()
+        // First convert the strings into character arrays
+        var data = [[Int8]]()
         data.reserveCapacity(strings.count)
-        for s in strings {
-            data.append(s.withCString{ $0 })
+        for string in strings {
+            let length = string.utf8.count
+            var cstring = [Int8](count: length, repeatedValue: 0)
+            string.withCString{ stringPointer in
+                cstring.withUnsafeMutableBufferPointer{ cstringPointer in
+                    let mutableStringPointer = UnsafeMutablePointer<Int8>(stringPointer)
+                    cstringPointer.baseAddress.initializeFrom(mutableStringPointer, count: length)
+                }
+            }
+            data.append(cstring)
+        }
+
+        // Create an array of pointers, which is what H5Dwrite expects
+        var pointers = [UnsafePointer<Int8>]()
+        pointers.reserveCapacity(data.count)
+        for a in data {
+            pointers.append(UnsafePointer<Int8>(a))
         }
 
         let type = Datatype.createString()
-        guard H5Dwrite(id, type.id, 0, 0, 0, data) >= 0 else {
+        guard H5Dwrite(id, type.id, 0, 0, 0, pointers) >= 0 else {
             return false
         }
 
