@@ -17,33 +17,51 @@ public class Dataset : Object {
     public var space: Dataspace {
         return Dataspace(id: H5Dget_space(id))
     }
-
-    public func readDouble(inout data: [Double]) -> Bool {
-        let status = H5Dread(id, NativeType.Double.rawValue, 0, 0, 0, &data)
+ 
+    public func readDouble(data: UnsafeMutablePointer<Double>) -> Bool {
+        let status = H5Dread(id, NativeType.Double.rawValue, 0, 0, 0, data)
         return status >= 0
     }
+    
+    public func readDouble() -> [Double] {
+        var result = [Double](count: Int(space.size), repeatedValue: 0.0)
+        readDouble(&result)
+        return result
+    }
 
-    public func writeDouble(data: [Double]) -> Bool {
+    public func writeDouble(data: UnsafePointer<Double>) -> Bool {
         let status = H5Dwrite(id, NativeType.Double.rawValue, 0, 0, 0, data);
         return status >= 0
     }
 
-    public func readFloat(inout data: [Float]) -> Bool {
-        let status = H5Dread(id, NativeType.Float.rawValue, 0, 0, 0, &data)
+    public func readFloat(data: UnsafeMutablePointer<Float>) -> Bool {
+        let status = H5Dread(id, NativeType.Float.rawValue, 0, 0, 0, data)
         return status >= 0
     }
+    
+    public func readFloat() -> [Float] {
+        var result = [Float](count: Int(space.size), repeatedValue: 0.0)
+        readFloat(&result)
+        return result
+    }
 
-    public func writeFloat(data: [Float]) -> Bool {
+    public func writeFloat(data: UnsafePointer<Float>) -> Bool {
         let status = H5Dwrite(id, NativeType.Float.rawValue, 0, 0, 0, data);
         return status >= 0
     }
 
-    public func readInt(inout data: [Int]) -> Bool {
-        let status = H5Dread(id, NativeType.Int.rawValue, 0, 0, 0, &data)
+    public func readInt(data: UnsafeMutablePointer<Int>) -> Bool {
+        let status = H5Dread(id, NativeType.Int.rawValue, 0, 0, 0, data)
         return status >= 0
     }
+    
+    public func readInt() -> [Int] {
+        var result = [Int](count: Int(space.size), repeatedValue: 0)
+        readInt(&result)
+        return result
+    }
 
-    public func writeInt(data: [Int]) -> Bool {
+    public func writeInt(data: UnsafePointer<Int>) -> Bool {
         let status = H5Dwrite(id, NativeType.Int.rawValue, 0, 0, 0, data);
         return status >= 0
     }
