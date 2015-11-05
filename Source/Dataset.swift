@@ -91,11 +91,11 @@ public class Dataset : Object {
         data.reserveCapacity(strings.count)
         for string in strings {
             let length = string.utf8.count
-            var cstring = [Int8](count: length, repeatedValue: 0)
+            var cstring = [Int8](count: length + 1, repeatedValue: 0)
             string.withCString{ stringPointer in
                 cstring.withUnsafeMutableBufferPointer{ cstringPointer in
                     let mutableStringPointer = UnsafeMutablePointer<Int8>(stringPointer)
-                    cstringPointer.baseAddress.initializeFrom(mutableStringPointer, count: length)
+                    cstringPointer.baseAddress.initializeFrom(mutableStringPointer, count: length + 1)
                 }
             }
             data.append(cstring)
