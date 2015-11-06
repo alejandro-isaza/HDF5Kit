@@ -4,4 +4,36 @@
 
 This is a Swift wrapper for the [HDF5](https://www.hdfgroup.org) file format. HDF5 is used in the scientific comunity for managing large volumes of data. The objective is to make it easy to read and write HDF5 files from Swift, including playgrounds.
 
-The project is at an early development stage, feel free to contribute and/or request features.
+
+## Usage
+
+This example shows how to open an existing HDF5 file and write data to an existing dataset.
+
+```swift
+import HDF5Kit
+
+// Initialize the data
+let dataWidth = 6
+let dataHeight = 4
+var data = [Double](count: dataHeight * dataWidth, repeatedValue: 0.0)
+for r in 0..<dataHeight {
+    for c in 0..<dataWidth {
+        data[r * dataWidth + c] = Double(r * dataWidth + c + 1)
+    }
+}
+
+// Open an existing file
+let path = "file.h5"
+guard let file = File.open(path, mode: .ReadWrite) else {
+    fatalError("Failed to open \(path)")
+}
+
+// Open an existing dataset
+let datasetName = "dset"
+guard let dataset = file.openDataset(datasetName) else {
+    fatalError("Failed to open dataset \(datasetName)")
+}
+
+// Write the data
+dataset.writeDouble(&data)
+```
