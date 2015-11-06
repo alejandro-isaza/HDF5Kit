@@ -67,6 +67,7 @@ public class Dataset : Object {
     }
 
     public func readString() -> [String]? {
+        let space = self.space
         let size = space.size
         let type = Datatype.createString()
 
@@ -90,22 +91,14 @@ public class Dataset : Object {
         var data = [[Int8]]()
         data.reserveCapacity(strings.count)
         for string in strings {
-            let length = string.utf8.count
-            var cstring = [Int8](count: length + 1, repeatedValue: 0)
-            string.withCString{ stringPointer in
-                cstring.withUnsafeMutableBufferPointer{ cstringPointer in
-                    let mutableStringPointer = UnsafeMutablePointer<Int8>(stringPointer)
-                    cstringPointer.baseAddress.initializeFrom(mutableStringPointer, count: length + 1)
-                }
-            }
-            data.append(cstring)
+            data.append(characterArrayFromString(string))
         }
 
         // Create an array of pointers, which is what H5Dwrite expects
         var pointers = [UnsafePointer<Int8>]()
         pointers.reserveCapacity(data.count)
-        for a in data {
-            pointers.append(UnsafePointer<Int8>(a))
+        for array in data {
+            pointers.append(UnsafePointer<Int8>(array))
         }
 
         let type = Datatype.createString()
@@ -114,5 +107,18 @@ public class Dataset : Object {
         }
 
         return true
+    }
+
+    func characterArrayFromString(string: String) -> [Int8] {
+        let length = string.utf8.count
+        var array = [Int8](count: length + 1, repeatedValue: 0)
+
+        string.withCString{ stringPointer in
+            array.withUnsafeMutableBufferPointer{ arrayPointer in
+                let mutableStringPointer = UnsafeMutablePointer<Int8>(stringPointer)
+                arrayPointer.baseAddress.initializeFrom(mutableStringPointer, count: length + 1)
+            }
+        }
+        return array
     }
 }
