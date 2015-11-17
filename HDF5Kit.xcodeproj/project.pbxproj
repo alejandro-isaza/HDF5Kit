@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		220E94CD1BFAAD7A005B70EE /* H5Index.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220E94CC1BFAAD7A005B70EE /* H5Index.swift */; };
 		616B83AA1BDC61A600B28545 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616B83A91BDC61A600B28545 /* Group.swift */; };
 		616B83AB1BDC61A600B28545 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616B83A91BDC61A600B28545 /* Group.swift */; };
 		616B83AD1BDD493200B28545 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616B83AC1BDD493200B28545 /* Object.swift */; };
@@ -716,6 +717,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		220E94CC1BFAAD7A005B70EE /* H5Index.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = H5Index.swift; sourceTree = "<group>"; };
 		616B83A91BDC61A600B28545 /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		616B83AC1BDD493200B28545 /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		616B83AF1BDD5A8500B28545 /* GroupTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupTests.swift; sourceTree = "<group>"; };
@@ -1163,6 +1165,7 @@
 			isa = PBXGroup;
 			children = (
 				61B314A01BBDBA3100F63C45 /* HDF5Kit.h */,
+				220E94CC1BFAAD7A005B70EE /* H5Index.swift */,
 				61B317941BBDE23200F63C45 /* File.swift */,
 				61B317961BBDE74400F63C45 /* Dataspace.swift */,
 				61B317981BBDEAD700F63C45 /* Datatype.swift */,
@@ -2233,6 +2236,7 @@
 				61B316961BBDBA8E00F63C45 /* H5FS.c in Sources */,
 				61B316B71BBDBA8E00F63C45 /* H5Gtraverse.c in Sources */,
 				61B317091BBDBA8E00F63C45 /* H5Oname.c in Sources */,
+				220E94CD1BFAAD7A005B70EE /* H5Index.swift in Sources */,
 				61B316781BBDBA8E00F63C45 /* H5FDmpi.c in Sources */,
 				61B3167C1BBDBA8E00F63C45 /* H5FDmulti.c in Sources */,
 				61B3164A1BBDBA8E00F63C45 /* H5dbg.c in Sources */,
