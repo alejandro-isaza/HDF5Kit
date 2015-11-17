@@ -40,22 +40,11 @@ extension Range: H5Index {
 
 class DatasetDemo {
 
-  subscript() -> () {
+  subscript(dims: H5Index...) -> () {
     get {
-      // get all
-    }
-  }
-  
-  subscript(x: H5Index) -> () {
-    get {
-      print(x.slice)
-    }
-  }
-  
-  subscript(x:H5Index, y:H5Index) -> () {
-    get {
-      if x.slice.startIndex != Int.min {
-        print("\(x.slice.startIndex) x \(x.slice.endIndex)")
+      for x in dims {
+        // iterate over dimension slices
+        print(x.slice)
       }
     }
   }
