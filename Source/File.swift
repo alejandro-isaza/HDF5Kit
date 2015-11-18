@@ -83,11 +83,11 @@ public class File {
     }
 
     /// Create a chunked Dataset
-    public func createDataset(name: String, datatype: Datatype, dataspace: Dataspace, chunkDimensions: [UInt64]) -> Dataset {
+    public func createDataset(name: String, datatype: Datatype, dataspace: Dataspace, chunkDimensions: [Int]) -> Dataset {
         precondition(dataspace.dims.count == chunkDimensions.count)
 
         let plist = H5Pcreate(H5P_CLS_DATASET_CREATE_ID_g)
-        H5Pset_chunk(plist, Int32(chunkDimensions.count), chunkDimensions)
+        H5Pset_chunk(plist, Int32(chunkDimensions.count), ptr(chunkDimensions))
         defer {
             H5Pclose(plist)
         }
