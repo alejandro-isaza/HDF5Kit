@@ -6,18 +6,33 @@
 
 public class Dataset : Object {
     /// The address in the file of the dataset or `nil` if the offset is undefined. That address is expressed as the offset in bytes from the beginning of the file.
-    public var offset: UInt64? {
+    public var offset: Int? {
         let offset = H5Dget_offset(id)
         guard offset != unsafeBitCast(-1, UInt64.self) else {
             return nil
         }
-        return offset
+        return Int(offset)
     }
 
     public var space: Dataspace {
         return Dataspace(id: H5Dget_space(id))
     }
- 
+
+    /// Retrieves the size of chunks for the raw data of a chunked layout Dataset, or `nil` if the Dataset's layout is not chunked
+    public var chunkSize: [Int]? {
+        let plistId = H5Dget_create_plist(id)
+        if H5Pget_layout(plistId) != H5D_CHUNKED {
+            return nil
+        }
+
+        let rank = space.dims.count
+        var chunkSize = [Int](count: rank, repeatedValue: 0)
+        H5Pget_chunk(plistId, Int32(rank), ptr(&chunkSize))
+        return chunkSize
+    }
+
+    // MARK: Reading/Writing data
+
     public func readDouble(data: UnsafeMutablePointer<Double>) -> Bool {
         let status = H5Dread(id, NativeType.Double.rawValue, 0, 0, 0, data)
         return status >= 0

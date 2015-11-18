@@ -15,6 +15,10 @@
 		616B83B11BDD5A8500B28545 /* GroupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616B83AF1BDD5A8500B28545 /* GroupTests.swift */; };
 		616B83B31BDD5B9700B28545 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616B83B21BDD5B9700B28545 /* Helpers.swift */; };
 		616B83B41BDD5B9700B28545 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616B83B21BDD5B9700B28545 /* Helpers.swift */; };
+		617187841BFCF64200FB5D5F /* DataspaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 617187831BFCF64200FB5D5F /* DataspaceTests.swift */; };
+		617187851BFCF64200FB5D5F /* DataspaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 617187831BFCF64200FB5D5F /* DataspaceTests.swift */; };
+		617187871BFCF9CB00FB5D5F /* PointerUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 617187861BFCF9CB00FB5D5F /* PointerUtilities.swift */; };
+		617187881BFCF9CB00FB5D5F /* PointerUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 617187861BFCF9CB00FB5D5F /* PointerUtilities.swift */; };
 		6185A7B51BD3395200CD5FC5 /* HDF5Kit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6185A7AB1BD3395200CD5FC5 /* HDF5Kit.framework */; };
 		6185A8B31BD339FD00CD5FC5 /* H5.c in Sources */ = {isa = PBXBuildFile; fileRef = 61B314BA1BBDBA8D00F63C45 /* H5.c */; };
 		6185A8B41BD339FD00CD5FC5 /* H5A.c in Sources */ = {isa = PBXBuildFile; fileRef = 61B314BB1BBDBA8D00F63C45 /* H5A.c */; };
@@ -720,6 +724,8 @@
 		616B83AC1BDD493200B28545 /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		616B83AF1BDD5A8500B28545 /* GroupTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupTests.swift; sourceTree = "<group>"; };
 		616B83B21BDD5B9700B28545 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		617187831BFCF64200FB5D5F /* DataspaceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataspaceTests.swift; sourceTree = "<group>"; };
+		617187861BFCF9CB00FB5D5F /* PointerUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointerUtilities.swift; sourceTree = "<group>"; };
 		6185A7AB1BD3395200CD5FC5 /* HDF5Kit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HDF5Kit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6185A7B41BD3395200CD5FC5 /* HDF5KitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HDF5KitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6185A9F01BD33B2D00CD5FC5 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.0.sdk/usr/lib/libz.tbd; sourceTree = DEVELOPER_DIR; };
@@ -1170,6 +1176,7 @@
 				616B83A91BDC61A600B28545 /* Group.swift */,
 				61B3179C1BBE21CE00F63C45 /* NativeType.swift */,
 				616B83AC1BDD493200B28545 /* Object.swift */,
+				617187861BFCF9CB00FB5D5F /* PointerUtilities.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -1178,6 +1185,7 @@
 			isa = PBXGroup;
 			children = (
 				616B83B21BDD5B9700B28545 /* Helpers.swift */,
+				617187831BFCF64200FB5D5F /* DataspaceTests.swift */,
 				61B314AC1BBDBA3200F63C45 /* FileTests.swift */,
 				616B83AF1BDD5A8500B28545 /* GroupTests.swift */,
 				61B314AE1BBDBA3200F63C45 /* Info.plist */,
@@ -2093,6 +2101,7 @@
 				6185A9951BD339FD00CD5FC5 /* H5trace.c in Sources */,
 				6185A90A1BD339FD00CD5FC5 /* H5Gloc.c in Sources */,
 				6185A9001BD339FD00CD5FC5 /* H5Ftest.c in Sources */,
+				617187881BFCF9CB00FB5D5F /* PointerUtilities.swift in Sources */,
 				6185A9281BD339FD00CD5FC5 /* H5HLcache.c in Sources */,
 				6185A8E71BD339FD00CD5FC5 /* H5FDmpi.c in Sources */,
 				6185A8D41BD339FD00CD5FC5 /* H5Dlayout.c in Sources */,
@@ -2157,6 +2166,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				617187851BFCF64200FB5D5F /* DataspaceTests.swift in Sources */,
 				6185A9AA1BD33A1800CD5FC5 /* FileTests.swift in Sources */,
 				616B83B41BDD5B9700B28545 /* Helpers.swift in Sources */,
 				616B83B11BDD5A8500B28545 /* GroupTests.swift in Sources */,
@@ -2358,6 +2368,7 @@
 				61B3176C1BBDBA8E00F63C45 /* H5trace.c in Sources */,
 				61B3173F1BBDBA8E00F63C45 /* H5Shyper.c in Sources */,
 				61B3168B1BBDBA8E00F63C45 /* H5Fio.c in Sources */,
+				617187871BFCF9CB00FB5D5F /* PointerUtilities.swift in Sources */,
 				61B3166A1BBDBA8E00F63C45 /* H5F.c in Sources */,
 				61B3163B1BBDBA8E00F63C45 /* H5B2test.c in Sources */,
 				61B317571BBDBA8E00F63C45 /* H5Tcommit.c in Sources */,
@@ -2422,6 +2433,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				617187841BFCF64200FB5D5F /* DataspaceTests.swift in Sources */,
 				61B314AD1BBDBA3200F63C45 /* FileTests.swift in Sources */,
 				616B83B31BDD5B9700B28545 /* Helpers.swift in Sources */,
 				616B83B01BDD5A8500B28545 /* GroupTests.swift in Sources */,

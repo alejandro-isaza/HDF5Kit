@@ -17,7 +17,7 @@ class FileTests: XCTestCase {
 
         let dims: [Int] = [Int(width), Int(height)]
         let dataset = file.createAndWriteDataset(datasetName, dims: dims, data: data)
-        XCTAssertEqual(UInt64(data.count), dataset.space.size)
+        XCTAssertEqual(data.count, dataset.space.size)
         XCTAssert(dataset.writeDouble(data))
     }
 
@@ -28,7 +28,7 @@ class FileTests: XCTestCase {
             XCTFail("Failed to open Dataset")
             return
         }
-        XCTAssertEqual(UInt64(data.count), dataset.space.size)
+        XCTAssertEqual(data.count, dataset.space.size)
         XCTAssert(dataset.readDouble(&data))
     }
 

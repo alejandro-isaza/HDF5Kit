@@ -82,6 +82,22 @@ public class File {
         return Dataset(id: datasetID)
     }
 
+    /// Create a chunked Dataset
+    public func createDataset(name: String, datatype: Datatype, dataspace: Dataspace, chunkDimensions: [UInt64]) -> Dataset {
+        precondition(dataspace.dims.count == chunkDimensions.count)
+
+        let plist = H5Pcreate(H5P_CLS_DATASET_CREATE_ID_g)
+        H5Pset_chunk(plist, Int32(chunkDimensions.count), chunkDimensions)
+        defer {
+            H5Pclose(plist)
+        }
+
+        let datasetID = name.withCString{ name in
+            return H5Dcreate2(id, name, datatype.id, dataspace.id, plist, 0, 0)
+        }
+        return Dataset(id: datasetID)
+    }
+
     /// Create a Double Dataset and write data
     public func createAndWriteDataset(name: String, dims: [Int], data: [Double]) -> Dataset {
         let type = Datatype.createDouble()
