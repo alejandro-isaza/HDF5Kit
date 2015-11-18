@@ -18,6 +18,10 @@ public class Dataset : Object {
         return Dataspace(id: H5Dget_space(id))
     }
 
+    public var type: Datatype {
+        return Datatype(id: H5Dget_type(id))
+    }
+
     /// Retrieves the size of chunks for the raw data of a chunked layout Dataset, or `nil` if the Dataset's layout is not chunked
     public var chunkSize: [Int]? {
         let plistId = H5Dget_create_plist(id)

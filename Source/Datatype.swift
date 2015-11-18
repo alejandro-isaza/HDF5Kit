@@ -50,6 +50,34 @@ public class Datatype : Object {
         return Datatype(id: id)
     }
 
+    public var `class`: DataClass {
+        return DataClass(rawValue: H5Tget_class(id).rawValue)!
+    }
+
+    public var nativeType: NativeType? {
+        let tid = H5Tget_native_type(id, H5T_DIR_ASCEND)
+        defer {
+            H5Tclose(tid)
+        }
+
+        switch (tid) {
+        case NativeType.Int.rawValue: return .Int
+        case NativeType.UInt.rawValue: return .UInt
+        case NativeType.Float.rawValue: return .Float
+        case NativeType.Double.rawValue: return .Double
+        case NativeType.Int8.rawValue: return .Int8
+        case NativeType.UInt8.rawValue: return .UInt8
+        case NativeType.Int16.rawValue: return .Int16
+        case NativeType.UInt16.rawValue: return .UInt16
+        case NativeType.Int32.rawValue: return .Int32
+        case NativeType.UInt32.rawValue: return .UInt32
+        case NativeType.Int64.rawValue: return .Int64
+        case NativeType.UInt64.rawValue: return .UInt64
+        case NativeType.Opaque.rawValue: return .Opaque
+        default: return nil
+        }
+    }
+
     public enum Order: Int32 {
         case Error        = -1
         case LittleEndian = 0
