@@ -78,4 +78,41 @@ class FileTests: XCTestCase {
             XCTAssertEqual(actual[i], Float(expected[i]))
         }
     }
+  
+    func testSlab7x7to3x4Read() {
+      let createDims = [7, 7]
+      let filePath = tempFilePath()
+      var file = createFile(filePath)
+      let incrementing = (0..<createDims.reduce(1, combine: *)).map { Double($0) }
+ 
+      // write a dataset of 7x7 with incrementing Doubles from 0.0, 1.0, 2.0, ..
+      let newDataset = file.createAndWriteDataset(datasetName, dims: createDims, data: incrementing)
+      XCTAssertEqual(Int(newDataset.space.size), createDims.reduce(1, combine: *))
+      
+      file = openFile(filePath)
+      guard let dataset = file.openDataset(datasetName) else {
+        XCTFail("Failed to open Dataset")
+        return
+      }
+      
+      // define hyperslab in dataset
+      let offset = [1,2]
+      let count = [3,4]
+      let dataspace = dataset.space // get new dataspace for hyperslab
+      dataspace.select(start: offset, stride: nil, count: count, block: nil)
+      
+      // define memspace
+      let offset_out = [0,0]
+      let count_out = [3,4]
+      let memspace = Dataspace(dims: count_out)
+      memspace.select(start: offset_out, stride: nil, count: count_out, block: nil)
+      
+      // create memory to read to
+      var actual = [Double](count: count_out.reduce(1, combine:*), repeatedValue: 0.0)
+      
+      // read dataspace to memspace
+      dataset.readDouble(&actual, memspace_id: memspace.id, dataspace_id: dataspace.id)
+      XCTAssertEqual(incrementing[9...12], actual[0...3])
+  }
+  
 }
