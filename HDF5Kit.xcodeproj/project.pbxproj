@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2241F9461BFE675900014748 /* HyperslabTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2241F9451BFE675900014748 /* HyperslabTests.swift */; };
+		2241F9471BFE675900014748 /* HyperslabTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2241F9451BFE675900014748 /* HyperslabTests.swift */; };
 		616B83AA1BDC61A600B28545 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616B83A91BDC61A600B28545 /* Group.swift */; };
 		616B83AB1BDC61A600B28545 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616B83A91BDC61A600B28545 /* Group.swift */; };
 		616B83AD1BDD493200B28545 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616B83AC1BDD493200B28545 /* Object.swift */; };
@@ -720,6 +722,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2241F9451BFE675900014748 /* HyperslabTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HyperslabTests.swift; sourceTree = "<group>"; };
 		616B83A91BDC61A600B28545 /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		616B83AC1BDD493200B28545 /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		616B83AF1BDD5A8500B28545 /* GroupTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupTests.swift; sourceTree = "<group>"; };
@@ -1187,6 +1190,7 @@
 				616B83B21BDD5B9700B28545 /* Helpers.swift */,
 				617187831BFCF64200FB5D5F /* DataspaceTests.swift */,
 				61B314AC1BBDBA3200F63C45 /* FileTests.swift */,
+				2241F9451BFE675900014748 /* HyperslabTests.swift */,
 				616B83AF1BDD5A8500B28545 /* GroupTests.swift */,
 				61B314AE1BBDBA3200F63C45 /* Info.plist */,
 			);
@@ -2170,6 +2174,7 @@
 				6185A9AA1BD33A1800CD5FC5 /* FileTests.swift in Sources */,
 				616B83B41BDD5B9700B28545 /* Helpers.swift in Sources */,
 				616B83B11BDD5A8500B28545 /* GroupTests.swift in Sources */,
+				2241F9471BFE675900014748 /* HyperslabTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2437,6 +2442,7 @@
 				61B314AD1BBDBA3200F63C45 /* FileTests.swift in Sources */,
 				616B83B31BDD5B9700B28545 /* Helpers.swift in Sources */,
 				616B83B01BDD5A8500B28545 /* GroupTests.swift in Sources */,
+				2241F9461BFE675900014748 /* HyperslabTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
