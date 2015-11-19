@@ -22,6 +22,15 @@ public class Dataset : Object {
         return Datatype(id: H5Dget_type(id))
     }
 
+    public var extent: [Int] {
+        get {
+            return space.dims
+        }
+        set {
+            H5Dset_extent(id, ptr(newValue))
+        }
+    }
+
     /// Retrieves the size of chunks for the raw data of a chunked layout Dataset, or `nil` if the Dataset's layout is not chunked
     public var chunkSize: [Int]? {
         let plistId = H5Dget_create_plist(id)
@@ -37,8 +46,8 @@ public class Dataset : Object {
 
     // MARK: Reading/Writing data
 
-    public func readDouble(data: UnsafeMutablePointer<Double>) -> Bool {
-        let status = H5Dread(id, NativeType.Double.rawValue, 0, 0, 0, data)
+    public func readDouble(data: UnsafeMutablePointer<Double>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
+        let status = H5Dread(id, NativeType.Double.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data)
         return status >= 0
     }
     
@@ -48,13 +57,13 @@ public class Dataset : Object {
         return result
     }
 
-    public func writeDouble(data: UnsafePointer<Double>) -> Bool {
-        let status = H5Dwrite(id, NativeType.Double.rawValue, 0, 0, 0, data);
+    public func writeDouble(data: UnsafePointer<Double>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
+        let status = H5Dwrite(id, NativeType.Double.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data);
         return status >= 0
     }
 
-    public func readFloat(data: UnsafeMutablePointer<Float>) -> Bool {
-        let status = H5Dread(id, NativeType.Float.rawValue, 0, 0, 0, data)
+    public func readFloat(data: UnsafeMutablePointer<Float>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
+        let status = H5Dread(id, NativeType.Float.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data)
         return status >= 0
     }
     
@@ -64,13 +73,13 @@ public class Dataset : Object {
         return result
     }
 
-    public func writeFloat(data: UnsafePointer<Float>) -> Bool {
-        let status = H5Dwrite(id, NativeType.Float.rawValue, 0, 0, 0, data);
+    public func writeFloat(data: UnsafePointer<Float>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
+        let status = H5Dwrite(id, NativeType.Float.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data);
         return status >= 0
     }
 
-    public func readInt(data: UnsafeMutablePointer<Int>) -> Bool {
-        let status = H5Dread(id, NativeType.Int.rawValue, 0, 0, 0, data)
+    public func readInt(data: UnsafeMutablePointer<Int>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
+        let status = H5Dread(id, NativeType.Int.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data)
         return status >= 0
     }
     
@@ -80,8 +89,8 @@ public class Dataset : Object {
         return result
     }
 
-    public func writeInt(data: UnsafePointer<Int>) -> Bool {
-        let status = H5Dwrite(id, NativeType.Int.rawValue, 0, 0, 0, data);
+    public func writeInt(data: UnsafePointer<Int>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
+        let status = H5Dwrite(id, NativeType.Int.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data);
         return status >= 0
     }
 
