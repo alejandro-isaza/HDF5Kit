@@ -93,7 +93,7 @@ public class File {
         }
 
         let datasetID = name.withCString{ name in
-            return H5Dcreate2(id, name, datatype.id, dataspace.id, plist, 0, 0)
+            return H5Dcreate2(id, name, datatype.id, dataspace.id, 0, plist, 0)
         }
         return Dataset(id: datasetID)
     }
