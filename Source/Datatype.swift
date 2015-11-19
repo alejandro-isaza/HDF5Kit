@@ -20,7 +20,7 @@ public enum DataClass: Int32 {
 }
 
 
-public class Datatype : Object {
+public class Datatype : Object, Equatable {
     /// Create a Datatype from a class and a size
     public class func create(dataClass: DataClass, size: Int) -> Datatype {
         let id = H5Tcreate(H5T_class_t(dataClass.rawValue), size)
@@ -55,27 +55,21 @@ public class Datatype : Object {
     }
 
     public var nativeType: NativeType? {
-        let tid = H5Tget_native_type(id, H5T_DIR_ASCEND)
-        defer {
-            H5Tclose(tid)
-        }
-
-        switch (tid) {
-        case NativeType.Int.rawValue: return .Int
-        case NativeType.UInt.rawValue: return .UInt
-        case NativeType.Float.rawValue: return .Float
-        case NativeType.Double.rawValue: return .Double
-        case NativeType.Int8.rawValue: return .Int8
-        case NativeType.UInt8.rawValue: return .UInt8
-        case NativeType.Int16.rawValue: return .Int16
-        case NativeType.UInt16.rawValue: return .UInt16
-        case NativeType.Int32.rawValue: return .Int32
-        case NativeType.UInt32.rawValue: return .UInt32
-        case NativeType.Int64.rawValue: return .Int64
-        case NativeType.UInt64.rawValue: return .UInt64
-        case NativeType.Opaque.rawValue: return .Opaque
-        default: return nil
-        }
+        let type = Datatype(id: H5Tget_native_type(id, H5T_DIR_ASCEND))
+        if H5Tequal(type.id, NativeType.Int.rawValue) > 0 { return .Int }
+        if H5Tequal(type.id, NativeType.UInt.rawValue) > 0 { return .UInt }
+        if H5Tequal(type.id, NativeType.Float.rawValue) > 0 { return .Float }
+        if H5Tequal(type.id, NativeType.Double.rawValue) > 0 { return .Double }
+        if H5Tequal(type.id, NativeType.Int8.rawValue) > 0 { return .Int8 }
+        if H5Tequal(type.id, NativeType.UInt8.rawValue) > 0 { return .UInt8 }
+        if H5Tequal(type.id, NativeType.Int16.rawValue) > 0 { return .Int16 }
+        if H5Tequal(type.id, NativeType.UInt16.rawValue) > 0 { return .UInt16 }
+        if H5Tequal(type.id, NativeType.Int32.rawValue) > 0 { return .Int32 }
+        if H5Tequal(type.id, NativeType.UInt32.rawValue) > 0 { return .UInt32 }
+        if H5Tequal(type.id, NativeType.Int64.rawValue) > 0 { return .Int64 }
+        if H5Tequal(type.id, NativeType.UInt64.rawValue) > 0 { return .UInt64 }
+        if H5Tequal(type.id, NativeType.Opaque.rawValue) > 0 { return .Opaque }
+        return nil
     }
 
     public enum Order: Int32 {
@@ -96,4 +90,8 @@ public class Datatype : Object {
             H5Tset_order(id, H5T_order_t(newValue.rawValue))
         }
     }
+}
+
+public func ==(lhs: Datatype, rhs: Datatype) -> Bool {
+    return H5Tequal(lhs.id, rhs.id) > 0
 }
