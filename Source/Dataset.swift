@@ -94,13 +94,13 @@ public class Dataset : Object {
         return status >= 0
     }
 
-    public func readString() -> [String]? {
+    public func readString(memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> [String]? {
         let space = self.space
         let size = space.size
         let type = Datatype.createString()
 
         var data = [UnsafePointer<CChar>](count: Int(size), repeatedValue: nil)
-        guard H5Dread(id, type.id, 0, 0, 0, &data) >= 0 else {
+        guard H5Dread(id, type.id, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, &data) >= 0 else {
             return nil
         }
 
@@ -114,7 +114,7 @@ public class Dataset : Object {
         return strings
     }
 
-    public func writeString(strings: [String]) -> Bool {
+    public func writeString(strings: [String], memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
         // First convert the strings into character arrays
         var data = [[Int8]]()
         data.reserveCapacity(strings.count)
@@ -130,7 +130,7 @@ public class Dataset : Object {
         }
 
         let type = Datatype.createString()
-        guard H5Dwrite(id, type.id, 0, 0, 0, pointers) >= 0 else {
+        guard H5Dwrite(id, type.id, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, pointers) >= 0 else {
             return false
         }
 
