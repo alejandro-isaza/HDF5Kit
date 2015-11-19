@@ -37,11 +37,6 @@ public class Dataset : Object {
       let status = H5Dread(id, NativeType.Double.rawValue, memspace_id, dataspace_id, 0, data)
       return status >= 0
     }
-
-//    public func readDouble(data: UnsafeMutablePointer<Double>) -> Bool {
-//        let status = H5Dread(id, NativeType.Double.rawValue, 0, 0, 0, data)
-//        return status >= 0
-//    }
   
     public func readDouble() -> [Double] {
         var result = [Double](count: Int(space.size), repeatedValue: 0.0)
