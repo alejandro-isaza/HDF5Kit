@@ -24,7 +24,7 @@ class HyperslabTests: XCTestCase {
         
         // re-open file for reading
         file = openFile(filePath)
-        guard let dataset = file.openDataset(datasetName) else {
+        guard let dataset = file.openDataset(datasetName, type: Double.self) else {
             XCTFail("Failed to open Dataset")
             return
         }
@@ -41,11 +41,8 @@ class HyperslabTests: XCTestCase {
         let memspace = Dataspace(dims: count_out)
         memspace.select(start: offset_out, stride: nil, count: count_out, block: nil)
         
-        // create memory to read to
-        var actual = [Double](count: count_out.reduce(1, combine:*), repeatedValue: 0.0)
-        
         // read dataspace to memspace
-        dataset.readDouble(&actual, memSpace: memspace, fileSpace: dataspace)
+        let actual = dataset.read(memSpace: memspace, fileSpace: dataspace) as! [Double]
         XCTAssertEqual(data[9...12], actual[0...3])
     }
   
@@ -63,7 +60,7 @@ class HyperslabTests: XCTestCase {
         
         // re-open file for reading
         file = openFile(filePath)
-        guard let dataset = file.openDataset(datasetName) else {
+        guard let dataset = file.openDataset(datasetName, type: Double.self) else {
             XCTFail("Failed to open Dataset")
             return
         }

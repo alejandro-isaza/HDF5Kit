@@ -24,7 +24,7 @@ class FileTests: XCTestCase {
     func readData(filePath: String, inout data: [Double]) {
         let file = openFile(filePath)
 
-        guard let dataset = file.openDataset(datasetName) else {
+        guard let dataset = file.openDataset(datasetName, type: Double.self) else {
             XCTFail("Failed to open Dataset")
             return
         }
@@ -41,7 +41,7 @@ class FileTests: XCTestCase {
         XCTAssertEqual(Int(dataspace.size), width * height)
         XCTAssertEqual(dataspace.dims.map{ Int($0) }, dims)
 
-        let dataset = file.createDataset(datasetName, datatype: Datatype.createDouble(), dataspace: dataspace)
+        let dataset = file.createDataset(datasetName, type: Double.self, dataspace: dataspace)!
         XCTAssertNil(dataset.offset)
     }
 
@@ -65,7 +65,7 @@ class FileTests: XCTestCase {
         writeData(filePath, data: expected)
 
         let file = openFile(filePath)
-        guard let dataset = file.openDataset(datasetName) else {
+        guard let dataset = file.openDataset(datasetName, type: Float.self) else {
             XCTFail("Failed to open Dataset")
             return
         }

@@ -4,7 +4,12 @@
 // terms governing use, modification, and redistribution, is contained in the
 // file LICENSE at the root of the source code distribution tree.
 
-public class Dataset : Object {
+public class Dataset<Element> : Object {
+
+    override init(id: Int32) {
+        super.init(id: id)
+    }
+
     /// The address in the file of the dataset or `nil` if the offset is undefined. That address is expressed as the offset in bytes from the beginning of the file.
     public var offset: Int? {
         let offset = H5Dget_offset(id)
@@ -46,15 +51,50 @@ public class Dataset : Object {
 
     // MARK: Reading/Writing data
 
+    public func read(memSpace memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> [AnyObject]? {
+        let size: Int
+        if let memspace = memSpace {
+            size = memspace.size
+        } else {
+            size = space.size
+        }
+
+        if Element.self == Double.self {
+            var result = [Double](count: size, repeatedValue: 0.0)
+            readDouble(&result, memSpace: memSpace, fileSpace: fileSpace)
+            return result
+        } else if Element.self == Float.self {
+            var result = [Float](count: size, repeatedValue: 0.0)
+            readFloat(&result, memSpace: memSpace, fileSpace: fileSpace)
+            return result
+        } else if Element.self == Int.self {
+            var result = [Int](count: size, repeatedValue: 0)
+            readInt(&result, memSpace: memSpace, fileSpace: fileSpace)
+            return result
+        } else if Element.self == String.self {
+            return readString(memSpace: memSpace, fileSpace: fileSpace)
+        }
+
+        return nil
+    }
+
+    public func write(data: [Element], memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
+        if Element.self == Double.self {
+            return writeDouble(UnsafeMutablePointer<Double>(data), memSpace: memSpace, fileSpace: fileSpace)
+        } else if Element.self == Float.self {
+            return writeFloat(UnsafeMutablePointer<Float>(data), memSpace: memSpace, fileSpace: fileSpace)
+        } else if Element.self == Int.self {
+            return writeInt(UnsafeMutablePointer<Int>(data), memSpace: memSpace, fileSpace: fileSpace)
+        } else if Element.self == String.self {
+            preconditionFailure("Use writeString function")
+        }
+
+        return false
+    }
+
     public func readDouble(data: UnsafeMutablePointer<Double>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
         let status = H5Dread(id, NativeType.Double.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data)
         return status >= 0
-    }
-    
-    public func readDouble() -> [Double] {
-        var result = [Double](count: Int(space.size), repeatedValue: 0.0)
-        readDouble(&result)
-        return result
     }
 
     public func writeDouble(data: UnsafePointer<Double>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
@@ -66,12 +106,6 @@ public class Dataset : Object {
         let status = H5Dread(id, NativeType.Float.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data)
         return status >= 0
     }
-    
-    public func readFloat() -> [Float] {
-        var result = [Float](count: Int(space.size), repeatedValue: 0.0)
-        readFloat(&result)
-        return result
-    }
 
     public func writeFloat(data: UnsafePointer<Float>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
         let status = H5Dwrite(id, NativeType.Float.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data);
@@ -82,23 +116,22 @@ public class Dataset : Object {
         let status = H5Dread(id, NativeType.Int.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data)
         return status >= 0
     }
-    
-    public func readInt() -> [Int] {
-        var result = [Int](count: Int(space.size), repeatedValue: 0)
-        readInt(&result)
-        return result
-    }
 
     public func writeInt(data: UnsafePointer<Int>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
         let status = H5Dwrite(id, NativeType.Int.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data);
         return status >= 0
     }
 
-    public func readString(memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> [String]? {
+    public func readString(memSpace memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> [String]? {
         let space = self.space
-        let size = space.size
-        let type = Datatype.createString()
+        let size: Int
+        if let memspace = memSpace {
+            size = memspace.size
+        } else {
+            size = space.size
+        }
 
+        let type = Datatype.createString()
         var data = [UnsafePointer<CChar>](count: Int(size), repeatedValue: nil)
         guard H5Dread(id, type.id, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, &data) >= 0 else {
             return nil

@@ -19,6 +19,7 @@ public enum NativeType {
     case UInt64
     case Opaque
 
+    /// Return the Swift type corresponding to the NativeType
     public var type: Any.Type {
         switch self {
         case Int: return Swift.Int.self
@@ -37,6 +38,7 @@ public enum NativeType {
         }
     }
 
+    /// The raw value of the NativeType
     public var rawValue: Swift.Int32 {
         switch self {
         case Int: return H5T_NATIVE_LONG_g
@@ -52,6 +54,37 @@ public enum NativeType {
         case Int64: return H5T_NATIVE_INT64_g
         case UInt64: return H5T_NATIVE_UINT64_g
         case Opaque: return H5T_NATIVE_OPAQUE_g
+        }
+    }
+
+    /// Create a NativeType from a Swift type
+    public init?(type: Any.Type) {
+        if type == Swift.Int.self {
+            self = .Int
+        } else if type == Swift.UInt.self {
+            self = .UInt
+        } else if type == Swift.Float.self {
+            self = .Float
+        } else if type == Swift.Double.self {
+            self = .Double
+        } else if type == Swift.Int8.self {
+            self = .Int8
+        } else if type == Swift.UInt8.self {
+            self = .UInt8
+        } else if type == Swift.Int16.self {
+            self = .Int16
+        } else if type == Swift.UInt16.self {
+            self = .UInt16
+        } else if type == Swift.Int32.self {
+            self = .Int32
+        } else if type == Swift.UInt32.self {
+            self = .UInt32
+        } else if type == Swift.Int64.self {
+            self = .Int64
+        } else if type == Swift.UInt64.self {
+            self = .UInt64
+        } else {
+            return nil
         }
     }
 }

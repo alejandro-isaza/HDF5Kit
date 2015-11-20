@@ -75,15 +75,31 @@ public class File {
     }
 
     /// Create a Dataset
-    public func createDataset(name: String, datatype: Datatype, dataspace: Dataspace) -> Dataset {
+    public func createDataset<T>(name: String, type: T.Type, dataspace: Dataspace) -> Dataset<T>? {
+        guard let datatype = Datatype(type: type) else {
+            return nil
+        }
+        return createDataset(name, datatype: datatype, dataspace: dataspace)
+    }
+
+    /// Create a Dataset
+    public func createDataset<T>(name: String, datatype: Datatype, dataspace: Dataspace) -> Dataset<T> {
         let datasetID = name.withCString{ name in
             return H5Dcreate2(id, name, datatype.id, dataspace.id, 0, 0, 0)
         }
-        return Dataset(id: datasetID)
+        return Dataset<T>(id: datasetID)
     }
 
     /// Create a chunked Dataset
-    public func createDataset(name: String, datatype: Datatype, dataspace: Dataspace, chunkDimensions: [Int]) -> Dataset {
+    public func createDataset<T>(name: String, type: T.Type, dataspace: Dataspace, chunkDimensions: [Int]) -> Dataset<T>? {
+        guard let datatype = Datatype(type: type) else {
+            return nil
+        }
+        return createDataset(name, datatype: datatype, dataspace: dataspace, chunkDimensions: chunkDimensions)
+    }
+
+    /// Create a chunked Dataset
+    public func createDataset<T>(name: String, datatype: Datatype, dataspace: Dataspace, chunkDimensions: [Int]) -> Dataset<T> {
         precondition(dataspace.dims.count == chunkDimensions.count)
 
         let plist = H5Pcreate(H5P_CLS_DATASET_CREATE_ID_g)
@@ -95,36 +111,34 @@ public class File {
         let datasetID = name.withCString{ name in
             return H5Dcreate2(id, name, datatype.id, dataspace.id, 0, plist, 0)
         }
-        return Dataset(id: datasetID)
+        return Dataset<T>(id: datasetID)
     }
 
     /// Create a Double Dataset and write data
-    public func createAndWriteDataset(name: String, dims: [Int], data: [Double]) -> Dataset {
-        let type = Datatype.createDouble()
+    public func createAndWriteDataset(name: String, dims: [Int], data: [Double]) -> Dataset<Double> {
         let space = Dataspace.init(dims: dims)
-        let set = createDataset(name, datatype: type, dataspace: space)
+        let set = createDataset(name, type: Double.self, dataspace: space)!
         set.writeDouble(data)
         return set
     }
 
     /// Create an Int Dataset and write data
-    public func createAndWriteDataset(name: String, dims: [Int], data: [Int]) -> Dataset {
-        let type = Datatype.createInt()
+    public func createAndWriteDataset(name: String, dims: [Int], data: [Int]) -> Dataset<Int> {
         let space = Dataspace.init(dims: dims)
-        let set = createDataset(name, datatype: type, dataspace: space)
+        let set = createDataset(name, type: Int.self, dataspace: space)!
         set.writeInt(data)
         return set
     }
 
     /// Open an existing Dataset
-    public func openDataset(name: String) -> Dataset? {
+    public func openDataset<T>(name: String, type: T.Type) -> Dataset<T>? {
         let datasetID = name.withCString{ name in
             return H5Dopen2(id, name, 0)
         }
         guard datasetID >= 0 else {
             return nil
         }
-        return Dataset(id: datasetID)
+        return Dataset<T>(id: datasetID)
     }
 
     /**

@@ -21,27 +21,46 @@ public enum DataClass: Int32 {
 
 
 public class Datatype : Object, Equatable {
+    override init(id: Int32) {
+        super.init(id: id)
+    }
+
     /// Create a Datatype from a class and a size
-    public class func create(dataClass: DataClass, size: Int) -> Datatype {
+    public convenience init(dataClass: DataClass, size: Int) {
         let id = H5Tcreate(H5T_class_t(dataClass.rawValue), size)
         guard id >= 0 else {
             fatalError("Failed to create Datatype")
         }
-        return Datatype(id: id)
+        self.init(id: id)
+    }
+
+    /// Create a Datatype from a Swift type
+    public convenience init?(type: Any.Type) {
+        let id: Int32
+        if type == String.self {
+            id = H5Tcopy(H5T_C_S1_g)
+            H5Tset_size(id, -1)
+        } else {
+            guard let nativeType = NativeType(type: type) else {
+                return nil
+            }
+            id = H5Tcopy(nativeType.rawValue)
+        }
+        self.init(id: id)
     }
 
     /// Copies an existing Datatype from a native type
-    public class func copy(type type: NativeType) -> Datatype {
-        let id = H5Tcopy(type.rawValue)
-        return Datatype(id: id)
+    public convenience init(nativeType: NativeType) {
+        let id = H5Tcopy(nativeType.rawValue)
+        self.init(id: id)
     }
 
     public class func createDouble() -> Datatype {
-        return copy(type: .Double)
+        return Datatype(nativeType: .Double)
     }
 
     public class func createInt() -> Datatype {
-        return copy(type: .Int)
+        return Datatype(nativeType: .Int)
     }
 
     public class func createString() -> Datatype {

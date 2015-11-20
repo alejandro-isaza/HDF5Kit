@@ -25,7 +25,15 @@ public class Group : Object {
     }
 
     /// Create a Dataset
-    public func createDataset(name: String, datatype: Datatype, dataspace: Dataspace) -> Dataset {
+    public func createDataset<T>(name: String, type: T.Type, dataspace: Dataspace) -> Dataset<T>? {
+        guard let datatype = Datatype(type: type) else {
+            return nil
+        }
+        return createDataset(name, datatype: datatype, dataspace: dataspace)
+    }
+
+    /// Create a Dataset
+    public func createDataset<T>(name: String, datatype: Datatype, dataspace: Dataspace) -> Dataset<T> {
         let datasetID = name.withCString{ name in
             return H5Dcreate2(id, name, datatype.id, dataspace.id, 0, 0, 0)
         }
@@ -33,7 +41,7 @@ public class Group : Object {
     }
 
     /// Open an existing Dataset
-    public func openDataset(name: String) -> Dataset? {
+    public func openDataset<T>(name: String) -> Dataset<T>? {
         let datasetID = name.withCString{ name in
             return H5Dopen2(id, name, 0)
         }
