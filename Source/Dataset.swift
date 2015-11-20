@@ -51,22 +51,19 @@ public class Dataset : Object {
         let dataspace = space
         var dimsOut = space.dims
         
-        if !sliceDims.isEmpty { // request for all data so use existing dataspace dims
+        if !sliceDims.isEmpty {
 
             var slabOffset: [Int] = []
             for (i, dim) in sliceDims.enumerate() {
                 
-                slabOffset.append(dim.slice.startIndex < 0 ? 0 : dim.slice.startIndex)
-                if dim.slice.endIndex < MAX {
-                    dimsOut[i] = dim.slice.endIndex - (dim.slice.startIndex < 0 ? 0 : dim.slice.startIndex)
+                slabOffset.append(dim.slice.startIndex)
+                if dim.slice.endIndex < Int.max-1 {
+                    dimsOut[i] = dim.slice.endIndex - (dim.slice.startIndex)
                 } else {
-                    // max
                     dimsOut[i] -= dim.slice.startIndex
                 }
                 
             }
-            print("slabOffset = \(slabOffset)")
-            print("dimsOut = \(dimsOut)")
             // define hyperslab in dataset
             dataspace.select(start: slabOffset, stride: nil, count: dimsOut, block: nil)
         }

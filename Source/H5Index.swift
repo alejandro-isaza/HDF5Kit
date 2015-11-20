@@ -9,15 +9,12 @@ postfix operator .. {}
 
 prefix operator .. {}
 
-let MAX = Int.max-1
-let MIN = Int.min
-
 public postfix func .. (lhs: Int) -> Range<Int> {
-    return lhs...MAX
+    return lhs...Int.max-1
 }
 
 public prefix func .. (rhs: Int) -> Range<Int> {
-    return Int.min...rhs
+    return 0...rhs
 }
 
 public protocol H5Index {
