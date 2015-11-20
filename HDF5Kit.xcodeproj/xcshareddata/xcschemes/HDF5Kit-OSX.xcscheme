@@ -51,6 +51,20 @@
                BlueprintName = "HDF5KitTests-OSX"
                ReferencedContainer = "container:HDF5Kit.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "DataspaceTests">
+               </Test>
+               <Test
+                  Identifier = "FileTests">
+               </Test>
+               <Test
+                  Identifier = "GroupTests">
+               </Test>
+               <Test
+                  Identifier = "HyperslabTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

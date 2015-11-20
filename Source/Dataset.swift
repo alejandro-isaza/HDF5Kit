@@ -48,26 +48,27 @@ public class Dataset : Object {
 
     public subscript(sliceDims: H5Index...) -> [Double] {
 
-        var dataspace: Dataspace
-
         var dimsOut: [Int] = []
+        let dataspace = space
+        dimsOut = space.dims
         
-        if sliceDims.isEmpty { // request for all data so use dataspace dims
-            dataspace = space
-            dimsOut = space.dims
-        } else {
+        if !sliceDims.isEmpty { // request for all data so use existing dataspace dims
+
             var slabOffset: [Int] = []
-            for dim in sliceDims {
-                // get slice attributes
+            for (i, dim) in sliceDims.enumerate() {
 
                 // define hyperslab in dataset
-                slabOffset.append(dim.slice.startIndex)
-                dimsOut.append(dim.slice.endIndex)
+                slabOffset.append(dim.slice.startIndex < 0 ? 0 : dim.slice.startIndex)
+                if dim.slice.endIndex < MAX {
+                    dimsOut[i] = dim.slice.endIndex - dim.slice.startIndex
+                } else {
+                    dimsOut[i] -= dim.slice.startIndex
+                }
                 
             }
             print("slabOffset = \(slabOffset)")
             print("dimsOut = \(dimsOut)")
-            dataspace = space
+            
             dataspace.select(start: slabOffset, stride: nil, count: dimsOut, block: nil)
         }
         // define memspace

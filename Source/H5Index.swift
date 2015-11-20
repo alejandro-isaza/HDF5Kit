@@ -9,30 +9,33 @@ postfix operator .. {}
 
 prefix operator .. {}
 
-postfix func .. (lhs: Int) -> Range<Int> {
-  return lhs...Int.max-1
+let MAX = Int.max-1
+let MIN = Int.min
+
+public postfix func .. (lhs: Int) -> Range<Int> {
+    return lhs...MAX
 }
 
-prefix func .. (rhs: Int) -> Range<Int> {
-  return Int.min...rhs
+public prefix func .. (rhs: Int) -> Range<Int> {
+    return Int.min...rhs
 }
 
 public protocol H5Index {
-  var slice: Range<Int> { get }
+      var slice: Range<Int> { get }
 }
 
 extension Int: H5Index {
-  public var slice: Range<Int> {
-    get {
-      return Range<Int>(start: self, end: self+1)
+    public var slice: Range<Int> {
+        get {
+            return Range<Int>(start: self, end: self+1)
+        }
     }
-  }
 }
 extension Range: H5Index {
-  public var slice: Range<Int> {
-    get {
-      return Range<Int>(start: self.startIndex as! Int, end: self.endIndex as! Int)
+    public var slice: Range<Int> {
+        get {
+          return Range<Int>(start: self.startIndex as! Int, end: self.endIndex as! Int)
+        }
     }
-  }
 }
 
