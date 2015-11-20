@@ -89,7 +89,7 @@ public class Dataset<Element> : Object {
             return readString(memSpace: memSpace, fileSpace: fileSpace)
         }
 
-        fatalError()
+        fatalError("Don't know how to read \(Element.self)")
     }
 
     public func write(data: [Element], memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
@@ -103,7 +103,7 @@ public class Dataset<Element> : Object {
             preconditionFailure("Use writeString function")
         }
 
-        return false
+        fatalError("Don't know how to write \(Element.self)")
     }
 
     public func readDouble(data: UnsafeMutablePointer<Double>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
