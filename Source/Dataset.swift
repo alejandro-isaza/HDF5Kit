@@ -62,7 +62,6 @@ public class Dataset : Object {
                 } else {
                     dimsOut[i] -= dim.slice.startIndex
                 }
-                
             }
             // define hyperslab in dataset
             dataspace.select(start: slabOffset, stride: nil, count: dimsOut, block: nil)
