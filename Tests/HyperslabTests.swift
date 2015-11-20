@@ -1,4 +1,5 @@
-// Copyright © 2015 Venture Media Labs. All rights reserved.
+// Copyright © 2015 Venture Media Labs.
+// Copyright © 2015 Tim Burgess
 //
 // This file is part of HDF5Kit. The full HDF5Kit copyright notice, including
 // terms governing use, modification, and redistribution, is contained in the

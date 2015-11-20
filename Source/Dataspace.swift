@@ -12,6 +12,8 @@ public class Dataspace {
         guard id >= 0 else {
             fatalError("Failed to create Dataspace")
         }
+        selectionDims = []
+        selectionDims = dims
     }
 
     deinit {
@@ -19,12 +21,15 @@ public class Dataspace {
         assert(status >= 0, "Failed to close Dataspace")
     }
 
+    public internal(set) var selectionDims: [Int]
+
     /// Create a Dataspace
     public init(dims: [Int]) {
         id = H5Screate_simple(Int32(dims.count), ptr(dims), nil)
         guard id >= 0 else {
             fatalError("Failed to create Dataspace")
         }
+        selectionDims = dims
     }
 
     /// Create a Dataspace for use in a chunked Dataset. No component of `maxDims` should be less than the corresponding element of `dims`. Elements of `maxDims` can have a value of -1, those dimension will have an unlimited size.
@@ -33,6 +38,7 @@ public class Dataspace {
         guard id >= 0 else {
             fatalError("Failed to create Dataspace")
         }
+        selectionDims = dims
     }
 
     /// The total number of elements in the Dataspace
@@ -77,11 +83,15 @@ public class Dataspace {
     /// Selects the entire dataspace.
     public func selectAll() {
         H5Sselect_all(id)
+        selectionDims = dims
     }
 
     /// Resets the selection region to include no elements.
     public func selectNone() {
         H5Sselect_none(id)
+        for i in 0..<selectionDims.count {
+            selectionDims[i] = 0
+        }
     }
 
     /// Select a hyperslab region.
@@ -92,6 +102,35 @@ public class Dataspace {
     /// - parameter block:  Determines the size of the element block selected from the dataspace. If the block parameter is set to `nil`, the block size defaults to a single element in each dimension (as if each value in the block array were set to 1).
     public func select(start start: [Int], stride: [Int]?, count: [Int]?, block: [Int]?) {
         H5Sselect_hyperslab(id, H5S_SELECT_SET, ptr(start), ptr(stride), ptr(count), ptr(block))
+        selectionDims = count ?? dims
+    }
+
+    /// Select a hyperslab region.
+    public func select(slices: HyperslabIndexType...) {
+        select(slices)
+    }
+
+    /// Select a hyperslab region.
+    public func select(slices: [HyperslabIndexType]) {
+        let dims = self.dims
+        let rank = dims.count
+        var start = [Int](count: rank, repeatedValue: 0)
+        var stride = [Int](count: rank, repeatedValue: 1)
+        var count = [Int](count: rank, repeatedValue: 0)
+        var block = [Int](count: rank, repeatedValue: 1)
+
+        for (index, slice) in slices.enumerate() {
+            start[index] = slice.start
+            stride[index] = slice.stride
+            if slice.blockCount != HyperslabIndex.all {
+                count[index] = slice.blockCount
+            } else {
+                count[index] = dims[index] - slice.start
+            }
+            block[index] = slice.blockSize
+        }
+
+        select(start: start, stride: stride, count: count, block: block)
     }
 
     /// This function allows the same shaped selection to be moved to different locations within a dataspace without requiring it to be redefined.

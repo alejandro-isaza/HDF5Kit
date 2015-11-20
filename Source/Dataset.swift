@@ -4,6 +4,9 @@
 // terms governing use, modification, and redistribution, is contained in the
 // file LICENSE at the root of the source code distribution tree.
 
+public enum DatasetError : ErrorType {
+    case UnkownDataType
+}
 public class Dataset<Element> : Object {
 
     override init(id: Int32) {
@@ -49,9 +52,20 @@ public class Dataset<Element> : Object {
         return chunkSize
     }
 
+    public subscript(slices: HyperslabIndexType...) -> [AnyObject] {
+        get {
+            let filespace = space
+            filespace.select(slices)
+
+            let memspace = Dataspace(dims: filespace.selectionDims)
+
+            return read(memSpace: memspace, fileSpace: filespace)
+        }
+    }
+
     // MARK: Reading/Writing data
 
-    public func read(memSpace memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> [AnyObject]? {
+    public func read(memSpace memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> [AnyObject] {
         let size: Int
         if let memspace = memSpace {
             size = memspace.size
@@ -75,7 +89,7 @@ public class Dataset<Element> : Object {
             return readString(memSpace: memSpace, fileSpace: fileSpace)
         }
 
-        return nil
+        fatalError()
     }
 
     public func write(data: [Element], memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
@@ -122,7 +136,7 @@ public class Dataset<Element> : Object {
         return status >= 0
     }
 
-    public func readString(memSpace memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> [String]? {
+    public func readString(memSpace memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> [String] {
         let space = self.space
         let size: Int
         if let memspace = memSpace {
@@ -134,7 +148,7 @@ public class Dataset<Element> : Object {
         let type = Datatype.createString()
         var data = [UnsafePointer<CChar>](count: Int(size), repeatedValue: nil)
         guard H5Dread(id, type.id, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, &data) >= 0 else {
-            return nil
+            return []
         }
 
         var strings = [String]()
