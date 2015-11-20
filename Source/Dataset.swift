@@ -46,6 +46,43 @@ public class Dataset : Object {
 
     // MARK: Reading/Writing data
 
+    public subscript(sliceDims: H5Index...) -> [Double] {
+
+        var dataspace: Dataspace
+
+        var dimsOut: [Int] = []
+        
+        if sliceDims.isEmpty { // request for all data so use dataspace dims
+            dataspace = space
+            dimsOut = space.dims
+        } else {
+            var slabOffset: [Int] = []
+            for dim in sliceDims {
+                // get slice attributes
+
+                // define hyperslab in dataset
+                slabOffset.append(dim.slice.startIndex)
+                dimsOut.append(dim.slice.endIndex)
+                
+            }
+            print("slabOffset = \(slabOffset)")
+            print("dimsOut = \(dimsOut)")
+            dataspace = space
+            dataspace.select(start: slabOffset, stride: nil, count: dimsOut, block: nil)
+        }
+        // define memspace
+        let memspace = Dataspace(dims: dimsOut)
+        memspace.select(start: Array(count: dimsOut.count, repeatedValue: 0), stride: nil, count: dimsOut, block: nil)
+        
+        // create memory to read to
+        var data = [Double](count: dimsOut.reduce(1, combine:*), repeatedValue: 0.0)
+
+        // read dataspace to memspace
+        readDouble(&data, memSpace: memspace, fileSpace: dataspace)
+        return data
+    }
+  
+
     public func readDouble(data: UnsafeMutablePointer<Double>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
         let status = H5Dread(id, NativeType.Double.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data)
         return status >= 0
