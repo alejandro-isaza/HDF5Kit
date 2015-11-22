@@ -5,7 +5,7 @@
 // file LICENSE at the root of the source code distribution tree.
 
 import XCTest
-@testable import HDF5Kit
+import HDF5Kit
 
 class FileTests: XCTestCase {
     let width = 100
