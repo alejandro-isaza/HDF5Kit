@@ -86,7 +86,7 @@ public class Dataset<Element> : Object {
             readInt(&result, memSpace: memSpace, fileSpace: fileSpace)
             return result
         } else if Element.self == String.self {
-            return readString(memSpace: memSpace, fileSpace: fileSpace)
+            return readString(fileSpace: fileSpace)
         }
 
         fatalError("Don't know how to read \(Element.self)")
@@ -136,18 +136,19 @@ public class Dataset<Element> : Object {
         return status >= 0
     }
 
-    public func readString(memSpace memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> [String] {
+    public func readString(fileSpace fileSpace: Dataspace? = nil) -> [String] {
         let space = self.space
         let size: Int
-        if let memspace = memSpace {
-            size = memspace.size
+        if let fileSpace = fileSpace {
+            size = fileSpace.size
         } else {
             size = space.size
         }
 
         let type = Datatype.createString()
         var data = [UnsafePointer<CChar>](count: Int(size), repeatedValue: nil)
-        guard H5Dread(id, type.id, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, &data) >= 0 else {
+        let memspace = Dataspace(dims: [size])
+        guard H5Dread(id, type.id, memspace.id, fileSpace?.id ?? 0, 0, &data) >= 0 else {
             return []
         }
 
@@ -161,7 +162,7 @@ public class Dataset<Element> : Object {
         return strings
     }
 
-    public func writeString(strings: [String], memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
+    public func writeString(strings: [String], fileSpace: Dataspace? = nil) -> Bool {
         // First convert the strings into character arrays
         var data = [[Int8]]()
         data.reserveCapacity(strings.count)
@@ -176,8 +177,9 @@ public class Dataset<Element> : Object {
             pointers.append(UnsafePointer<Int8>(array))
         }
 
+        let memspace = Dataspace(dims: [strings.count])
         let type = Datatype.createString()
-        guard H5Dwrite(id, type.id, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, pointers) >= 0 else {
+        guard H5Dwrite(id, type.id, memspace.id, fileSpace?.id ?? 0, 0, pointers) >= 0 else {
             return false
         }
 
