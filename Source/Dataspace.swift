@@ -41,6 +41,10 @@ public class Dataspace {
         selectionDims = dims
     }
 
+    public convenience init(_ space: Dataspace) {
+        self.init(id: H5Scopy(space.id))
+    }
+
     /// The total number of elements in the Dataspace
     public var size: Int {
         let result = H5Sget_simple_extent_npoints(id)
