@@ -11,7 +11,7 @@ import HDF5Kit
 class HyperslabTests: XCTestCase {
     let datasetName = "MyData"
 
-    func testSlab2DRead() {
+    func testSlab2DReadDouble() {
         let filePath = tempFilePath()
         var file = createFile(filePath)
         
@@ -44,6 +44,69 @@ class HyperslabTests: XCTestCase {
         
         // read dataspace to memspace
         let actual = dataset.read(memSpace: memspace, fileSpace: dataspace) as! [Double]
+        XCTAssertEqual(data[9...12], actual[0...3])
+    }
+
+    func testSlab2DReadString() {
+        let filePath = tempFilePath()
+        var file = createFile(filePath)
+
+        let createDims = [7, 7]
+        let size = createDims.reduce(1, combine: *)
+        let data = (0..<size).map { String($0) }
+
+        // write a 7x7 dataset
+        let space = Dataspace(dims: createDims)
+        let newDataset = file.createDataset(datasetName, type: String.self, dataspace: space)!
+        newDataset.writeString(data)
+        XCTAssertEqual(Int(newDataset.space.size), size)
+
+        // re-open file for reading
+        file = openFile(filePath)
+        guard let dataset = file.openDataset(datasetName, type: String.self) else {
+            XCTFail("Failed to open Dataset")
+            return
+        }
+
+        // define hyperslab in dataset
+        let offset = [1,2]
+        let count = [3,4]
+        let dataspace = dataset.space // get new dataspace for hyperslab
+        dataspace.select(start: offset, stride: nil, count: count, block: nil)
+
+        // define memspace
+        let offset_out = [0,0]
+        let count_out = [3,4]
+        let memspace = Dataspace(dims: count_out)
+        memspace.select(start: offset_out, stride: nil, count: count_out, block: nil)
+
+        // read dataspace to memspace
+        let actual = dataset.read(memSpace: memspace, fileSpace: dataspace) as! [String]
+        XCTAssertEqual(data[9...12], actual[0...3])
+    }
+
+    func testReadStringSlab() {
+        let filePath = tempFilePath()
+        var file = createFile(filePath)
+
+        let createDims = [7, 7]
+        let size = createDims.reduce(1, combine: *)
+        let data = (0..<size).map { String($0) }
+
+        // write a 7x7 dataset
+        let space = Dataspace(dims: createDims)
+        let newDataset = file.createDataset(datasetName, type: String.self, dataspace: space)!
+        newDataset.writeString(data)
+        XCTAssertEqual(Int(newDataset.space.size), size)
+
+        // re-open file for reading
+        file = openFile(filePath)
+        guard let dataset = file.openDataset(datasetName, type: String.self) else {
+            XCTFail("Failed to open Dataset")
+            return
+        }
+
+        let actual = dataset[1...3, 2...5] as! [String]
         XCTAssertEqual(data[9...12], actual[0...3])
     }
   
