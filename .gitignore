@@ -12,6 +12,8 @@ xcuserdata/
 *.lo
 .deps/
 .libs/
+.build/
 
-# Carthage
+# Dependency management
 Carthage/
+Packages/
