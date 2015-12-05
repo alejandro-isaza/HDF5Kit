@@ -55,7 +55,7 @@ public class Dataset<Element> : Object {
         return chunkSize
     }
 
-    public subscript(slices: HyperslabIndexType...) -> [AnyObject] {
+    public subscript(slices: HyperslabIndexType...) -> Any {
         get {
             let filespace = space
             filespace.select(slices)
@@ -72,7 +72,7 @@ public class Dataset<Element> : Object {
     /// Read data using an optional memory Dataspace and an optional file Dataspace
     ///
     /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace
-    public func read(memSpace memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> [AnyObject] {
+    public func read(memSpace memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Any {
         let size: Int
         if let memspace = memSpace {
             size = memspace.selectionSize
