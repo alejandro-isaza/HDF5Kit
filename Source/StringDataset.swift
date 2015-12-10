@@ -6,7 +6,17 @@
 
 public class StringDataset: Dataset {
     public subscript(slices: HyperslabIndexType...) -> [String] {
+        // There is a problem with Swift where it gives a compiler error if `set` is implemented here
         return (try? read(slices)) ?? []
+    }
+
+    public subscript(slices: [HyperslabIndexType]) -> [String] {
+        get {
+            return (try? read(slices)) ?? []
+        }
+        set {
+            try! write(newValue, to: slices)
+        }
     }
     
     public func read(slices: [HyperslabIndexType]) throws -> [String] {

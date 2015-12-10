@@ -11,6 +11,35 @@ import HDF5Kit
 class HyperslabTests: XCTestCase {
     let datasetName = "MyData"
 
+    func testDoubleWriteRead() {
+        let filePath = tempFilePath()
+        let file = createFile(filePath)
+
+        let createDims = [7, 7]
+        let space = Dataspace(dims: createDims)
+        let dataset = file.createDoubleDataset(datasetName, dataspace: space)!
+
+        let data = (0..<7).map({ Double($0) })
+        dataset[[0, 0..]] = data
+
+        XCTAssertEqual(dataset[0, 0..], data)
+    }
+
+    func testStringWriteRead() {
+        let filePath = tempFilePath()
+        let file = createFile(filePath)
+
+        let createDims = [7, 7]
+        let space = Dataspace(dims: createDims)
+        let dataset = file.createStringDataset(datasetName, dataspace: space)!
+
+        let data = (0..<7).map({ "Number \($0)" })
+        dataset[[0, 0..]] = data
+
+        XCTAssertEqual(dataset[0, 0], ["Number 0"])
+        XCTAssertEqual(dataset[0, 0..], data)
+    }
+
     func testSlab2DReadDouble() {
         let filePath = tempFilePath()
         var file = createFile(filePath)
