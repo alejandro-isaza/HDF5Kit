@@ -87,7 +87,10 @@ extension GroupType {
     }
 
     /// Create a chunked IntDataset
-    public func createDataset(name: String, datatype: Datatype, dataspace: Dataspace, chunkDimensions: [Int]) -> IntDataset {
+    public func createIntDataset(name: String, dataspace: Dataspace, chunkDimensions: [Int]) -> IntDataset? {
+        guard let datatype = Datatype(type: Int.self) else {
+            return nil
+        }
         precondition(dataspace.dims.count == chunkDimensions.count)
 
         let plist = H5Pcreate(H5P_CLS_DATASET_CREATE_ID_g)
