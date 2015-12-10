@@ -5,7 +5,7 @@
 // file LICENSE at the root of the source code distribution tree.
 
 public class Object {
-    var id: Int32 = -1
+    public internal(set) var id: Int32 = -1
 
     init(id: Int32) {
         precondition(id >= 0, "Object ID needs to be non-negative")

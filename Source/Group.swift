@@ -4,7 +4,11 @@
 // terms governing use, modification, and redistribution, is contained in the
 // file LICENSE at the root of the source code distribution tree.
 
-public class Group : Object {
+public protocol GroupType {
+    var id: Int32 { get }
+}
+
+public class Group: Object, GroupType {
     /// Create a group
     public func createGroup(name: String) -> Group {
         let groupID = name.withCString{
@@ -22,33 +26,6 @@ public class Group : Object {
             return nil
         }
         return Group(id: groupID)
-    }
-
-    /// Create a Dataset
-    public func createDataset<T>(name: String, type: T.Type, dataspace: Dataspace) -> Dataset<T>? {
-        guard let datatype = Datatype(type: type) else {
-            return nil
-        }
-        return createDataset(name, datatype: datatype, dataspace: dataspace)
-    }
-
-    /// Create a Dataset
-    public func createDataset<T>(name: String, datatype: Datatype, dataspace: Dataspace) -> Dataset<T> {
-        let datasetID = name.withCString{ name in
-            return H5Dcreate2(id, name, datatype.id, dataspace.id, 0, 0, 0)
-        }
-        return Dataset(id: datasetID)
-    }
-
-    /// Open an existing Dataset
-    public func openDataset<T>(name: String) -> Dataset<T>? {
-        let datasetID = name.withCString{ name in
-            return H5Dopen2(id, name, 0)
-        }
-        guard datasetID >= 0 else {
-            return nil
-        }
-        return Dataset(id: datasetID)
     }
 
     /**

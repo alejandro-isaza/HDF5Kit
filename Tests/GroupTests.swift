@@ -28,7 +28,7 @@ class GroupTests: XCTestCase {
         }
         let group = file.createGroup("group")
         group.createGroup("subGroup")
-        group.createDataset("data", type: Double.self, dataspace: Dataspace(dims: [10]))
+        group.createDoubleDataset("data", dataspace: Dataspace(dims: [10]))
 
         let groupNames = group.objectNames()
         XCTAssert(groupNames.contains("data"))

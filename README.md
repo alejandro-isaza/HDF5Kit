@@ -30,12 +30,12 @@ guard let file = File.open(path, mode: .ReadWrite) else {
 
 // Open an existing dataset
 let datasetName = "dset"
-guard let dataset = file.openDataset(datasetName, type: Double.self) else {
+guard let dataset = file.openDoubleDataset(datasetName) else {
     fatalError("Failed to open dataset \(datasetName)")
 }
 
 // Write the data
-dataset.writeDouble(&data)
+dataset.write(data)
 ```
 
 Reading data is really easy with HDF5Kit:
@@ -49,11 +49,11 @@ guard let file = File.open(path, mode: .ReadWrite) else {
 
 // Open an existing dataset
 let datasetName = "dset"
-guard let dataset = file.openDataset(datasetName, type: String.self) else {
+guard let dataset = file.openStringDataset(datasetName) else {
     fatalError("Failed to open dataset \(datasetName)")
 }
 
-let data = dataset[1...3, 2...5] as! [String]
+let data = dataset[1...3, 2...5]
 ```
 
 Supported types are: `Double`, `Float`, `Int` and `String`.
