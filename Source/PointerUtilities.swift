@@ -13,10 +13,10 @@ func ptr<T>(array: [T]) -> UnsafePointer<T> {
 
 /// Get the pointer to an optional array of values. Use only with arrays of a basic data type (e.g. `[Int]?`)
 func ptr<T>(array: [T]?) -> UnsafePointer<T> {
-    guard let array = array else {
+    if array == nil {
         return nil
     }
-    return ptr(array)
+    return ptr(array!)
 }
 
 /// Get the mutable pointer to an array of values. Use only with arrays of a basic data type (e.g. `[Int]`)
@@ -26,10 +26,10 @@ func ptr<T>(inout array: [T]) -> UnsafeMutablePointer<T> {
 
 /// Get the mutable pointer to an optional array of values. Use only with arrays of a basic data type (e.g. `[Int]?`)
 func ptr<T>(inout array: [T]?) -> UnsafeMutablePointer<T> {
-    guard var array = array else {
+    if array == nil {
         return nil
     }
-    return ptr(&array)
+    return ptr(&array!)
 }
 
 
@@ -43,10 +43,10 @@ func ptr<T: IntegerType>(array: [T]) -> UnsafePointer<UInt64> {
 
 /// Get a UInt64 pointer to an optional array of values. Will only work for types that are 64 bits long.
 func ptr<T: IntegerType>(array: [T]?) -> UnsafePointer<UInt64> {
-    guard let array = array else {
+    if array == nil {
         return nil
     }
-    return ptr(array)
+    return ptr(array!)
 }
 
 /// Get a mutable UInt64 pointer to an array of values. Will only work for types that are 64 bits long.
@@ -57,10 +57,10 @@ func ptr<T: IntegerType>(inout array: [T]) -> UnsafeMutablePointer<UInt64> {
 
 /// Get a mutable UInt64 pointer to an optional array of values. Will only work for types that are 64 bits long.
 func ptr<T: IntegerType>(inout array: [T]?) -> UnsafeMutablePointer<UInt64> {
-    guard var array = array else {
+    if array == nil {
         return nil
     }
-    return ptr(&array)
+    return ptr(&array!)
 }
 
 
@@ -74,10 +74,10 @@ func ptr<T: IntegerType>(array: [T]) -> UnsafePointer<Int64> {
 
 /// Get a Int64 pointer to an optional array of values. Will only work for types that are 64 bits long.
 func ptr<T: IntegerType>(array: [T]?) -> UnsafePointer<Int64> {
-    guard let array = array else {
+    if array == nil {
         return nil
     }
-    return ptr(array)
+    return ptr(array!)
 }
 
 /// Get a mutable Int64 pointer to an array of values. Will only work for types that are 64 bits long.
@@ -88,8 +88,8 @@ func ptr<T: IntegerType>(inout array: [T]) -> UnsafeMutablePointer<Int64> {
 
 /// Get a mutable Int64 pointer to an optional array of values. Will only work for types that are 64 bits long.
 func ptr<T: IntegerType>(inout array: [T]?) -> UnsafeMutablePointer<Int64> {
-    guard var array = array else {
+    if array == nil {
         return nil
     }
-    return ptr(&array)
+    return ptr(&array!)
 }

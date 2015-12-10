@@ -150,7 +150,7 @@
 /* #undef H5_HAVE_INSTRUMENTED_LIBRARY */
 
 /* Define to 1 if you have the <inttypes.h> header file. */
-#define H5_HAVE_INTTYPES_H 1
+/* #define H5_HAVE_INTTYPES_H 1 */
 
 /* Define to 1 if you have the `ioctl' function. */
 #define H5_HAVE_IOCTL 1
