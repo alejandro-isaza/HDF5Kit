@@ -11,6 +11,35 @@ import HDF5Kit
 class HyperslabTests: XCTestCase {
     let datasetName = "MyData"
 
+    func testDoubleWriteRead() {
+        let filePath = tempFilePath()
+        let file = createFile(filePath)
+
+        let createDims = [7, 7]
+        let space = Dataspace(dims: createDims)
+        let dataset = file.createDoubleDataset(datasetName, dataspace: space)!
+
+        let data = (0..<7).map({ Double($0) })
+        dataset[[0, 0..]] = data
+
+        XCTAssertEqual(dataset[0, 0..], data)
+    }
+
+    func testStringWriteRead() {
+        let filePath = tempFilePath()
+        let file = createFile(filePath)
+
+        let createDims = [7, 7]
+        let space = Dataspace(dims: createDims)
+        let dataset = file.createStringDataset(datasetName, dataspace: space)!
+
+        let data = (0..<7).map({ "Number \($0)" })
+        dataset[[0, 0..]] = data
+
+        XCTAssertEqual(dataset[0, 0], ["Number 0"])
+        XCTAssertEqual(dataset[0, 0..], data)
+    }
+
     func testSlab2DReadDouble() {
         let filePath = tempFilePath()
         var file = createFile(filePath)
@@ -20,12 +49,12 @@ class HyperslabTests: XCTestCase {
         let data = (0..<size).map { Double($0) }
         
         // write a 7x7 dataset
-        let newDataset = file.createAndWriteDataset(datasetName, dims: createDims, data: data)
+        let newDataset = try! file.createAndWriteDataset(datasetName, dims: createDims, data: data)
         XCTAssertEqual(Int(newDataset.space.size), size)
         
         // re-open file for reading
         file = openFile(filePath)
-        guard let dataset = file.openDataset(datasetName, type: Double.self) else {
+        guard let dataset = file.openDoubleDataset(datasetName) else {
             XCTFail("Failed to open Dataset")
             return
         }
@@ -43,7 +72,7 @@ class HyperslabTests: XCTestCase {
         memspace.select(start: offset_out, stride: nil, count: count_out, block: nil)
         
         // read dataspace to memspace
-        let actual = dataset.read(memSpace: memspace, fileSpace: dataspace) as! [Double]
+        let actual = try! dataset.read(memSpace: memspace, fileSpace: dataspace)
         XCTAssertEqual(data[9...12], actual[0...3])
     }
 
@@ -57,13 +86,13 @@ class HyperslabTests: XCTestCase {
 
         // write a 7x7 dataset
         let space = Dataspace(dims: createDims)
-        let newDataset = file.createDataset(datasetName, type: String.self, dataspace: space)!
-        newDataset.writeString(data)
+        let newDataset = file.createStringDataset(datasetName, dataspace: space)!
+        try! newDataset.write(data)
         XCTAssertEqual(Int(newDataset.space.size), size)
 
         // re-open file for reading
         file = openFile(filePath)
-        guard let dataset = file.openDataset(datasetName, type: String.self) else {
+        guard let dataset = file.openStringDataset(datasetName) else {
             XCTFail("Failed to open Dataset")
             return
         }
@@ -81,7 +110,7 @@ class HyperslabTests: XCTestCase {
         memspace.select(start: offset_out, stride: nil, count: count_out, block: nil)
 
         // read dataspace to memspace
-        let actual = dataset.read(memSpace: memspace, fileSpace: dataspace) as! [String]
+        let actual = try! dataset.read(fileSpace: dataspace)
         XCTAssertEqual(data[9...12], actual[0...3])
     }
 
@@ -95,18 +124,18 @@ class HyperslabTests: XCTestCase {
 
         // write a 7x7 dataset
         let space = Dataspace(dims: createDims)
-        let newDataset = file.createDataset(datasetName, type: String.self, dataspace: space)!
-        newDataset.writeString(data)
+        let newDataset = file.createStringDataset(datasetName, dataspace: space)!
+        try! newDataset.write(data)
         XCTAssertEqual(Int(newDataset.space.size), size)
 
         // re-open file for reading
         file = openFile(filePath)
-        guard let dataset = file.openDataset(datasetName, type: String.self) else {
+        guard let dataset = file.openStringDataset(datasetName) else {
             XCTFail("Failed to open Dataset")
             return
         }
 
-        let actual = dataset[1...3, 2...5] as! [String]
+        let actual = dataset[1...3, 2...5]
         XCTAssertEqual(data[9...12], actual[0...3])
     }
   
@@ -119,12 +148,12 @@ class HyperslabTests: XCTestCase {
         let data = (0..<size).map { Double($0) }
         
         // write a 7x7 dataset
-        let newDataset = file.createAndWriteDataset(datasetName, dims: createDims, data: data)
+        let newDataset = try! file.createAndWriteDataset(datasetName, dims: createDims, data: data)
         XCTAssertEqual(Int(newDataset.space.size), size)
         
         // re-open file for reading
         file = openFile(filePath)
-        guard let dataset = file.openDataset(datasetName, type: Double.self) else {
+        guard let dataset = file.openDoubleDataset(datasetName) else {
             XCTFail("Failed to open Dataset")
             return
         }
@@ -142,11 +171,8 @@ class HyperslabTests: XCTestCase {
         let memspace = Dataspace(dims: dims)
         memspace.select(start: offset_out, stride: nil, count: count_out, block: nil)
         
-        // create memory to read to
-        var actual = [Double](count: dims.reduce(1, combine:*), repeatedValue: 0.0)
-        
         // read dataspace to memspace
-        dataset.readDouble(&actual, memSpace: memspace, fileSpace: dataspace)
+        let actual = try! dataset.read(memSpace: memspace, fileSpace: dataspace)
         XCTAssertEqual(data[9...12], actual[0...3])
     }
 }

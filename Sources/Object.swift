@@ -7,7 +7,7 @@
 import CHDF5
 
 public class Object {
-    var id: Int32 = -1
+    public internal(set) var id: Int32 = -1
 
     init(id: Int32) {
         precondition(id >= 0, "Object ID needs to be non-negative")

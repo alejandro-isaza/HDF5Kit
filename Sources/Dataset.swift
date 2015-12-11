@@ -6,12 +6,7 @@
 
 import CHDF5
 
-public enum DatasetError : ErrorType {
-    case UnkownDataType
-}
-
-public class Dataset<Element> : Object {
-
+public class Dataset: Object {
     override init(id: Int32) {
         super.init(id: id)
     }
@@ -55,198 +50,63 @@ public class Dataset<Element> : Object {
         return chunkSize
     }
 
-    public subscript(slices: HyperslabIndexType...) -> Any {
-        get {
-            let filespace = space
-            filespace.select(slices)
-
-            let memspace = Dataspace(dims: filespace.selectionDims)
-
-            return read(memSpace: memspace, fileSpace: filespace)
-        }
-    }
-
-    
-    // MARK: Reading/Writing data
-
     /// Read data using an optional memory Dataspace and an optional file Dataspace
     ///
-    /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace
-    public func read(memSpace memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Any {
-        let size: Int
-        if let memspace = memSpace {
-            size = memspace.selectionSize
-        } else if let filespace = fileSpace {
-            size = filespace.selectionSize
-        } else {
-            size = space.selectionSize
+    /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace and there is enough memory available for it
+    public func readInto(pointer: UnsafeMutablePointer<Void>, type: NativeType, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
+        let status = H5Dread(id, type.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, pointer)
+        if status < 0 {
+            throw Error.IOError
         }
-
-        if Element.self == Double.self {
-            var result = [Double](count: size, repeatedValue: 0.0)
-            readDouble(&result, memSpace: memSpace, fileSpace: fileSpace)
-            return result
-        } else if Element.self == Float.self {
-            var result = [Float](count: size, repeatedValue: 0.0)
-            readFloat(&result, memSpace: memSpace, fileSpace: fileSpace)
-            return result
-        } else if Element.self == Int.self {
-            var result = [Int](count: size, repeatedValue: 0)
-            readInt(&result, memSpace: memSpace, fileSpace: fileSpace)
-            return result
-        } else if Element.self == String.self {
-            return readString(fileSpace: fileSpace)
-        }
-
-        fatalError("Don't know how to read \(Element.self)")
     }
 
     /// Write data using an optional memory Dataspace and an optional file Dataspace
     ///
-    /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace and the same as `data.count`
-    public func write(data: [Element], memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
-        let size: Int
-        if let memspace = memSpace {
-            size = memspace.selectionSize
-        } else if let filespace = fileSpace {
-            size = filespace.selectionSize
-        } else {
-            size = space.selectionSize
+    /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace
+    public func writeFrom(pointer: UnsafePointer<Void>, type: NativeType, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
+        let status = H5Dwrite(id, type.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, pointer);
+        if status < 0 {
+            throw Error.IOError
         }
-        precondition(data.count == size, "Data size doesn't match Dataspace dimensions")
+    }
+}
 
-        if Element.self == Double.self {
-            return writeDouble(UnsafeMutablePointer<Double>(data), memSpace: memSpace, fileSpace: fileSpace)
-        } else if Element.self == Float.self {
-            return writeFloat(UnsafeMutablePointer<Float>(data), memSpace: memSpace, fileSpace: fileSpace)
-        } else if Element.self == Int.self {
-            return writeInt(UnsafeMutablePointer<Int>(data), memSpace: memSpace, fileSpace: fileSpace)
-        } else if Element.self == String.self {
-            preconditionFailure("Use writeString function")
+
+// MARK: GroupType extension for Dataset
+
+extension GroupType {
+    /// Create a Dataset
+    public func createDataset(name: String, datatype: Datatype, dataspace: Dataspace) -> Dataset {
+        let datasetID = name.withCString{ name in
+            return H5Dcreate2(id, name, datatype.id, dataspace.id, 0, 0, 0)
         }
-
-        fatalError("Don't know how to write \(Element.self)")
+        return Dataset(id: datasetID)
     }
 
-    /// Read double data using an optional memory Dataspace and an optional file Dataspace
-    ///
-    /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace and there is as much available memory in the data buffer.
-    public func readDouble(data: UnsafeMutablePointer<Double>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
-        let status = H5Dread(id, NativeType.Double.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data)
-        return status >= 0
-    }
+    /// Create a chunked Dataset
+    public func createDataset(name: String, datatype: Datatype, dataspace: Dataspace, chunkDimensions: [Int]) -> Dataset? {
+        precondition(dataspace.dims.count == chunkDimensions.count)
 
-    /// Write double data using an optional memory Dataspace and an optional file Dataspace
-    ///
-    /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace and there is as much data available in the data buffer.
-    public func writeDouble(data: UnsafePointer<Double>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
-        let status = H5Dwrite(id, NativeType.Double.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data);
-        return status >= 0
-    }
-
-    /// Read float data using an optional memory Dataspace and an optional file Dataspace
-    ///
-    /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace and there is as much available memory in the data buffer.
-    public func readFloat(data: UnsafeMutablePointer<Float>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
-        let status = H5Dread(id, NativeType.Float.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data)
-        return status >= 0
-    }
-
-    /// Write float data using an optional memory Dataspace and an optional file Dataspace
-    ///
-    /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace and there is as much data available in the data buffer.
-    public func writeFloat(data: UnsafePointer<Float>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
-        let status = H5Dwrite(id, NativeType.Float.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data);
-        return status >= 0
-    }
-
-    /// Read integer data using an optional memory Dataspace and an optional file Dataspace
-    ///
-    /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace and there is as much available memory in the data buffer.
-    public func readInt(data: UnsafeMutablePointer<Int>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
-        let status = H5Dread(id, NativeType.Int.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data)
-        return status >= 0
-    }
-
-    /// Write integer data using an optional memory Dataspace and an optional file Dataspace
-    ///
-    /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace and there is as much data available in the data buffer.
-    public func writeInt(data: UnsafePointer<Int>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) -> Bool {
-        let status = H5Dwrite(id, NativeType.Int.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, data);
-        return status >= 0
-    }
-
-    /// Read string data using an optional file Dataspace
-    public func readString(fileSpace fileSpace: Dataspace? = nil) -> [String] {
-        let size: Int
-        if let fileSpace = fileSpace {
-            size = fileSpace.selectionSize
-        } else {
-            size = self.space.selectionSize
+        let plist = H5Pcreate(H5P_CLS_DATASET_CREATE_ID_g)
+        H5Pset_chunk(plist, Int32(chunkDimensions.count), ptr(chunkDimensions))
+        defer {
+            H5Pclose(plist)
         }
 
-        let type = Datatype.createString()
-        var data = [UnsafePointer<CChar>](count: Int(size), repeatedValue: nil)
-        let memspace = Dataspace(dims: [size])
-        guard H5Dread(id, type.id, memspace.id, fileSpace?.id ?? 0, 0, &data) >= 0 else {
-            return []
+        let datasetID = name.withCString{ name in
+            return H5Dcreate2(id, name, datatype.id, dataspace.id, 0, plist, 0)
         }
-
-        var strings = [String]()
-        strings.reserveCapacity(size)
-        for pointer in data {
-            strings.append(String.fromCString(pointer) ?? "")
-        }
-
-        H5Dvlen_reclaim(type.id, memspace.id, 0, &data);
-        return strings
+        return Dataset(id: datasetID)
     }
 
-    /// Write string data using an optional file Dataspace
-    ///
-    /// - precondition: The `selectionSize` of the file Dataspace is equal to `strings.count`
-    public func writeString(strings: [String], fileSpace: Dataspace? = nil) -> Bool {
-        let size: Int
-        if let fileSpace = fileSpace {
-            size = fileSpace.selectionSize
-        } else {
-            size = self.space.selectionSize
+    /// Open an existing Dataset
+    public func openDataset(name: String) -> Dataset? {
+        let datasetID = name.withCString{ name in
+            return H5Dopen2(id, name, 0)
         }
-        precondition(strings.count == size, "Data size doesn't match Dataspace dimensions")
-
-        // First convert the strings into character arrays
-        var data = [[Int8]]()
-        data.reserveCapacity(size)
-        for string in strings {
-            data.append(characterArrayFromString(string))
+        guard datasetID >= 0 else {
+            return nil
         }
-
-        // Create an array of pointers, which is what H5Dwrite expects
-        var pointers = [UnsafePointer<Int8>]()
-        pointers.reserveCapacity(data.count)
-        for array in data {
-            pointers.append(UnsafePointer<Int8>(array))
-        }
-
-        let memspace = Dataspace(dims: [size])
-        let type = Datatype.createString()
-        guard H5Dwrite(id, type.id, memspace.id, fileSpace?.id ?? 0, 0, pointers) >= 0 else {
-            return false
-        }
-
-        return true
-    }
-
-    func characterArrayFromString(string: String) -> [Int8] {
-        let length = string.utf8.count
-        var array = [Int8](count: length + 1, repeatedValue: 0)
-
-        string.withCString{ stringPointer in
-            array.withUnsafeMutableBufferPointer{ arrayPointer in
-                let mutableStringPointer = UnsafeMutablePointer<Int8>(stringPointer)
-                arrayPointer.baseAddress.initializeFrom(mutableStringPointer, count: length + 1)
-            }
-        }
-        return array
+        return Dataset(id: datasetID)
     }
 }

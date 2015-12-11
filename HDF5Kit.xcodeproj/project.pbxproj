@@ -11,6 +11,16 @@
 		2241F9471BFE675900014748 /* HyperslabTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2241F9451BFE675900014748 /* HyperslabTests.swift */; };
 		22B02AAF1BFE80A10054F2BF /* IndexingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B02AAE1BFE80A10054F2BF /* IndexingTests.swift */; };
 		22B02AB01BFE80A10054F2BF /* IndexingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B02AAE1BFE80A10054F2BF /* IndexingTests.swift */; };
+		613F83811C1A4B070085E946 /* DoubleDataset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613F837C1C1A4B070085E946 /* DoubleDataset.swift */; };
+		613F83821C1A4B070085E946 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613F837D1C1A4B070085E946 /* Error.swift */; };
+		613F83831C1A4B070085E946 /* FloatDataset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613F837E1C1A4B070085E946 /* FloatDataset.swift */; };
+		613F83841C1A4B070085E946 /* IntDataset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613F837F1C1A4B070085E946 /* IntDataset.swift */; };
+		613F83851C1A4B070085E946 /* StringDataset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613F83801C1A4B070085E946 /* StringDataset.swift */; };
+		613F83861C1A4B100085E946 /* DoubleDataset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613F837C1C1A4B070085E946 /* DoubleDataset.swift */; };
+		613F83871C1A4B100085E946 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613F837D1C1A4B070085E946 /* Error.swift */; };
+		613F83881C1A4B100085E946 /* FloatDataset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613F837E1C1A4B070085E946 /* FloatDataset.swift */; };
+		613F83891C1A4B100085E946 /* IntDataset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613F837F1C1A4B070085E946 /* IntDataset.swift */; };
+		613F838A1C1A4B100085E946 /* StringDataset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613F83801C1A4B070085E946 /* StringDataset.swift */; };
 		615E67991C10D2D30030602D /* HDF5Kit.h in Headers */ = {isa = PBXBuildFile; fileRef = 61F61F0F1C10CA0B0063EE3A /* HDF5Kit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		615E679A1C10D2D90030602D /* Dataset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F61F0A1C10CA0B0063EE3A /* Dataset.swift */; };
 		615E679B1C10D2D90030602D /* Dataspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F61F0B1C10CA0B0063EE3A /* Dataspace.swift */; };
@@ -65,6 +75,11 @@
 /* Begin PBXFileReference section */
 		2241F9451BFE675900014748 /* HyperslabTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HyperslabTests.swift; sourceTree = "<group>"; };
 		22B02AAE1BFE80A10054F2BF /* IndexingTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IndexingTests.swift; sourceTree = "<group>"; };
+		613F837C1C1A4B070085E946 /* DoubleDataset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoubleDataset.swift; sourceTree = "<group>"; };
+		613F837D1C1A4B070085E946 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
+		613F837E1C1A4B070085E946 /* FloatDataset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatDataset.swift; sourceTree = "<group>"; };
+		613F837F1C1A4B070085E946 /* IntDataset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntDataset.swift; sourceTree = "<group>"; };
+		613F83801C1A4B070085E946 /* StringDataset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringDataset.swift; sourceTree = "<group>"; };
 		616B83AF1BDD5A8500B28545 /* GroupTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupTests.swift; sourceTree = "<group>"; };
 		616B83B21BDD5B9700B28545 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		617187831BFCF64200FB5D5F /* DataspaceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataspaceTests.swift; sourceTree = "<group>"; };
@@ -173,16 +188,21 @@
 		61F61F091C10CA0B0063EE3A /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				61F61F0F1C10CA0B0063EE3A /* HDF5Kit.h */,
 				61F61F0A1C10CA0B0063EE3A /* Dataset.swift */,
 				61F61F0B1C10CA0B0063EE3A /* Dataspace.swift */,
 				61F61F0C1C10CA0B0063EE3A /* Datatype.swift */,
+				613F837C1C1A4B070085E946 /* DoubleDataset.swift */,
+				613F837D1C1A4B070085E946 /* Error.swift */,
 				61F61F0D1C10CA0B0063EE3A /* File.swift */,
+				613F837E1C1A4B070085E946 /* FloatDataset.swift */,
 				61F61F0E1C10CA0B0063EE3A /* Group.swift */,
+				61F61F0F1C10CA0B0063EE3A /* HDF5Kit.h */,
 				61F61F101C10CA0B0063EE3A /* HyperslabIndex.swift */,
+				613F837F1C1A4B070085E946 /* IntDataset.swift */,
 				61F61F111C10CA0B0063EE3A /* NativeType.swift */,
 				61F61F121C10CA0B0063EE3A /* Object.swift */,
 				61F61F131C10CA0B0063EE3A /* PointerUtilities.swift */,
+				613F83801C1A4B070085E946 /* StringDataset.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -361,13 +381,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				613F83891C1A4B100085E946 /* IntDataset.swift in Sources */,
 				615E679C1C10D2D90030602D /* Datatype.swift in Sources */,
+				613F83881C1A4B100085E946 /* FloatDataset.swift in Sources */,
 				615E679F1C10D2D90030602D /* HyperslabIndex.swift in Sources */,
 				615E679A1C10D2D90030602D /* Dataset.swift in Sources */,
+				613F83871C1A4B100085E946 /* Error.swift in Sources */,
 				615E679E1C10D2D90030602D /* Group.swift in Sources */,
 				615E67A11C10D2D90030602D /* Object.swift in Sources */,
 				615E679D1C10D2D90030602D /* File.swift in Sources */,
 				615E67A01C10D2D90030602D /* NativeType.swift in Sources */,
+				613F83861C1A4B100085E946 /* DoubleDataset.swift in Sources */,
+				613F838A1C1A4B100085E946 /* StringDataset.swift in Sources */,
 				615E67A21C10D2D90030602D /* PointerUtilities.swift in Sources */,
 				615E679B1C10D2D90030602D /* Dataspace.swift in Sources */,
 			);
@@ -390,13 +415,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				613F83841C1A4B070085E946 /* IntDataset.swift in Sources */,
 				61F61F161C10CA0B0063EE3A /* Datatype.swift in Sources */,
+				613F83831C1A4B070085E946 /* FloatDataset.swift in Sources */,
 				61F61F1A1C10CA0B0063EE3A /* HyperslabIndex.swift in Sources */,
 				61F61F141C10CA0B0063EE3A /* Dataset.swift in Sources */,
+				613F83821C1A4B070085E946 /* Error.swift in Sources */,
 				61F61F181C10CA0B0063EE3A /* Group.swift in Sources */,
 				61F61F1C1C10CA0B0063EE3A /* Object.swift in Sources */,
 				61F61F171C10CA0B0063EE3A /* File.swift in Sources */,
 				61F61F1B1C10CA0B0063EE3A /* NativeType.swift in Sources */,
+				613F83811C1A4B070085E946 /* DoubleDataset.swift in Sources */,
+				613F83851C1A4B070085E946 /* StringDataset.swift in Sources */,
 				61F61F1D1C10CA0B0063EE3A /* PointerUtilities.swift in Sources */,
 				61F61F151C10CA0B0063EE3A /* Dataspace.swift in Sources */,
 			);

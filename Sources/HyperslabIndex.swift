@@ -24,7 +24,7 @@ public protocol HyperslabIndexType {
     var blockSize: Int { get }
 }
 
-public struct HyperslabIndex : HyperslabIndexType {
+public struct HyperslabIndex: HyperslabIndexType {
     static let all = Int.max - 1
 
     public var start: Int

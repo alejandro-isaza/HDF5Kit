@@ -16,20 +16,19 @@ class FileTests: XCTestCase {
         let file = createFile(filePath)
 
         let dims: [Int] = [Int(width), Int(height)]
-        let dataset = file.createAndWriteDataset(datasetName, dims: dims, data: data)
+        let dataset = try! file.createAndWriteDataset(datasetName, dims: dims, data: data)
         XCTAssertEqual(data.count, dataset.space.size)
-        XCTAssert(dataset.writeDouble(data))
+        try! dataset.write(data)
     }
 
-    func readData(filePath: String, inout data: [Double]) {
+    func readData(filePath: String) -> [Double]? {
         let file = openFile(filePath)
 
-        guard let dataset = file.openDataset(datasetName, type: Double.self) else {
+        guard let dataset = file.openDoubleDataset(datasetName) else {
             XCTFail("Failed to open Dataset")
-            return
+            return nil
         }
-        XCTAssertEqual(data.count, dataset.space.size)
-        XCTAssert(dataset.readDouble(&data))
+        return try! dataset.read()
     }
 
     func testCreateDataset() {
@@ -41,7 +40,7 @@ class FileTests: XCTestCase {
         XCTAssertEqual(Int(dataspace.size), width * height)
         XCTAssertEqual(dataspace.dims.map{ Int($0) }, dims)
 
-        let dataset = file.createDataset(datasetName, type: Double.self, dataspace: dataspace)!
+        let dataset = file.createDoubleDataset(datasetName, dataspace: dataspace)!
         XCTAssertNil(dataset.offset)
     }
 
@@ -51,8 +50,7 @@ class FileTests: XCTestCase {
         let expected = (0..<width*height).map{ _ in return Double(arc4random()) / Double(UINT32_MAX) }
         writeData(filePath, data: expected)
 
-        var actual = [Double](count: Int(width*height), repeatedValue: 0.0)
-        readData(filePath, data: &actual)
+        let actual = readData(filePath)!
 
         XCTAssertEqual(expected, actual)
     }
@@ -65,14 +63,13 @@ class FileTests: XCTestCase {
         writeData(filePath, data: expected)
 
         let file = openFile(filePath)
-        guard let dataset = file.openDataset(datasetName, type: Float.self) else {
+        guard let dataset = file.openFloatDataset(datasetName) else {
             XCTFail("Failed to open Dataset")
             return
         }
 
         // Read as Float
-        var actual = [Float](count: width*height, repeatedValue: 0.0)
-        XCTAssert(dataset.readFloat(&actual))
+        let actual = try! dataset.read()
 
         for i in 0..<expected.count {
             XCTAssertEqual(actual[i], Float(expected[i]))
