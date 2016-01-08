@@ -344,6 +344,7 @@
 		6185A9EE1BD33AE000CD5FC5 /* H5version.h in Headers */ = {isa = PBXBuildFile; fileRef = 61B3160B1BBDBA8E00F63C45 /* H5version.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6185A9EF1BD33B1000CD5FC5 /* H5Epubgen.h in Headers */ = {isa = PBXBuildFile; fileRef = 61B314FE1BBDBA8D00F63C45 /* H5Epubgen.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6185A9F11BD33B2D00CD5FC5 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6185A9F01BD33B2D00CD5FC5 /* libz.tbd */; };
+		6192A7121C403A62001E824E /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61BB7D671C19FC9500ED6532 /* Error.swift */; };
 		61B314A11BBDBA3100F63C45 /* HDF5Kit.h in Headers */ = {isa = PBXBuildFile; fileRef = 61B314A01BBDBA3100F63C45 /* HDF5Kit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		61B314A81BBDBA3200F63C45 /* HDF5Kit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61B3149D1BBDBA3100F63C45 /* HDF5Kit.framework */; };
 		61B314AD1BBDBA3200F63C45 /* FileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61B314AC1BBDBA3200F63C45 /* FileTests.swift */; };
@@ -1984,6 +1985,7 @@
 				6185A9881BD339FD00CD5FC5 /* H5Tenum.c in Sources */,
 				6185A9331BD339FD00CD5FC5 /* H5MFdbg.c in Sources */,
 				6185A93A1BD339FD00CD5FC5 /* H5Oalloc.c in Sources */,
+				6192A7121C403A62001E824E /* Error.swift in Sources */,
 				6185A9471BD339FD00CD5FC5 /* H5Ofill.c in Sources */,
 				6185A8F81BD339FD00CD5FC5 /* H5FScache.c in Sources */,
 				6185A9591BD339FD00CD5FC5 /* H5Pacpl.c in Sources */,
