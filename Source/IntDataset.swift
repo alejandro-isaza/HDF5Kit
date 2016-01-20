@@ -31,6 +31,25 @@ public class IntDataset: Dataset {
         try write(data, memSpace: Dataspace(dims: filespace.selectionDims), fileSpace: filespace)
     }
 
+    /// Append data to the table
+    public func append(data: [Int], dimensions: [Int], axis: Int = 0) throws {
+        let oldExtent = extent
+        extent[axis] += dimensions[axis]
+        for (index, dim) in dimensions.enumerate() {
+            if dim > oldExtent[index] {
+                extent[index] = dim
+            }
+        }
+
+        var start = [Int](count: oldExtent.count, repeatedValue: 0)
+        start[axis] = oldExtent[axis]
+
+        let fileSpace = space
+        fileSpace.select(start: start, stride: nil, count: dimensions, block: nil)
+
+        try write(data, memSpace: Dataspace(dims: dimensions), fileSpace: fileSpace)
+    }
+
     /// Read data using an optional memory Dataspace and an optional file Dataspace
     ///
     /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace

@@ -31,6 +31,20 @@ public class StringDataset: Dataset {
         try write(data, fileSpace: filespace)
     }
 
+    /// Append data to the table
+    public func append(data: [String], dimensions: [Int]) throws {
+        let oldExtent = extent
+        extent[0] += dimensions[0]
+
+        var start = [Int](count: oldExtent.count, repeatedValue: 0)
+        start[0] = oldExtent[0]
+
+        let fileSpace = space
+        fileSpace.select(start: start, stride: nil, count: dimensions, block: nil)
+
+        try write(data, fileSpace: fileSpace)
+    }
+
     /// Read string data using an optional file Dataspace
     public func read(fileSpace fileSpace: Dataspace? = nil) throws -> [String] {
         let size: Int
