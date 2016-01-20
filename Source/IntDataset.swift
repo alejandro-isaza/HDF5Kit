@@ -45,7 +45,9 @@ public class IntDataset: Dataset {
         }
 
         var result = [Int](count: size, repeatedValue: 0)
-        try readInto(&result, memSpace: memSpace, fileSpace: fileSpace)
+        try result.withUnsafeMutableBufferPointer() { (inout pointer: UnsafeMutableBufferPointer) in
+            try readInto(pointer.baseAddress, memSpace: memSpace, fileSpace: fileSpace)
+        }
         return result
     }
 
@@ -70,7 +72,9 @@ public class IntDataset: Dataset {
         }
         precondition(data.count == size, "Data size doesn't match Dataspace dimensions")
 
-        try writeFrom(UnsafePointer<Int>(data), memSpace: memSpace, fileSpace: fileSpace)
+        try data.withUnsafeBufferPointer() { bufferPointer in
+            try writeFrom(bufferPointer.baseAddress, memSpace: memSpace, fileSpace: fileSpace)
+        }
     }
 
     /// Write data using an optional memory Dataspace and an optional file Dataspace
