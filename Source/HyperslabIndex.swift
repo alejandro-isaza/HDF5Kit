@@ -83,7 +83,7 @@ extension Int: HyperslabIndexType {
 
 extension Range: HyperslabIndexType {
     public var start: Int {
-        return startIndex as! Int
+        return unsafeBitCast(startIndex, Int.self)
     }
 
     public var stride: Int {
@@ -91,10 +91,10 @@ extension Range: HyperslabIndexType {
     }
 
     public var blockCount: Int {
-        if (endIndex as! Int) == HyperslabIndex.all + 1 {
+        if unsafeBitCast(endIndex, Int.self) == HyperslabIndex.all + 1 {
             return HyperslabIndex.all
         }
-        return (endIndex as! Int) - start
+        return unsafeBitCast(endIndex, Int.self) - start
     }
 
     public var blockSize: Int {
