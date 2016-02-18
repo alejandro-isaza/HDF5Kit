@@ -25,7 +25,10 @@ public class Dataspace {
 
     /// Create a Dataspace
     public init(dims: [Int]) {
-        id = H5Screate_simple(Int32(dims.count), ptr(dims), nil)
+        let dims64 = dims.map({ hsize_t($0) })
+        id = dims64.withUnsafeBufferPointer { pointer in
+            return H5Screate_simple(Int32(dims.count), pointer.baseAddress, nil)
+        }
         guard id >= 0 else {
             fatalError("Failed to create Dataspace")
         }
@@ -34,7 +37,11 @@ public class Dataspace {
 
     /// Create a Dataspace for use in a chunked Dataset. No component of `maxDims` should be less than the corresponding element of `dims`. Elements of `maxDims` can have a value of -1, those dimension will have an unlimited size.
     public init(dims: [Int], maxDims: [Int]) {
-        id = H5Screate_simple(Int32(dims.count), ptr(dims), ptr(maxDims))
+        let dims64 = dims.map({ hsize_t($0) })
+        let maxDims64 = maxDims.map({ hsize_t($0) })
+        id = withExtendedLifetime((dims64, maxDims64)) {
+            return H5Screate_simple(Int32(dims.count), dims64, maxDims64)
+        }
         guard id >= 0 else {
             fatalError("Failed to create Dataspace")
         }
@@ -57,21 +64,25 @@ public class Dataspace {
     /// The size of each dimension in the Dataspace
     public var dims: [Int] {
         let rank = Int(H5Sget_simple_extent_ndims(id))
-        var dims = [Int](count: rank, repeatedValue: 0)
-        guard H5Sget_simple_extent_dims(id, ptr(&dims), nil) >= 0 else {
-            fatalError("Coulnd't get the dimensons of the Dataspace")
+        var dims = [hsize_t](count: rank, repeatedValue: 0)
+        dims.withUnsafeMutableBufferPointer { pointer in
+            guard H5Sget_simple_extent_dims(id, pointer.baseAddress, nil) >= 0 else {
+                fatalError("Coulnd't get the dimensons of the Dataspace")
+            }
         }
-        return dims
+        return dims.map({ Int($0) })
     }
 
     /// The maximum size of each dimension in the Dataspace
     public var maxDims: [Int] {
         let rank = Int(H5Sget_simple_extent_ndims(id))
-        var maxDims = [Int](count: rank, repeatedValue: 0)
-        guard H5Sget_simple_extent_dims(id, nil, ptr(&maxDims)) >= 0 else {
-            fatalError("Coulnd't get the dimensons of the Dataspace")
+        var maxDims = [hsize_t](count: rank, repeatedValue: 0)
+        maxDims.withUnsafeMutableBufferPointer { pointer in
+            guard H5Sget_simple_extent_dims(id, nil, pointer.baseAddress) >= 0 else {
+                fatalError("Coulnd't get the dimensons of the Dataspace")
+            }
         }
-        return maxDims
+        return maxDims.map({ Int($0) })
     }
 
     // MARK: - Selection
@@ -105,7 +116,13 @@ public class Dataspace {
     /// - parameter count:  Determines how many blocks to select from the dataspace, in each dimension.
     /// - parameter block:  Determines the size of the element block selected from the dataspace. If the block parameter is set to `nil`, the block size defaults to a single element in each dimension (as if each value in the block array were set to 1).
     public func select(start start: [Int], stride: [Int]?, count: [Int]?, block: [Int]?) {
-        H5Sselect_hyperslab(id, H5S_SELECT_SET, ptr(start), ptr(stride), ptr(count), ptr(block))
+        let start64 = start.map({ hsize_t($0) })
+        let stride64 = stride?.map({ hsize_t($0) })
+        let count64 = count?.map({ hsize_t($0) })
+        let block64 = block?.map({ hsize_t($0) })
+        withExtendedLifetime((start64, stride64, count64, block64)) {
+            H5Sselect_hyperslab(id, H5S_SELECT_SET, start64,  pointerOrNil(stride64), pointerOrNil(count64), pointerOrNil(block64))
+        }
         selectionDims = count ?? dims
     }
 
@@ -139,6 +156,16 @@ public class Dataspace {
 
     /// This function allows the same shaped selection to be moved to different locations within a dataspace without requiring it to be redefined.
     public func offset(offset: [Int]) {
-        H5Soffset_simple(id, ptr(offset))
+        let offset64 = offset.map({ hssize_t($0) })
+        offset64.withUnsafeBufferPointer { pointer in
+            H5Soffset_simple(id, pointer.baseAddress)
+        }
     }
+}
+
+func pointerOrNil(array: [hsize_t]?) -> UnsafePointer<hsize_t> {
+    if let array = array {
+        return UnsafePointer(array)
+    }
+    return nil
 }
