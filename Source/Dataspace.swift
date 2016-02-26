@@ -38,7 +38,7 @@ public class Dataspace {
     /// Create a Dataspace for use in a chunked Dataset. No component of `maxDims` should be less than the corresponding element of `dims`. Elements of `maxDims` can have a value of -1, those dimension will have an unlimited size.
     public init(dims: [Int], maxDims: [Int]) {
         let dims64 = dims.map({ hsize_t($0) })
-        let maxDims64 = maxDims.map({ hsize_t($0) })
+        let maxDims64 = maxDims.map({ unsafeBitCast($0, hsize_t.self) })
         id = withExtendedLifetime((dims64, maxDims64)) {
             return H5Screate_simple(Int32(dims.count), dims64, maxDims64)
         }
