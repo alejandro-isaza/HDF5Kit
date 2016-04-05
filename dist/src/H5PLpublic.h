@@ -43,7 +43,7 @@ extern "C" {
 
 /* plugin state */
 H5_DLL herr_t H5PLset_loading_state(unsigned int plugin_type);
-H5_DLL herr_t H5PLget_loading_state(unsigned int *plugin_type/*out*/);
+H5_DLL herr_t H5PLget_loading_state(unsigned int* plugin_type/*out*/);
 
 #ifdef __cplusplus
 }

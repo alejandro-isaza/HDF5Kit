@@ -24,7 +24,8 @@
  *-------------------------------------------------------------------------
  */
 
-#define H5O_PACKAGE		/*suppress error about including H5Opkg	  */
+#include "H5Omodule.h"          /* This source code file is part of the H5O module */
+
 
 #include "H5private.h"		/* Generic Functions			*/
 #include "H5Eprivate.h"		/* Error handling		  	*/
@@ -90,11 +91,11 @@ H5FL_DEFINE_STATIC(H5O_refcount_t);
  *-------------------------------------------------------------------------
  */
 static void *
-H5O_refcount_decode(H5F_t UNUSED *f, hid_t UNUSED dxpl_id, H5O_t UNUSED *open_oh,
-    unsigned UNUSED mesg_flags, unsigned UNUSED *ioflags, const uint8_t *p)
+H5O_refcount_decode(H5F_t H5_ATTR_UNUSED *f, hid_t H5_ATTR_UNUSED dxpl_id, H5O_t H5_ATTR_UNUSED *open_oh,
+    unsigned H5_ATTR_UNUSED mesg_flags, unsigned H5_ATTR_UNUSED *ioflags, const uint8_t *p)
 {
-    H5O_refcount_t *refcount = NULL;  /* Reference count */
-    void        *ret_value;     /* Return value */
+    H5O_refcount_t *refcount = NULL;    /* Reference count */
+    void *ret_value = NULL;             /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT
 
@@ -138,7 +139,7 @@ done:
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5O_refcount_encode(H5F_t UNUSED *f, hbool_t UNUSED disable_shared, uint8_t *p, const void *_mesg)
+H5O_refcount_encode(H5F_t H5_ATTR_UNUSED *f, hbool_t H5_ATTR_UNUSED disable_shared, uint8_t *p, const void *_mesg)
 {
     const H5O_refcount_t   *refcount = (const H5O_refcount_t *)_mesg;
 
@@ -177,9 +178,9 @@ H5O_refcount_encode(H5F_t UNUSED *f, hbool_t UNUSED disable_shared, uint8_t *p, 
 static void *
 H5O_refcount_copy(const void *_mesg, void *_dest)
 {
-    const H5O_refcount_t   *refcount = (const H5O_refcount_t *)_mesg;
-    H5O_refcount_t         *dest = (H5O_refcount_t *) _dest;
-    void                *ret_value;     /* Return value */
+    const H5O_refcount_t    *refcount = (const H5O_refcount_t *)_mesg;
+    H5O_refcount_t          *dest = (H5O_refcount_t *) _dest;
+    void                    *ret_value = NULL;  /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT
 
@@ -216,8 +217,8 @@ done:
  *-------------------------------------------------------------------------
  */
 static size_t
-H5O_refcount_size(const H5F_t UNUSED *f, hbool_t UNUSED disable_shared,
-    const void UNUSED *_mesg)
+H5O_refcount_size(const H5F_t H5_ATTR_UNUSED *f, hbool_t H5_ATTR_UNUSED disable_shared,
+    const void H5_ATTR_UNUSED *_mesg)
 {
     size_t ret_value;   /* Return value */
 
@@ -271,8 +272,8 @@ H5O_refcount_free(void *mesg)
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5O_refcount_pre_copy_file(H5F_t UNUSED *file_src, const void UNUSED *native_src,
-    hbool_t *deleted, const H5O_copy_t UNUSED *cpy_info, void UNUSED *udata)
+H5O_refcount_pre_copy_file(H5F_t H5_ATTR_UNUSED *file_src, const void H5_ATTR_UNUSED *native_src,
+    hbool_t *deleted, const H5O_copy_t H5_ATTR_UNUSED *cpy_info, void H5_ATTR_UNUSED *udata)
 {
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -303,7 +304,7 @@ H5O_refcount_pre_copy_file(H5F_t UNUSED *file_src, const void UNUSED *native_src
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5O_refcount_debug(H5F_t UNUSED *f, hid_t UNUSED dxpl_id, const void *_mesg, FILE * stream,
+H5O_refcount_debug(H5F_t H5_ATTR_UNUSED *f, hid_t H5_ATTR_UNUSED dxpl_id, const void *_mesg, FILE * stream,
 	       int indent, int fwidth)
 {
     const H5O_refcount_t       *refcount = (const H5O_refcount_t *) _mesg;

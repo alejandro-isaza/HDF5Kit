@@ -31,10 +31,7 @@
 /* Module Setup */
 /****************/
 
-#define H5P_PACKAGE		/*suppress error about including H5Ppkg   */
-
-/* Interface initialization */
-#define H5_INTERFACE_INIT_FUNC	H5P__init_deprec_interface
+#include "H5Pmodule.h"          /* This source code file is part of the H5P module */
 
 
 /***********/
@@ -81,51 +78,6 @@
 /* Local Variables */
 /*******************/
 
-
-
-/*--------------------------------------------------------------------------
-NAME
-   H5P__init_deprec_interface -- Initialize interface-specific information
-USAGE
-    herr_t H5P__init_deprec_interface()
-RETURNS
-    Non-negative on success/Negative on failure
-DESCRIPTION
-    Initializes any interface-specific data or routines.  (Just calls
-    H5P_init() currently).
-
---------------------------------------------------------------------------*/
-static herr_t
-H5P__init_deprec_interface(void)
-{
-    FUNC_ENTER_STATIC_NOERR
-
-    FUNC_LEAVE_NOAPI(H5P_init())
-} /* H5P__init_deprec_interface() */
-
-
-/*--------------------------------------------------------------------------
-NAME
-   H5P__term_deprec_interface -- Terminate interface
-USAGE
-    herr_t H5P__term_deprec_interface()
-RETURNS
-    Non-negative on success/Negative on failure
-DESCRIPTION
-    Terminates interface.  (Just resets H5_interface_initialize_g
-    currently).
-
---------------------------------------------------------------------------*/
-herr_t
-H5P__term_deprec_interface(void)
-{
-    FUNC_ENTER_PACKAGE_NOERR
-
-    /* Mark closed */
-    H5_interface_initialize_g = 0;
-
-    FUNC_LEAVE_NOAPI(0)
-} /* H5P__term_deprec_interface() */
 
 #ifndef H5_NO_DEPRECATED_SYMBOLS
 
@@ -292,7 +244,7 @@ H5Pregister1(hid_t cls_id, const char *name, size_t size, void *def_value,
 
     /* Create the new property list class */
     orig_pclass = pclass;
-    if((ret_value = H5P_register(&pclass, name, size, def_value, prp_create, prp_set, prp_get, prp_delete, prp_copy, NULL, prp_close)) < 0)
+    if((ret_value = H5P_register(&pclass, name, size, def_value, prp_create, prp_set, prp_get, NULL, NULL, prp_delete, prp_copy, NULL, prp_close)) < 0)
         HGOTO_ERROR(H5E_PLIST, H5E_CANTREGISTER, FAIL, "unable to register property in class");
 
     /* Check if the property class changed and needs to be substituted in the ID */
@@ -475,11 +427,66 @@ H5Pinsert1(hid_t plist_id, const char *name, size_t size, void *value,
         HGOTO_ERROR(H5E_ARGS, H5E_BADVALUE, FAIL, "properties >0 size must have default")
 
     /* Create the new property list class */
-    if((ret_value = H5P_insert(plist, name, size, value, prp_set, prp_get, prp_delete, prp_copy, NULL, prp_close)) < 0)
+    if((ret_value = H5P_insert(plist, name, size, value, prp_set, prp_get,
+            NULL, NULL, prp_delete, prp_copy, NULL, prp_close)) < 0)
         HGOTO_ERROR(H5E_PLIST, H5E_CANTREGISTER, FAIL, "unable to register property in plist")
 
 done:
     FUNC_LEAVE_API(ret_value)
 }   /* H5Pinsert1() */
+
+
+/*-------------------------------------------------------------------------
+ * Function:	H5Pget_version
+ *
+ * Purpose:	Retrieves version information for various parts of a file.
+ *
+ *		SUPER:		The file super block.
+ *		FREELIST:	The global free list.
+ *		STAB:		The root symbol table entry.
+ *		SHHDR:		Shared object headers.
+ *
+ *		Any (or even all) of the output arguments can be null
+ *		pointers.
+ *
+ * Return:	Success:	Non-negative, version information is returned
+ *				through the arguments.
+ *
+ *		Failure:	Negative
+ *
+ * Programmer:	Robb Matzke
+ *		Wednesday, January  7, 1998
+ *
+ *-------------------------------------------------------------------------
+ */
+herr_t
+H5Pget_version(hid_t plist_id, unsigned *super/*out*/, unsigned *freelist/*out*/,
+    unsigned *stab/*out*/, unsigned *shhdr/*out*/)
+{
+    H5P_genplist_t *plist;     	/* Property list pointer */
+    herr_t ret_value = SUCCEED;	/* Return value */
+
+    FUNC_ENTER_API(FAIL)
+    H5TRACE5("e", "ixxxx", plist_id, super, freelist, stab, shhdr);
+
+    /* Get the plist structure */
+    if(NULL == (plist = H5P_object_verify(plist_id,H5P_FILE_CREATE)))
+        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+
+    /* Get values */
+    if(super)
+        if(H5P_get(plist, H5F_CRT_SUPER_VERS_NAME, super) < 0)
+            HGOTO_ERROR(H5E_PLIST, H5E_CANTGET, FAIL, "can't get superblock version")
+    if(freelist)
+        *freelist = HDF5_FREESPACE_VERSION;     /* (hard-wired) */
+    if(stab)
+        *stab = HDF5_OBJECTDIR_VERSION;         /* (hard-wired) */
+    if(shhdr)
+        *shhdr = HDF5_SHAREDHEADER_VERSION;     /* (hard-wired) */
+
+done:
+    FUNC_LEAVE_API(ret_value)
+} /* end H5Pget_version() */
+
 #endif /* H5_NO_DEPRECATED_SYMBOLS */
 

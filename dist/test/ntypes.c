@@ -2188,7 +2188,7 @@ test_refer_dtype(hid_t file)
         TEST_ERROR;
 
     /* Open datatype object */
-    if((tid1 = H5Rdereference(dataset, H5R_OBJECT, rbuf)) < 0)
+    if((tid1 = H5Rdereference2(dataset, H5P_DEFAULT, H5R_OBJECT, rbuf)) < 0)
         TEST_ERROR;
 
     /* Verify correct datatype */
@@ -2373,7 +2373,7 @@ test_refer_dtype2(hid_t file)
         TEST_ERROR;
 
     /* Try to open objects */
-    if((dset2 = H5Rdereference(dset1, H5R_DATASET_REGION, &rbuf)) < 0)
+    if((dset2 = H5Rdereference2(dset1, H5P_DEFAULT, H5R_DATASET_REGION, &rbuf)) < 0)
         TEST_ERROR;
 
     /* Check what H5Rget_obj_type2 function returns */

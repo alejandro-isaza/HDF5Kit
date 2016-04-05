@@ -23,7 +23,7 @@
  *
  *-------------------------------------------------------------------------
  */
-#define H5G_PACKAGE		/*suppress error about including H5Gpkg	  */
+#include "H5Gmodule.h"          /* This source code file is part of the H5G module */
 
 
 /* Packages needed by this file... */
@@ -83,7 +83,7 @@ static herr_t H5G_compact_build_table(const H5O_loc_t *oloc, hid_t dxpl_id,
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5G_compact_build_table_cb(const void *_mesg, unsigned UNUSED idx, void *_udata)
+H5G_compact_build_table_cb(const void *_mesg, unsigned H5_ATTR_UNUSED idx, void *_udata)
 {
     const H5O_link_t *lnk = (const H5O_link_t *)_mesg;  /* Pointer to link */
     H5G_iter_bt_t *udata = (H5G_iter_bt_t *)_udata;     /* 'User data' passed in */
@@ -224,8 +224,8 @@ H5G__compact_get_name_by_idx(const H5O_loc_t *oloc, hid_t dxpl_id,
     const H5O_linfo_t *linfo, H5_index_t idx_type, H5_iter_order_t order,
     hsize_t idx, char* name, size_t size)
 {
-    H5G_link_table_t    ltable = {0, NULL};         /* Link table */
-    ssize_t		ret_value;      /* Return value */
+    H5G_link_table_t    ltable = {0, NULL};     /* Link table */
+    ssize_t		ret_value = -1;         /* Return value */
 
     FUNC_ENTER_PACKAGE
 
@@ -274,7 +274,7 @@ done:
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5G_compact_remove_common_cb(const void *_mesg, unsigned UNUSED idx, void *_udata)
+H5G_compact_remove_common_cb(const void *_mesg, unsigned H5_ATTR_UNUSED idx, void *_udata)
 {
     const H5O_link_t *lnk = (const H5O_link_t *)_mesg;  /* Pointer to link */
     H5G_iter_rm_t *udata = (H5G_iter_rm_t *)_udata;     /* 'User data' passed in */
@@ -411,7 +411,7 @@ H5G__compact_iterate(const H5O_loc_t *oloc, hid_t dxpl_id, const H5O_linfo_t *li
     H5G_lib_iterate_t op, void *op_data)
 {
     H5G_link_table_t    ltable = {0, NULL};     /* Link table */
-    herr_t		ret_value;              /* Return value */
+    herr_t ret_value = FAIL;    /* Return value */
 
     FUNC_ENTER_PACKAGE
 
@@ -452,7 +452,7 @@ done:
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5G_compact_lookup_cb(const void *_mesg, unsigned UNUSED idx, void *_udata)
+H5G_compact_lookup_cb(const void *_mesg, unsigned H5_ATTR_UNUSED idx, void *_udata)
 {
     const H5O_link_t *lnk = (const H5O_link_t *)_mesg;  /* Pointer to link */
     H5G_iter_lkp_t *udata = (H5G_iter_lkp_t *)_udata;     /* 'User data' passed in */
@@ -503,7 +503,7 @@ H5G__compact_lookup(const H5O_loc_t *oloc, const char *name, H5O_link_t *lnk,
 {
     H5G_iter_lkp_t udata;               /* User data for iteration callback */
     H5O_mesg_operator_t op;             /* Message operator */
-    htri_t     ret_value;               /* Return value */
+    htri_t     ret_value = FAIL;        /* Return value */
 
     FUNC_ENTER_PACKAGE
 
@@ -598,7 +598,7 @@ H5G__compact_get_type_by_idx(H5O_loc_t *oloc, hid_t dxpl_id, const H5O_linfo_t *
     hsize_t idx)
 {
     H5G_link_table_t    ltable = {0, NULL};         /* Link table */
-    H5G_obj_t		ret_value;      /* Return value */
+    H5G_obj_t		ret_value = H5G_UNKNOWN;    /* Return value */
 
     FUNC_ENTER_PACKAGE
 

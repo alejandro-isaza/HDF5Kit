@@ -21,7 +21,7 @@
  *		the H5B package.  Source files outside the H5B package should
  *		include H5Bprivate.h instead.
  */
-#ifndef H5B_PACKAGE
+#if !(defined H5B_FRIEND || defined H5B_MODULE)
 #error "Do not include this file outside the H5B package!"
 #endif
 
@@ -52,7 +52,7 @@
 typedef struct H5B_t {
     H5AC_info_t        cache_info;     /* Information for H5AC cache functions */
                                         /* _must_ be first field in structure */
-    H5RC_t		*rc_shared;	/*ref-counted shared info	     */
+    H5UC_t		*rc_shared;	/*ref-counted shared info	     */
     unsigned		level;		/*node level			     */
     unsigned		nchildren;	/*number of child pointers	     */
     haddr_t		left;		/*address of left sibling	     */
@@ -65,7 +65,7 @@ typedef struct H5B_t {
 typedef struct H5B_cache_ud_t {
     H5F_t *f;                           /* File that B-tree node is within   */
     const struct H5B_class_t *type;     /* Type of tree			     */
-    H5RC_t *rc_shared;                  /* Ref-counted shared info	     */
+    H5UC_t *rc_shared;                  /* Ref-counted shared info	     */
 } H5B_cache_ud_t;
 
 /*****************************/
@@ -88,9 +88,9 @@ H5FL_EXTERN(H5B_t);
 /******************************/
 /* Package Private Prototypes */
 /******************************/
-H5_DLL herr_t H5B_node_dest(H5B_t *bt);
+H5_DLL herr_t H5B__node_dest(H5B_t *bt);
 #ifdef H5B_DEBUG
-herr_t H5B_assert(H5F_t *f, hid_t dxpl_id, haddr_t addr, const H5B_class_t *type,
+herr_t H5B__assert(H5F_t *f, hid_t dxpl_id, haddr_t addr, const H5B_class_t *type,
 			 void *udata);
 #endif
 

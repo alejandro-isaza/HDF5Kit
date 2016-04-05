@@ -78,6 +78,8 @@ extern "C" {
  * open_trace_file: Boolean field indicating whether the trace_file_name
  * 	field should be used to open a trace file for the cache.
  *
+ *      *** DEPRECATED *** Use H5Fstart/stop logging functions instead
+ *
  * 	The trace file is a debuging feature that allow the capture of
  * 	top level metadata cache requests for purposes of debugging and/or
  * 	optimization.  This field should normally be set to FALSE, as
@@ -91,12 +93,16 @@ extern "C" {
  * close_trace_file: Boolean field indicating whether the current trace
  * 	file (if any) should be closed.
  *
+ *      *** DEPRECATED *** Use H5Fstart/stop logging functions instead
+ *
  * 	See the above comments on the open_trace_file field.  This field
  * 	should be set to FALSE unless there is an open trace file on the
  * 	cache that you wish to close.
  *
  * trace_file_name: Full path of the trace file to be opened if the
  * 	open_trace_file field is TRUE.
+ *
+ *      *** DEPRECATED *** Use H5Fstart/stop logging functions instead
  *
  * 	In the parallel case, an ascii representation of the mpi rank of
  * 	the process will be appended to the file name to yield a unique
@@ -496,7 +502,7 @@ typedef struct H5AC_cache_config_t
 
 
     /* parallel configuration fields: */
-    int                      dirty_bytes_threshold;
+    size_t                   dirty_bytes_threshold;
     int                      metadata_write_strategy;
 
 } H5AC_cache_config_t;
@@ -506,3 +512,4 @@ typedef struct H5AC_cache_config_t
 }
 #endif
 #endif
+

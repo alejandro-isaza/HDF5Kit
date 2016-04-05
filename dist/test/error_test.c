@@ -314,7 +314,7 @@ error:
  *-------------------------------------------------------------------------
  */
 static herr_t
-long_desc_cb(unsigned UNUSED n, const H5E_error2_t *err_desc, void *client_data)
+long_desc_cb(unsigned H5_ATTR_UNUSED n, const H5E_error2_t *err_desc, void *client_data)
 {
     char *real_desc  = (char *)client_data;
 
@@ -498,7 +498,7 @@ test_create(void)
     if(err_num != 0) TEST_ERROR
 
     /* Push an error with a long description */
-    if(H5Epush(estack_id, __FILE__, err_func, __LINE__, ERR_CLS, ERR_MAJ_TEST, ERR_MIN_SUBROUTINE, err_msg) < 0) TEST_ERROR;
+    if(H5Epush(estack_id, __FILE__, err_func, __LINE__, ERR_CLS, ERR_MAJ_TEST, ERR_MIN_SUBROUTINE, "%s", err_msg) < 0) TEST_ERROR;
 
     /* Check the number of errors on stack */
     err_num = H5Eget_num(estack_id);
@@ -543,7 +543,7 @@ test_copy(void)
     herr_t      ret;                 /* Generic return value */
 
     /* Push an error with a long description */
-    if(H5Epush(H5E_DEFAULT, __FILE__, err_func, __LINE__, ERR_CLS, ERR_MAJ_TEST, ERR_MIN_SUBROUTINE, err_msg) < 0) TEST_ERROR;
+    if(H5Epush(H5E_DEFAULT, __FILE__, err_func, __LINE__, ERR_CLS, ERR_MAJ_TEST, ERR_MIN_SUBROUTINE, "%s", err_msg) < 0) TEST_ERROR;
 
     /* Check the number of errors on stack */
     err_num = H5Eget_num(H5E_DEFAULT);
@@ -756,7 +756,7 @@ main(void)
     if(test_filter_error(filename) < 0)
         TEST_ERROR;
 
-    h5_cleanup(FILENAME, fapl);
+    h5_clean_files(FILENAME, fapl);
 
     HDfprintf(stderr, "\nAll error API tests passed.\n");
     return 0;

@@ -83,7 +83,7 @@ int iter_strcmp(const void *s1, const void *s2)
 **
 ****************************************************************/
 static herr_t
-liter_cb(hid_t UNUSED group, const char *name, const H5L_info_t UNUSED *link_info,
+liter_cb(hid_t H5_ATTR_UNUSED group, const char *name, const H5L_info_t H5_ATTR_UNUSED *link_info,
     void *op_data)
 {
     iter_info *info = (iter_info *)op_data;
@@ -344,7 +344,7 @@ test_iter_group(hid_t fapl, hbool_t new_format)
 **
 ****************************************************************/
 herr_t
-aiter_cb(hid_t UNUSED group, const char *name, const H5A_info_t UNUSED *ainfo,
+aiter_cb(hid_t H5_ATTR_UNUSED group, const char *name, const H5A_info_t H5_ATTR_UNUSED *ainfo,
     void *op_data)
 {
     iter_info *info = (iter_info *)op_data;
@@ -538,7 +538,7 @@ int iter_strcmp2(const void *s1, const void *s2)
 **
 ****************************************************************/
 static herr_t
-liter_cb2(hid_t loc_id, const char *name, const H5L_info_t UNUSED *link_info,
+liter_cb2(hid_t loc_id, const char *name, const H5L_info_t H5_ATTR_UNUSED *link_info,
     void *opdata)
 {
     const iter_info *test_info = (const iter_info *)opdata;
@@ -704,7 +704,7 @@ static void test_grp_memb_funcs(hid_t fapl)
     char dataset_name[NAMELEN];  /* dataset name */
     ssize_t name_len;       /* Length of object's name */
     H5G_info_t ginfo;       /* Buffer for querying object's info */
-    herr_t ret;		    /* Generic return value */
+    herr_t ret = SUCCEED;	/* Generic return value */
 
     /* Output message about test being performed */
     MESSAGE(5, ("Testing Group Member Information Functionality\n"));
@@ -919,7 +919,7 @@ void
 test_iterate(void)
 {
     hid_t fapl, fapl2;          /* File access property lists */
-    hbool_t new_format;         /* Whether to use the new format or not */
+    unsigned new_format;        /* Whether to use the new format or not */
     herr_t ret;		        /* Generic return value */
 
     /* Output message about test being performed */

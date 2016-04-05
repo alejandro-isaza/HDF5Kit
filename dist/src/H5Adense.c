@@ -29,8 +29,8 @@
 /* Module Setup */
 /****************/
 
-#define H5A_PACKAGE		/*suppress error about including H5Apkg  */
-#define H5O_PACKAGE		/*suppress error about including H5Opkg  */
+#include "H5Amodule.h"          /* This source code file is part of the H5A module */
+#define H5O_FRIEND		/*suppress error about including H5Opkg  */
 
 
 /***********/
@@ -339,7 +339,8 @@ H5A__dense_fnd_cb(const H5A_t *attr, hbool_t *took_ownership, void *_user_attr)
  *-------------------------------------------------------------------------
  */
 H5A_t *
-H5A_dense_open(H5F_t *f, hid_t dxpl_id, const H5O_ainfo_t *ainfo, const char *name)
+H5A_dense_open(H5F_t *f, hid_t dxpl_id, const H5O_ainfo_t *ainfo,
+    const char *name)
 {
     H5A_bt2_ud_common_t udata;          /* User data for v2 B-tree modify */
     H5HF_t *fheap = NULL;               /* Fractal heap handle */
@@ -538,7 +539,7 @@ H5A_dense_insert(H5F_t *f, hid_t dxpl_id, const H5O_ainfo_t *ainfo, H5A_t *attr)
     udata.common.shared_fheap = shared_fheap;
     udata.common.name = attr->shared->name;
     udata.common.name_hash = H5_checksum_lookup3(attr->shared->name, HDstrlen(attr->shared->name), 0);
-    H5_ASSIGN_OVERFLOW(udata.common.flags, mesg_flags, unsigned, uint8_t);
+    H5_CHECKED_ASSIGN(udata.common.flags, uint8_t, mesg_flags, unsigned);
     udata.common.corder = attr->shared->crt_idx;
     udata.common.found_op = NULL;
     udata.common.found_op_data = NULL;
@@ -845,7 +846,7 @@ done:
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5A__dense_copy_fh_cb(const void *obj, size_t UNUSED obj_len, void *_udata)
+H5A__dense_copy_fh_cb(const void *obj, size_t H5_ATTR_UNUSED obj_len, void *_udata)
 {
     H5A_fh_ud_cp_t *udata = (H5A_fh_ud_cp_t *)_udata;       /* User data for fractal heap 'op' callback */
     herr_t ret_value = SUCCEED;   /* Return value */
@@ -888,8 +889,8 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5A_dense_rename(H5F_t *f, hid_t dxpl_id, const H5O_ainfo_t *ainfo, const char *old_name,
-    const char *new_name)
+H5A_dense_rename(H5F_t *f, hid_t dxpl_id, const H5O_ainfo_t *ainfo,
+    const char *old_name, const char *new_name)
 {
     H5A_bt2_ud_common_t udata;          /* User data for v2 B-tree modify */
     H5HF_t *fheap = NULL;               /* Fractal heap handle */
@@ -1082,7 +1083,7 @@ H5A__dense_iterate_bt2_cb(const void *_record, void *_bt2_udata)
                 H5A_info_t ainfo;               /* Info for attribute */
 
                 /* Get the attribute information */
-                if(H5A_get_info(fh_udata.attr, &ainfo) < 0)
+                if(H5A__get_info(fh_udata.attr, &ainfo) < 0)
                     HGOTO_ERROR(H5E_ATTR, H5E_CANTGET, H5_ITER_ERROR, "unable to get attribute info")
 
                 /* Make the application callback */
@@ -1140,8 +1141,9 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5A_dense_iterate(H5F_t *f, hid_t dxpl_id, hid_t loc_id, const H5O_ainfo_t *ainfo,
-    H5_index_t idx_type, H5_iter_order_t order, hsize_t skip, hsize_t *last_attr,
+H5A_dense_iterate(H5F_t *f, hid_t dxpl_id, hid_t loc_id,
+    const H5O_ainfo_t *ainfo, H5_index_t idx_type, H5_iter_order_t order,
+    hsize_t skip, hsize_t *last_attr,
     const H5A_attr_iter_op_t *attr_op, void *op_data)
 {
     H5HF_t *fheap = NULL;               /* Fractal heap handle */
@@ -1149,7 +1151,7 @@ H5A_dense_iterate(H5F_t *f, hid_t dxpl_id, hid_t loc_id, const H5O_ainfo_t *ainf
     H5A_attr_table_t atable = {0, NULL};        /* Table of attributes */
     H5B2_t *bt2 = NULL;                 /* v2 B-tree handle for index */
     haddr_t bt2_addr;                   /* Address of v2 B-tree to use for lookup */
-    herr_t ret_value;                   /* Return value */
+    herr_t ret_value = FAIL;            /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
 
@@ -1342,7 +1344,8 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5A_dense_remove(H5F_t *f, hid_t dxpl_id, const H5O_ainfo_t *ainfo, const char *name)
+H5A_dense_remove(H5F_t *f, hid_t dxpl_id, const H5O_ainfo_t *ainfo,
+    const char *name)
 {
     H5A_bt2_ud_rm_t udata;              /* User data for v2 B-tree record removal */
     H5HF_t *fheap = NULL;               /* Fractal heap handle */
@@ -1692,7 +1695,8 @@ done:
  *-------------------------------------------------------------------------
  */
 htri_t
-H5A_dense_exists(H5F_t *f, hid_t dxpl_id, const H5O_ainfo_t *ainfo, const char *name)
+H5A_dense_exists(H5F_t *f, hid_t dxpl_id, const H5O_ainfo_t *ainfo,
+    const char *name)
 {
     H5A_bt2_ud_common_t udata;          /* User data for v2 B-tree modify */
     H5HF_t *fheap = NULL;               /* Fractal heap handle */
@@ -1701,7 +1705,7 @@ H5A_dense_exists(H5F_t *f, hid_t dxpl_id, const H5O_ainfo_t *ainfo, const char *
     htri_t attr_sharable;               /* Flag indicating attributes are sharable */
     htri_t ret_value = TRUE;            /* Return value */
 
-    FUNC_ENTER_NOAPI(NULL)
+    FUNC_ENTER_NOAPI(FAIL)
 
     /*
      * Check arguments.

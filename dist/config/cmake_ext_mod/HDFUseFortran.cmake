@@ -3,7 +3,7 @@
 #
 #-------------------------------------------------------------------------------
 ENABLE_LANGUAGE (Fortran)
-  
+
 #-----------------------------------------------------------------------------
 # Detect name mangling convention used between Fortran and C
 #-----------------------------------------------------------------------------
@@ -12,7 +12,6 @@ FortranCInterface_HEADER (
     ${CMAKE_BINARY_DIR}/FCMangle.h
     MACRO_NAMESPACE "H5_FC_"
     SYMBOL_NAMESPACE "H5_FC_"
-    SYMBOLS mysub mymod:my_sub
 )
 
 file (STRINGS ${CMAKE_BINARY_DIR}/FCMangle.h CONTENTS REGEX "H5_FC_GLOBAL\\(.*,.*\\) +(.*)")
@@ -28,7 +27,6 @@ set (H5_FC_FUNC_ "H5_FC_FUNC_(name,NAME) ${CMAKE_MATCH_1}")
 # so this one is used for a sizeof test.
 #-----------------------------------------------------------------------------
 MACRO (CHECK_FORTRAN_FEATURE FUNCTION CODE VARIABLE)
-  if (NOT DEFINED ${VARIABLE})
     message (STATUS "Testing Fortran ${FUNCTION}")
     if (CMAKE_REQUIRED_LIBRARIES)
       set (CHECK_FUNCTION_EXISTS_ADD_LIBRARIES
@@ -37,12 +35,12 @@ MACRO (CHECK_FORTRAN_FEATURE FUNCTION CODE VARIABLE)
       set (CHECK_FUNCTION_EXISTS_ADD_LIBRARIES)
     endif (CMAKE_REQUIRED_LIBRARIES)
     file (WRITE
-        ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/testFortranCompiler.f
+        ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/testFortranCompiler.f90
         "${CODE}"
     )
-    TRY_COMPILE (${VARIABLE}
+    TRY_COMPILE (RESULT_VAR
         ${CMAKE_BINARY_DIR}
-        ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/testFortranCompiler.f
+        ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/testFortranCompiler.f90
         CMAKE_FLAGS "${CHECK_FUNCTION_EXISTS_ADD_LIBRARIES}"
         OUTPUT_VARIABLE OUTPUT
     )
@@ -51,21 +49,21 @@ MACRO (CHECK_FORTRAN_FEATURE FUNCTION CODE VARIABLE)
 #    message ( "Test result ${OUTPUT}")
 #    message ( "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ")
 
-    if (${VARIABLE})
+    if (${RESULT_VAR})
       set (${VARIABLE} 1 CACHE INTERNAL "Have Fortran function ${FUNCTION}")
       message (STATUS "Testing Fortran ${FUNCTION} - OK")
       file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
           "Determining if the Fortran ${FUNCTION} exists passed with the following output:\n"
           "${OUTPUT}\n\n"
       )
-    else (${VARIABLE})
+    else ()
       message (STATUS "Testing Fortran ${FUNCTION} - Fail")
-      set (${VARIABLE} "" CACHE INTERNAL "Have Fortran function ${FUNCTION}")
+      set (${VARIABLE} 0 CACHE INTERNAL "Have Fortran function ${FUNCTION}")
       file (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log
           "Determining if the Fortran ${FUNCTION} exists failed with the following output:\n"
           "${OUTPUT}\n\n")
-    endif (${VARIABLE})
-  endif (NOT DEFINED ${VARIABLE})
+    endif ()
+
 ENDMACRO (CHECK_FORTRAN_FEATURE)
 
 #-----------------------------------------------------------------------------
@@ -77,6 +75,7 @@ ENDMACRO (CHECK_FORTRAN_FEATURE)
 #-----------------------------------------------------------------------------
 
 # Check for Non-standard extension intrinsic function SIZEOF
+set(FORTRAN_HAVE_SIZEOF FALSE)
 CHECK_FORTRAN_FEATURE(sizeof
   "
        PROGRAM main
@@ -87,6 +86,7 @@ CHECK_FORTRAN_FEATURE(sizeof
 )
 
 # Check for F2008 standard intrinsic function C_SIZEOF
+set(FORTRAN_HAVE_C_SIZEOF FALSE)
 CHECK_FORTRAN_FEATURE(c_sizeof
   "
        PROGRAM main
@@ -111,7 +111,18 @@ CHECK_FORTRAN_FEATURE(storage_size
   FORTRAN_HAVE_STORAGE_SIZE
 )
 
+# Check for F2008 standard intrinsic module "ISO_FORTRAN_ENV"
+set(HAVE_ISO_FORTRAN_ENV FALSE)
+CHECK_FORTRAN_FEATURE(ISO_FORTRAN_ENV
+  "
+       PROGRAM main
+         USE, INTRINSIC :: ISO_FORTRAN_ENV
+       END PROGRAM
+  "
+  HAVE_ISO_FORTRAN_ENV
+)
 
+set(FORTRAN_DEFAULT_REAL_NOT_DOUBLE FALSE)
 CHECK_FORTRAN_FEATURE(RealIsNotDouble
   "
        MODULE type_mod
@@ -141,6 +152,7 @@ CHECK_FORTRAN_FEATURE(RealIsNotDouble
 #-----------------------------------------------------------------------------
 # Checks if the ISO_C_BINDING module meets all the requirements
 #-----------------------------------------------------------------------------
+set(FORTRAN_HAVE_ISO_C_BINDING FALSE)
 CHECK_FORTRAN_FEATURE(iso_c_binding
   "
        PROGRAM main
@@ -148,7 +160,7 @@ CHECK_FORTRAN_FEATURE(iso_c_binding
             IMPLICIT NONE
             TYPE(C_PTR) :: ptr
             TYPE(C_FUNPTR) :: funptr
-            INTEGER(C_INT64_T) :: c_int64_type 
+            INTEGER(C_INT64_T) :: c_int64_type
             CHARACTER(LEN=80, KIND=c_char), TARGET :: ichr
             ptr = C_LOC(ichr(1:1))
        END PROGRAM

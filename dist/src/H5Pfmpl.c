@@ -27,7 +27,8 @@
 /****************/
 /* Module Setup */
 /****************/
-#define H5P_PACKAGE		/*suppress error about including H5Ppkg	  */
+
+#include "H5Pmodule.h"          /* This source code file is part of the H5P module */
 
 
 /***********/
@@ -97,6 +98,14 @@ const H5P_libclass_t H5P_CLS_FMNT[1] = {{
 /*****************************/
 
 
+/*******************/
+/* Local Variables */
+/*******************/
+
+/* Property value defaults */
+static const hbool_t H5F_def_local_g = H5F_MNT_SYM_LOCAL_DEF;      /* Whether symlinks are local to file */
+
+
 
 /*-------------------------------------------------------------------------
  * Function:    H5P_fmnt_reg_prop
@@ -112,14 +121,14 @@ const H5P_libclass_t H5P_CLS_FMNT[1] = {{
 static herr_t
 H5P_fmnt_reg_prop(H5P_genclass_t *pclass)
 {
-    hbool_t local = H5F_MNT_SYM_LOCAL_DEF;      /* Whether symlinks are local to file */
     herr_t ret_value = SUCCEED;                 /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT
 
     /* Register property of whether symlinks is local to file */
-    if(H5P_register_real(pclass, H5F_MNT_SYM_LOCAL_NAME, H5F_MNT_SYM_LOCAL_SIZE, &local, NULL, NULL, NULL, NULL, NULL, NULL, NULL) < 0)
-         HGOTO_ERROR(H5E_PLIST, H5E_CANTINSERT, FAIL, "can't insert property into class")
+    if(H5P_register_real(pclass, H5F_MNT_SYM_LOCAL_NAME, H5F_MNT_SYM_LOCAL_SIZE, &H5F_def_local_g, 
+            NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL) < 0)
+        HGOTO_ERROR(H5E_PLIST, H5E_CANTINSERT, FAIL, "can't insert property into class")
 
 done:
     FUNC_LEAVE_NOAPI(ret_value)

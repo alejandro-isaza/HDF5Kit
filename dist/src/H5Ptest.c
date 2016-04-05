@@ -19,7 +19,7 @@
  * Purpose:	Generic Property Testing Functions
  */
 
-#define H5P_PACKAGE		/*suppress error about including H5Ppkg	  */
+#include "H5Pmodule.h"          /* This source code file is part of the H5P module */
 #define H5P_TESTING		/*suppress warning about H5P testing funcs*/
 
 
@@ -60,8 +60,8 @@
 char *
 H5P_get_class_path_test(hid_t pclass_id)
 {
-    H5P_genclass_t	*pclass;    /* Property class to query */
-    char *ret_value;       /* return value */
+    H5P_genclass_t	*pclass;        /* Property class to query */
+    char *ret_value = NULL;             /* Return value */
 
     FUNC_ENTER_NOAPI(NULL)
 
@@ -101,8 +101,8 @@ done:
 hid_t
 H5P_open_class_path_test(const char *path)
 {
-    H5P_genclass_t *pclass=NULL;/* Property class to query */
-    hid_t ret_value;            /* Return value */
+    H5P_genclass_t *pclass = NULL;      /* Property class to query */
+    hid_t ret_value = H5I_INVALID_HID;  /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
 
@@ -156,7 +156,7 @@ H5P_reset_external_file_test(hid_t dcpl_id)
         HGOTO_ERROR(H5E_ARGS, H5E_BADTYPE, FAIL, "not a dataset creation property list")
 
     /* get external file list */
-    if(H5P_get(plist, H5D_CRT_EXT_FILE_LIST_NAME, &efl) < 0)
+    if(H5P_peek(plist, H5D_CRT_EXT_FILE_LIST_NAME, &efl) < 0)
         HGOTO_ERROR(H5E_PLIST, H5E_CANTGET, FAIL, "can't get external file list")
 
     /* Clean up any values set for the external file-list */
@@ -164,10 +164,56 @@ H5P_reset_external_file_test(hid_t dcpl_id)
         HGOTO_ERROR(H5E_DATASET, H5E_CANTFREE, FAIL, "can't release external file list info")
 
     /* set external file list */
-    if(H5P_set(plist, H5D_CRT_EXT_FILE_LIST_NAME, &efl) < 0)
-        HGOTO_ERROR(H5E_PLIST, H5E_CANTGET, FAIL, "can't get external file list")
+    if(H5P_poke(plist, H5D_CRT_EXT_FILE_LIST_NAME, &efl) < 0)
+        HGOTO_ERROR(H5E_PLIST, H5E_CANTSET, FAIL, "can't set external file list")
 
 done:
     FUNC_LEAVE_NOAPI(ret_value)
 }   /* H5P_reset_external_file_test() */
+
+
+/*--------------------------------------------------------------------------
+ NAME
+    H5P_reset_layout_test
+ PURPOSE
+    Routine to reset layout message
+ USAGE
+    herr_t H5P_reset_layout_test(plist)
+           hid_t dcpl_id; IN: the property list
+
+ RETURNS
+    Non-negative on success/Negative on failure
+
+ PROGRAMMER
+    Quincey Koziol
+    April 5, 2012
+--------------------------------------------------------------------------*/
+herr_t
+H5P_reset_layout_test(hid_t dcpl_id)
+{
+    H5O_layout_t    layout;             /* Layout message */
+    H5P_genplist_t *plist;              /* Property list */
+    herr_t ret_value = SUCCEED;         /* Return value */
+
+    FUNC_ENTER_NOAPI(FAIL)
+
+    /* Check arguments */
+    if(NULL == (plist = (H5P_genplist_t *)H5I_object(dcpl_id)))
+        HGOTO_ERROR(H5E_ARGS, H5E_BADTYPE, FAIL, "not a dataset creation property list")
+
+    /* Get layout message */
+    if(H5P_peek(plist, H5D_CRT_LAYOUT_NAME, &layout) < 0)
+        HGOTO_ERROR(H5E_PLIST, H5E_CANTGET, FAIL, "can't get layout")
+
+    /* Clean up any values set for the layout */
+    if(H5O_msg_reset(H5O_LAYOUT_ID, &layout) < 0)
+        HGOTO_ERROR(H5E_DATASET, H5E_CANTFREE, FAIL, "can't release layout info")
+
+    /* Set layout message */
+    if(H5P_poke(plist, H5D_CRT_LAYOUT_NAME, &layout) < 0)
+        HGOTO_ERROR(H5E_PLIST, H5E_CANTSET, FAIL, "can't set layout")
+
+done:
+    FUNC_LEAVE_NOAPI(ret_value)
+}   /* H5P_reset_layout_test() */
 

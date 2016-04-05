@@ -22,9 +22,6 @@
  *  They will be named according to the platform and should
  *  be placed in the hdf5/test directory so that the links test can use them.
  *
- * Note: The be_extlink2.h5 is also used by external.c to test opening
- *  external link twice. -SLU 2007/11/7
- *
  */
 
 #include "hdf5.h"
@@ -57,6 +54,10 @@ main (void)
       strcpy(filename1, NAME_BE_1);
       strcpy(filename2, NAME_BE_2);
       break;
+    case H5T_ORDER_ERROR:
+    case H5T_ORDER_VAX:
+    case H5T_ORDER_MIXED:
+    case H5T_ORDER_NONE:
     default:
       goto error;
   }

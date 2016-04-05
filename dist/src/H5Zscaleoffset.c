@@ -13,7 +13,7 @@
  * access to either file, you may request a copy from help@hdfgroup.org.     *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#define H5Z_PACKAGE		/*suppress error about including H5Zpkg	  */
+#include "H5Zmodule.h"          /* This source code file is part of the H5Z module */
 
 #include "H5private.h"		/* Generic Functions			*/
 #include "H5ACprivate.h"	/* Metadata cache			*/
@@ -49,7 +49,7 @@ static herr_t H5Z_set_local_scaleoffset(hid_t dcpl_id, hid_t type_id, hid_t spac
 static size_t H5Z_filter_scaleoffset(unsigned flags, size_t cd_nelmts,
     const unsigned cd_values[], size_t nbytes, size_t *buf_size, void **buf);
 static void H5Z_scaleoffset_convert(void *buf, unsigned d_nelmts, size_t dtype_size);
-static unsigned H5Z_scaleoffset_log2(unsigned long long num);
+static H5_ATTR_CONST unsigned H5Z_scaleoffset_log2(unsigned long long num);
 static void H5Z_scaleoffset_precompress_i(void *data, unsigned d_nelmts,
     enum H5Z_scaleoffset_t type, unsigned filavail, const unsigned cd_values[],
     uint32_t *minbits, unsigned long long *minval);
@@ -689,7 +689,7 @@ H5Z_class2_t H5Z_SCALEOFFSET[1] = {{
  *-------------------------------------------------------------------------
  */
 static htri_t
-H5Z_can_apply_scaleoffset(hid_t UNUSED dcpl_id, hid_t type_id, hid_t UNUSED space_id)
+H5Z_can_apply_scaleoffset(hid_t H5_ATTR_UNUSED dcpl_id, hid_t type_id, hid_t H5_ATTR_UNUSED space_id)
 {
     const H5T_t	*type;                  /* Datatype */
     H5T_class_t dtype_class;            /* Datatype's class */
@@ -746,7 +746,7 @@ static enum H5Z_scaleoffset_t
 H5Z_scaleoffset_get_type(unsigned dtype_class, unsigned dtype_size, unsigned dtype_sign)
 {
     enum H5Z_scaleoffset_t type = t_bad; /* integer type */
-    enum H5Z_scaleoffset_t ret_value;             /* return value */
+    enum H5Z_scaleoffset_t ret_value = t_bad;   /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT
 
@@ -883,10 +883,8 @@ H5Z_set_local_scaleoffset(hid_t dcpl_id, hid_t type_id, hid_t space_id)
     if(NULL == (type = (H5T_t *)H5I_object_verify(type_id, H5I_DATATYPE)))
 	HGOTO_ERROR(H5E_ARGS, H5E_BADTYPE, FAIL, "not a datatype")
 
-#ifdef H5_CLEAR_MEMORY
     /* Initialize the parameters to a known state */
     HDmemset(cd_values, 0, sizeof(cd_values));
-#endif /* H5_CLEAR_MEMORY */
 
     /* Get the filter's current parameters */
     if(H5P_get_filter_by_id(dcpl_plist, H5Z_FILTER_SCALEOFFSET, &flags, &cd_nelmts, cd_values, (size_t)0, NULL, NULL) < 0)
@@ -901,7 +899,7 @@ H5Z_set_local_scaleoffset(hid_t dcpl_id, hid_t type_id, hid_t space_id)
         HGOTO_ERROR(H5E_PLINE, H5E_CANTGET, FAIL, "unable to get number of points in the dataspace")
 
     /* Set "local" parameter for this dataset's number of elements */
-    H5_ASSIGN_OVERFLOW(cd_values[H5Z_SCALEOFFSET_PARM_NELMTS],npoints,hssize_t,unsigned);
+    H5_CHECKED_ASSIGN(cd_values[H5Z_SCALEOFFSET_PARM_NELMTS], unsigned, npoints, hssize_t);
 
     /* Get datatype's class */
     if((dtype_class = H5T_get_class(type, TRUE)) == H5T_NO_CLASS)
@@ -977,6 +975,7 @@ H5Z_set_local_scaleoffset(hid_t dcpl_id, hid_t type_id, hid_t space_id)
 
         case H5T_ORDER_ERROR:
         case H5T_ORDER_VAX:
+        case H5T_ORDER_MIXED:
         case H5T_ORDER_NONE:
         default:
             HGOTO_ERROR(H5E_PLINE, H5E_BADTYPE, FAIL, "bad datatype endianness order")
@@ -1004,7 +1003,7 @@ H5Z_set_local_scaleoffset(hid_t dcpl_id, hid_t type_id, hid_t space_id)
             HGOTO_ERROR(H5E_PLINE, H5E_BADTYPE, FAIL, "cannot use C integer datatype for cast")
 
         /* Get dataset fill value and store in cd_values[] */
-        if(H5Z_scaleoffset_set_parms_fillval(dcpl_plist, type, scale_type, cd_values, need_convert, H5AC_ind_dxpl_id) < 0)
+        if(H5Z_scaleoffset_set_parms_fillval(dcpl_plist, type, scale_type, cd_values, need_convert, H5AC_noio_dxpl_id) < 0)
             HGOTO_ERROR(H5E_PLINE, H5E_CANTSET, FAIL, "unable to set fill value")
     } /* end else */
 
@@ -1075,6 +1074,7 @@ H5Z_filter_scaleoffset(unsigned flags, size_t cd_nelmts, const unsigned cd_value
 
         case H5T_ORDER_ERROR:
         case H5T_ORDER_VAX:
+        case H5T_ORDER_MIXED:
         case H5T_ORDER_NONE:
         default:
             HGOTO_ERROR(H5E_PLINE, H5E_BADTYPE, 0, "bad H5T_NATIVE_INT endianness order")
@@ -1264,13 +1264,11 @@ H5Z_filter_scaleoffset(unsigned flags, size_t cd_nelmts, const unsigned cd_value
         for(i = 0; i < sizeof(unsigned long long); i++)
             ((unsigned char *)outbuf)[5+i] = (unsigned char)((minval & ((unsigned long long)0xff << i*8)) >> i*8);
 
-#ifdef H5_CLEAR_MEMORY
         /* Zero out remaining, unused bytes */
         /* (Looks like an error in the original determination of how many
          *      bytes would be needed for parameters. - QAK, 2010/08/19)
          */
         HDmemset(outbuf + 13, 0, (size_t)8);
-#endif /* H5_CLEAR_MEMORY */
 
         /* special case: minbits equal to full precision */
         if(minbits == p.size * 8) {

@@ -16,7 +16,7 @@ public class File: GroupType {
     }
 
     public class func create(filePath: String, mode: CreateMode) -> File? {
-        var id: Int32 = -1
+        var id: hid_t = -1
         filePath.withCString { filePath in
             id = H5Fcreate(filePath, mode.rawValue, 0, 0)
         }
@@ -27,7 +27,7 @@ public class File: GroupType {
     }
 
     public class func open(filePath: String, mode: OpenMode) -> File? {
-        var id: Int32 = -1
+        var id: hid_t = -1
         filePath.withCString { filePath in
             id = H5Fopen(filePath, mode.rawValue, 0)
         }
@@ -37,9 +37,9 @@ public class File: GroupType {
         return File(id: id)
     }
 
-    public internal(set) var id: Int32 = -1
+    public internal(set) var id: hid_t = -1
 
-    init(id: Int32) {
+    init(id: hid_t) {
         self.id = id
         guard id >= 0 else {
             fatalError("Failed to create HDF5 File")

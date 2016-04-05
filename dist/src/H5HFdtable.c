@@ -28,7 +28,8 @@
 /* Module Setup */
 /****************/
 
-#define H5HF_PACKAGE		/*suppress error about including H5HFpkg  */
+#include "H5HFmodule.h"         /* This source code file is part of the H5HF module */
+
 
 /***********/
 /* Headers */
@@ -168,7 +169,7 @@ HDfprintf(stderr, "%s: off = %Hu\n", "H5HF_dtable_lookup", off);
     /* Check for offset in first row */
     if(off < dtable->num_id_first_row) {
         *row = 0;
-        H5_ASSIGN_OVERFLOW(/* To: */ *col, /* From: */ (off / dtable->cparam.start_block_size), /* From: */ hsize_t, /* To: */ unsigned);
+        H5_CHECKED_ASSIGN(*col, unsigned, (off / dtable->cparam.start_block_size), hsize_t);
     } /* end if */
     else {
         unsigned high_bit = H5VM_log2_gen(off);  /* Determine the high bit in the offset */
@@ -178,7 +179,7 @@ HDfprintf(stderr, "%s: off = %Hu\n", "H5HF_dtable_lookup", off);
 HDfprintf(stderr, "%s: high_bit = %u, off_mask = %Hu\n", "H5HF_dtable_lookup", high_bit, off_mask);
 #endif /* QAK */
         *row = (high_bit - dtable->first_row_bits) + 1;
-        H5_ASSIGN_OVERFLOW(/* To: */ *col, /* From: */ ((off - off_mask) / dtable->row_block_size[*row]), /* From: */ hsize_t, /* To: */ unsigned);
+        H5_CHECKED_ASSIGN(*col, unsigned, ((off - off_mask) / dtable->row_block_size[*row]), hsize_t);
     } /* end else */
 
     FUNC_LEAVE_NOAPI(SUCCEED)
@@ -240,7 +241,7 @@ H5HF_dtable_dest(H5HF_dtable_t *dtable)
 unsigned
 H5HF_dtable_size_to_row(const H5HF_dtable_t *dtable, size_t block_size)
 {
-    unsigned row;               /* Row where block will fit */
+    unsigned row = 0;   /* Row where block will fit */
 
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -274,7 +275,7 @@ H5HF_dtable_size_to_row(const H5HF_dtable_t *dtable, size_t block_size)
 unsigned
 H5HF_dtable_size_to_rows(const H5HF_dtable_t *dtable, hsize_t size)
 {
-    unsigned rows;              /* # of rows required for indirect block */
+    unsigned rows = 0;          /* # of rows required for indirect block */
 
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -310,7 +311,7 @@ H5HF_dtable_span_size(const H5HF_dtable_t *dtable, unsigned start_row,
     unsigned end_row;           /* Row for last block covered */
     unsigned end_col;           /* Column for last block covered */
     unsigned end_entry;         /* Entry for last block covered */
-    hsize_t acc_span_size;      /* Accumulated span size */
+    hsize_t acc_span_size = 0;  /* Accumulated span size */
 
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 

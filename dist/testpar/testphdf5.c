@@ -272,6 +272,10 @@ create_faccess_plist(MPI_Comm comm, MPI_Info info, int l_facc_type)
 	/* set Parallel access with communicator */
 	ret = H5Pset_fapl_mpio(ret_pl, comm, info);
 	VRFY((ret >= 0), "");
+        ret = H5Pset_all_coll_metadata_ops(ret_pl, TRUE);
+	VRFY((ret >= 0), "");
+        ret = H5Pset_coll_metadata_write(ret_pl, TRUE);
+	VRFY((ret >= 0), "");
 	return(ret_pl);
     }
 
@@ -347,6 +351,9 @@ int main(int argc, char **argv)
     AddTest("split", test_split_comm_access, NULL,
 	    "dataset using split communicators", PARATESTFILE);
 
+    AddTest("props", test_file_properties, NULL,
+	    "Coll Metadata file property settings", PARATESTFILE);
+
     AddTest("idsetw", dataset_writeInd, NULL,
 	    "dataset independent write", PARATESTFILE);
     AddTest("idsetr", dataset_readInd, NULL,
@@ -370,7 +377,7 @@ int main(int argc, char **argv)
     AddTest("selnone", none_selection_chunk, NULL,
             "chunked dataset with none-selection", PARATESTFILE);
     AddTest("calloc", test_chunk_alloc, NULL,
-	    "parallel extend Chunked allocation on serial file", PARATESTFILE);
+            "parallel extend Chunked allocation on serial file", PARATESTFILE);
     AddTest("fltread", test_filter_read, NULL,
 	    "parallel read of dataset written serially with filters", PARATESTFILE);
 
@@ -507,6 +514,9 @@ int main(int argc, char **argv)
             "test cause for broken collective io",
             PARATESTFILE);
 
+    AddTest("edpl", test_plist_ed, NULL,
+	    "encode/decode Property Lists", NULL);
+
     if((mpi_size < 2) && MAINPROCESS) {
         printf("File Image Ops daisy chain test needs at least 2 processes.\n");
         printf("File Image Ops daisy chain test will be skipped \n");
@@ -560,7 +570,7 @@ int main(int argc, char **argv)
         TestSummary();
 
     /* Clean up test files */
-    h5_cleanup(FILENAME, fapl);
+    h5_clean_files(FILENAME, fapl);
 
     nerrors += GetTestNumErrs();
 

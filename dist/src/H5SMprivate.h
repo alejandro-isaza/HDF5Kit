@@ -66,7 +66,7 @@ H5_DLL herr_t H5SM_reconstitute(H5O_shared_t *sh_mesg, H5F_t *f,
     unsigned msg_type_id, H5O_fheap_id_t heap_id);
 H5_DLL herr_t H5SM_get_refcount(H5F_t *f, hid_t dxpl_id, unsigned type_id,
     const H5O_shared_t *sh_mesg, hsize_t *ref_count);
-H5_DLL herr_t H5SM_ih_size(H5F_t *f, hid_t dxpl_id, H5F_info_t *bh_info);
+H5_DLL herr_t H5SM_ih_size(H5F_t *f, hid_t dxpl_id, hsize_t *hdr_size, H5_ih_info_t *ih_info);
 
 
 /* Debugging routines */
@@ -74,7 +74,7 @@ H5_DLL herr_t H5SM_table_debug(H5F_t *f, hid_t dxpl_id, haddr_t table_addr,
     FILE *stream, int indent, int fwidth, unsigned table_vers,
     unsigned num_indexes);
 H5_DLL herr_t H5SM_list_debug(H5F_t *f, hid_t dxpl_id, haddr_t list_addr,
-    FILE *stream, int indent, int fwidth, unsigned list_vers, size_t num_messages);
+    FILE *stream, int indent, int fwidth, haddr_t table_addr);
 
 #endif /*_H5SMprivate_H*/
 

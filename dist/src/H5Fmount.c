@@ -13,10 +13,7 @@
  * access to either file, you may request a copy from help@hdfgroup.org.     *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#define H5F_PACKAGE		/*suppress error about including H5Fpkg	  */
-
-/* Interface initialization */
-#define H5_INTERFACE_INIT_FUNC	H5F_init_mount_interface
+#include "H5Fmodule.h"          /* This source code file is part of the H5F module */
 
 
 /* Packages needed by this file... */
@@ -34,28 +31,6 @@ static herr_t H5F_mount(H5G_loc_t *loc, const char *name, H5F_t *child,
     hid_t plist_id, hid_t dxpl_id);
 static herr_t H5F_unmount(H5G_loc_t *loc, const char *name, hid_t dxpl_id);
 static void H5F_mount_count_ids_recurse(H5F_t *f, unsigned *nopen_files, unsigned *nopen_objs);
-
-
-/*--------------------------------------------------------------------------
-NAME
-   H5F_init_mount_interface -- Initialize interface-specific information
-USAGE
-    herr_t H5F_init_mount_interface()
-
-RETURNS
-    Non-negative on success/Negative on failure
-DESCRIPTION
-    Initializes any interface-specific data or routines.  (Just calls
-    H5F_init() currently).
-
---------------------------------------------------------------------------*/
-static herr_t
-H5F_init_mount_interface(void)
-{
-    FUNC_ENTER_NOAPI_NOINIT_NOERR
-
-    FUNC_LEAVE_NOAPI(H5F_init())
-} /* H5F_init_mount_interface() */
 
 
 /*-------------------------------------------------------------------------
@@ -128,7 +103,7 @@ done:
  */
 static herr_t
 H5F_mount(H5G_loc_t *loc, const char *name, H5F_t *child,
-	  hid_t UNUSED plist_id, hid_t dxpl_id)
+	  hid_t H5_ATTR_UNUSED plist_id, hid_t dxpl_id)
 {
     H5G_t	*mount_point = NULL;	/*mount point group		*/
     H5F_t	*ancestor = NULL;	/*ancestor files		*/
@@ -439,7 +414,7 @@ done:
 hbool_t
 H5F_is_mount(const H5F_t *file)
 {
-    hbool_t ret_value;   /* Return value */
+    hbool_t ret_value = FALSE;          /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -491,7 +466,7 @@ H5Fmount(hid_t loc_id, const char *name, hid_t child_id, hid_t plist_id)
             HGOTO_ERROR(H5E_ARGS, H5E_BADTYPE, FAIL, "not property list")
 
     /* Do the mount */
-    if(H5F_mount(&loc, name, child, plist_id, H5AC_dxpl_id) < 0)
+    if(H5F_mount(&loc, name, child, plist_id, H5AC_ind_read_dxpl_id) < 0)
 	HGOTO_ERROR(H5E_FILE, H5E_MOUNT, FAIL, "unable to mount file")
 
 done:
@@ -534,7 +509,7 @@ H5Funmount(hid_t loc_id, const char *name)
 	HGOTO_ERROR(H5E_ARGS, H5E_BADVALUE, FAIL, "no name")
 
     /* Unmount */
-    if (H5F_unmount(&loc, name, H5AC_dxpl_id) < 0)
+    if (H5F_unmount(&loc, name, H5AC_ind_read_dxpl_id) < 0)
 	HGOTO_ERROR(H5E_FILE, H5E_MOUNT, FAIL, "unable to unmount file")
 
 done:

@@ -119,7 +119,7 @@ void test_fl_string(hid_t fid, const char *string)
  * Borrows heavily from dtypes.c, but is more complicated because
  * the string is randomly generated.
  */
-void test_strpad(hid_t UNUSED fid, const char *string)
+void test_strpad(hid_t H5_ATTR_UNUSED fid, const char *string)
 {
     /* buf is used to hold the data that H5Tconvert operates on. */
     char     buf[LONG_BUF_SIZE];
@@ -463,8 +463,8 @@ void test_objnames(hid_t fid, const char* string)
   CHECK(ret, FAIL, "H5Dread");
 
   /* Ensure that we can open named datatype using object reference */
-  type_id = H5Rdereference(dset_id, H5R_OBJECT, &obj_ref);
-  CHECK(type_id, FAIL, "H5Rdereference");
+  type_id = H5Rdereference2(dset_id, H5P_DEFAULT, H5R_OBJECT, &obj_ref);
+  CHECK(type_id, FAIL, "H5Rdereference2");
   ret = H5Tcommitted(type_id);
   VERIFY(ret, 1, "H5Tcommitted");
 
@@ -650,7 +650,7 @@ void test_compound(hid_t fid, const char * string)
  * test_enum
  * Test that enumerated datatypes can have UTF-8 member names.
  */
-void test_enum(hid_t UNUSED fid, const char * string)
+void test_enum(hid_t H5_ATTR_UNUSED fid, const char * string)
 {
   /* Define an enumerated type */
   typedef enum {
@@ -699,7 +699,7 @@ void test_enum(hid_t UNUSED fid, const char * string)
  * test_opaque
  * Test comments on opaque datatypes
  */
-void test_opaque(hid_t UNUSED fid, const char * string)
+void test_opaque(hid_t H5_ATTR_UNUSED fid, const char * string)
 {
   hid_t type_id;
   char * read_buf;

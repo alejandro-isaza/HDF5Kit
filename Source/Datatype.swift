@@ -21,7 +21,7 @@ public enum DataClass: Int32 {
 
 
 public class Datatype : Object, Equatable {
-    override init(id: Int32) {
+    override init(id: hid_t) {
         super.init(id: id)
     }
 
@@ -36,7 +36,7 @@ public class Datatype : Object, Equatable {
 
     /// Create a Datatype from a Swift type
     public convenience init?(type: Any.Type) {
-        let id: Int32
+        let id: hid_t
         if type == String.self {
             id = H5Tcopy(H5T_C_S1_g)
             H5Tset_size(id, -1)

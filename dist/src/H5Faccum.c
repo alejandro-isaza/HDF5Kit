@@ -30,7 +30,7 @@
 /* Module Setup */
 /****************/
 
-#define H5F_PACKAGE		/*suppress error about including H5Fpkg	  */
+#include "H5Fmodule.h"          /* This source code file is part of the H5F module */
 
 
 /***********/
@@ -112,10 +112,9 @@ H5FL_BLK_DEFINE_STATIC(meta_accum);
  *-------------------------------------------------------------------------
  */
 herr_t
-H5F__accum_read(const H5F_io_info_t *fio_info, H5FD_mem_t type, haddr_t addr,
+H5F__accum_read(const H5F_io_info_t *fio_info, H5FD_mem_t map_type, haddr_t addr,
     size_t size, void *buf/*out*/)
 {
-    H5FD_mem_t  map_type;               /* Mapped memory type */
     herr_t      ret_value = SUCCEED;    /* Return value */
 
     FUNC_ENTER_PACKAGE
@@ -124,9 +123,6 @@ H5F__accum_read(const H5F_io_info_t *fio_info, H5FD_mem_t type, haddr_t addr,
     HDassert(fio_info->f);
     HDassert(fio_info->dxpl);
     HDassert(buf);
-
-    /* Treat global heap as raw data */
-    map_type = (type == H5FD_MEM_GHEAP) ? H5FD_MEM_DRAW : type;
 
     /* Check if this information is in the metadata accumulator */
     if((fio_info->f->shared->feature_flags & H5FD_FEAT_ACCUMULATE_METADATA) && map_type != H5FD_MEM_DRAW) {
@@ -164,15 +160,15 @@ H5F__accum_read(const H5F_io_info_t *fio_info, H5FD_mem_t type, haddr_t addr,
 
                     /* Note the new buffer size */
                     accum->alloc_size = new_alloc_size;
-#ifdef H5_CLEAR_MEMORY
-    HDmemset(accum->buf + accum->size, 0, (accum->alloc_size - accum->size));
-#endif /* H5_CLEAR_MEMORY */
+
+                    /* Clear the memory */
+                    HDmemset(accum->buf + accum->size, 0, (accum->alloc_size - accum->size));
                 } /* end if */
 
                 /* Read the part before the metadata accumulator */
                 if(addr < accum->loc) {
                     /* Set the amount to read */
-                    H5_ASSIGN_OVERFLOW(amount_before, (accum->loc - addr), hsize_t, size_t);
+                    H5_CHECKED_ASSIGN(amount_before, size_t, (accum->loc - addr), hsize_t);
 
                     /* Make room for the metadata to read in */
                     HDmemmove(accum->buf + amount_before, accum->buf, accum->size);
@@ -193,7 +189,7 @@ H5F__accum_read(const H5F_io_info_t *fio_info, H5FD_mem_t type, haddr_t addr,
                     size_t amount_after;         /* Amount to read at a time */
 
                     /* Set the amount to read */
-                    H5_ASSIGN_OVERFLOW(amount_after, ((addr + size) - (accum->loc + accum->size)), hsize_t, size_t);
+                    H5_CHECKED_ASSIGN(amount_after, size_t, ((addr + size) - (accum->loc + accum->size)), hsize_t);
 
                     /* Dispatch to driver */
                     if(H5FD_read(fio_info->f->shared->lf, fio_info->dxpl, map_type, (accum->loc + accum->size), amount_after, (accum->buf + accum->size + amount_before)) < 0)
@@ -373,9 +369,9 @@ H5F__accum_adjust(H5F_meta_accum_t *accum, const H5F_io_info_t *fio_info,
 
             /* Trim the accumulator's use of its buffer */
             accum->size = remnant_size;
-            
+
             /* When appending, need to adjust location of accumulator */
-            if (H5F_ACCUM_APPEND == adjust) {
+            if(H5F_ACCUM_APPEND == adjust) {
                 /* Move remnant of accumulator down */
                 HDmemmove(accum->buf, (accum->buf + shrink_size), remnant_size);
 
@@ -395,9 +391,9 @@ H5F__accum_adjust(H5F_meta_accum_t *accum, const H5F_io_info_t *fio_info,
             /* Update accumulator info */
             accum->buf = new_buf;
             accum->alloc_size = new_size;
-#ifdef H5_CLEAR_MEMORY
-HDmemset(accum->buf + accum->size, 0, (accum->alloc_size - (accum->size + size)));
-#endif /* H5_CLEAR_MEMORY */
+
+            /* Clear the memory */
+            HDmemset(accum->buf + accum->size, 0, (accum->alloc_size - (accum->size + size)));
         } /* end if */
     } /* end if */
 
@@ -418,13 +414,17 @@ done:
  *		koziol@hdfgroup.org
  *		Jan 10 2008
  *
+ * Modifications:
+ *	Vailin Choi; June 2013
+ *	This is a fix for SWMR:
+ *	For a large write that is >= than H5F_ACCUM_MAX_SIZE,
+ *	flush the metadata in the accumulator first before the write.
  *-------------------------------------------------------------------------
  */
 herr_t
-H5F__accum_write(const H5F_io_info_t *fio_info, H5FD_mem_t type, haddr_t addr,
+H5F__accum_write(const H5F_io_info_t *fio_info, H5FD_mem_t map_type, haddr_t addr,
     size_t size, const void *buf)
 {
-    H5FD_mem_t  map_type;               /* Mapped memory type */
     herr_t      ret_value = SUCCEED;    /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
@@ -434,9 +434,6 @@ H5F__accum_write(const H5F_io_info_t *fio_info, H5FD_mem_t type, haddr_t addr,
     HDassert(H5F_INTENT(fio_info->f) & H5F_ACC_RDWR);
     HDassert(fio_info->dxpl);
     HDassert(buf);
-
-    /* Treat global heap as raw data */
-    map_type = (type == H5FD_MEM_GHEAP) ? H5FD_MEM_DRAW : type;
 
     /* Check for accumulating metadata */
     if((fio_info->f->shared->feature_flags & H5FD_FEAT_ACCUMULATE_METADATA) && map_type != H5FD_MEM_DRAW) {
@@ -536,14 +533,14 @@ H5F__accum_write(const H5F_io_info_t *fio_info, H5FD_mem_t type, haddr_t addr,
                         size_t old_offset;  /* Offset of old data within the accumulator buffer */
 
                         /* Calculate the amount we will need to add to the accumulator size, based on the amount of overlap */
-                        H5_ASSIGN_OVERFLOW(add_size, (accum->loc - addr), hsize_t, size_t);
+                        H5_CHECKED_ASSIGN(add_size, size_t, (accum->loc - addr), hsize_t);
 
                         /* Check if we need to adjust accumulator size */
                         if(H5F__accum_adjust(accum, fio_info, H5F_ACCUM_PREPEND, add_size) < 0)
                             HGOTO_ERROR(H5E_IO, H5E_CANTRESIZE, FAIL, "can't adjust metadata accumulator")
 
                         /* Calculate the proper offset of the existing metadata */
-                        H5_ASSIGN_OVERFLOW(old_offset, (addr + size) - accum->loc, hsize_t, size_t);
+                        H5_CHECKED_ASSIGN(old_offset, size_t, (addr + size) - accum->loc, hsize_t);
 
                         /* Move the existing metadata to the proper location */
                         HDmemmove(accum->buf + size, accum->buf + old_offset, (accum->size - old_offset));
@@ -576,7 +573,7 @@ H5F__accum_write(const H5F_io_info_t *fio_info, H5FD_mem_t type, haddr_t addr,
                         size_t dirty_off;           /* Offset of dirty region */
 
                         /* Calculate the amount we will need to add to the accumulator size, based on the amount of overlap */
-                        H5_ASSIGN_OVERFLOW(add_size, (addr + size) - (accum->loc + accum->size), hsize_t, size_t);
+                        H5_CHECKED_ASSIGN(add_size, size_t, (addr + size) - (accum->loc + accum->size), hsize_t);
 
                         /* Check if we need to adjust accumulator size */
                         if(H5F__accum_adjust(accum, fio_info, H5F_ACCUM_APPEND, add_size) < 0)
@@ -623,9 +620,9 @@ H5F__accum_write(const H5F_io_info_t *fio_info, H5FD_mem_t type, haddr_t addr,
 
                             /* Note the new buffer size */
                             accum->alloc_size = new_alloc_size;
-#ifdef H5_CLEAR_MEMORY
-HDmemset(accum->buf + size, 0, (accum->alloc_size - size));
-#endif /* H5_CLEAR_MEMORY */
+
+                            /* Clear the memory */
+                            HDmemset(accum->buf + size, 0, (accum->alloc_size - size));
                         } /* end if */
 
                         /* Copy the new metadata to the buffer */
@@ -656,6 +653,7 @@ HDmemset(accum->buf + size, 0, (accum->alloc_size - size));
                     /* Check if we need to resize the buffer */
                     if(size > accum->alloc_size) {
                         size_t new_size;        /* New size of accumulator */
+                        size_t clear_size;      /* Size of memory that needs clearing */
 
                         /* Adjust the buffer size to be a power of 2 that is large enough to hold data */
                         new_size = (size_t)1 << (1 + H5VM_log2_gen((uint64_t)(size - 1)));
@@ -666,12 +664,10 @@ HDmemset(accum->buf + size, 0, (accum->alloc_size - size));
 
                         /* Note the new buffer size */
                         accum->alloc_size = new_size;
-#ifdef H5_CLEAR_MEMORY
-{
-size_t clear_size = MAX(accum->size, size);
-HDmemset(accum->buf + clear_size, 0, (accum->alloc_size - clear_size));
-}
-#endif /* H5_CLEAR_MEMORY */
+
+                        /* Clear the memory */
+                        clear_size = MAX(accum->size, size);
+                        HDmemset(accum->buf + clear_size, 0, (accum->alloc_size - clear_size));
                     } /* end if */
                     else {
                         /* Check if we should shrink the accumulator buffer */
@@ -716,9 +712,9 @@ HDmemset(accum->buf + clear_size, 0, (accum->alloc_size - clear_size));
 
                     /* Note the new buffer size */
                     accum->alloc_size = new_size;
-#ifdef H5_CLEAR_MEMORY
-HDmemset(accum->buf + size, 0, (accum->alloc_size - size));
-#endif /* H5_CLEAR_MEMORY */
+
+                    /* Clear the memory */
+                    HDmemset(accum->buf + size, 0, (accum->alloc_size - size));
                 } /* end if */
 
                 /* Update the metadata accumulator information */
@@ -735,6 +731,12 @@ HDmemset(accum->buf + size, 0, (accum->alloc_size - size));
             } /* end else */
         } /* end if */
         else {
+	    if((H5F_INTENT(fio_info->f) & H5F_ACC_SWMR_WRITE) > 0) {
+                /* Flush if dirty and reset accumulator */
+                if(H5F__accum_reset(fio_info, TRUE) < 0)
+                    HGOTO_ERROR(H5E_IO, H5E_CANTRESET, FAIL, "can't reset accumulator")
+            }
+
             /* Write the data */
             if(H5FD_write(fio_info->f->shared->lf, fio_info->dxpl, map_type, addr, size, buf) < 0)
                 HGOTO_ERROR(H5E_IO, H5E_WRITEERROR, FAIL, "file write failed")
@@ -845,7 +847,7 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5F__accum_free(const H5F_io_info_t *fio_info, H5FD_mem_t UNUSED type, haddr_t addr,
+H5F__accum_free(const H5F_io_info_t *fio_info, H5FD_mem_t H5_ATTR_UNUSED type, haddr_t addr,
     hsize_t size)
 {
     H5F_meta_accum_t *accum;            /* Alias for file's metadata accumulator */
@@ -885,7 +887,7 @@ H5F__accum_free(const H5F_io_info_t *fio_info, H5FD_mem_t UNUSED type, haddr_t a
                 size_t new_accum_size;      /* Size of new accumulator buffer */
 
                 /* Calculate the size of the overlap with the accumulator, etc. */
-                H5_ASSIGN_OVERFLOW(overlap_size, (addr + size) - accum->loc, haddr_t, size_t);
+                H5_CHECKED_ASSIGN(overlap_size, size_t, (addr + size) - accum->loc, haddr_t);
                 new_accum_size = accum->size - overlap_size;
 
                 /* Move the accumulator buffer information to eliminate the freed block */
@@ -919,7 +921,7 @@ H5F__accum_free(const H5F_io_info_t *fio_info, H5FD_mem_t UNUSED type, haddr_t a
             haddr_t dirty_start = accum->loc + accum->dirty_off;
 
             /* Calculate the size of the overlap with the accumulator */
-            H5_ASSIGN_OVERFLOW(overlap_size, (accum->loc + accum->size) - addr, haddr_t, size_t);
+            H5_CHECKED_ASSIGN(overlap_size, size_t, (accum->loc + accum->size) - addr, haddr_t);
 
             /* Check if block to free begins before end of dirty region */
             if(accum->dirty && H5F_addr_lt(addr, dirty_end)) {

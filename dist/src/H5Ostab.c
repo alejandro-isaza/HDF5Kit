@@ -24,8 +24,9 @@
  *-------------------------------------------------------------------------
  */
 
-#define H5G_PACKAGE		/*suppress error about including H5Gpkg	  */
-#define H5O_PACKAGE		/*suppress error about including H5Opkg	  */
+#define H5G_FRIEND		/*suppress error about including H5Gpkg   */
+#include "H5Omodule.h"          /* This source code file is part of the H5O module */
+
 
 #include "H5private.h"		/* Generic Functions			*/
 #include "H5Eprivate.h"		/* Error handling		  	*/
@@ -97,11 +98,11 @@ H5FL_DEFINE_STATIC(H5O_stab_t);
  *-------------------------------------------------------------------------
  */
 static void *
-H5O_stab_decode(H5F_t *f, hid_t UNUSED dxpl_id, H5O_t UNUSED *open_oh,
-    unsigned UNUSED mesg_flags, unsigned UNUSED *ioflags, const uint8_t *p)
+H5O_stab_decode(H5F_t *f, hid_t H5_ATTR_UNUSED dxpl_id, H5O_t H5_ATTR_UNUSED *open_oh,
+    unsigned H5_ATTR_UNUSED mesg_flags, unsigned H5_ATTR_UNUSED *ioflags, const uint8_t *p)
 {
     H5O_stab_t          *stab = NULL;
-    void                *ret_value;     /* Return value */
+    void                *ret_value = NULL;     /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT
 
@@ -142,7 +143,7 @@ done:
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5O_stab_encode(H5F_t *f, hbool_t UNUSED disable_shared, uint8_t *p, const void *_mesg)
+H5O_stab_encode(H5F_t *f, hbool_t H5_ATTR_UNUSED disable_shared, uint8_t *p, const void *_mesg)
 {
     const H5O_stab_t       *stab = (const H5O_stab_t *) _mesg;
 
@@ -180,9 +181,9 @@ H5O_stab_encode(H5F_t *f, hbool_t UNUSED disable_shared, uint8_t *p, const void 
 static void *
 H5O_stab_copy(const void *_mesg, void *_dest)
 {
-    const H5O_stab_t       *stab = (const H5O_stab_t *) _mesg;
-    H5O_stab_t             *dest = (H5O_stab_t *) _dest;
-    void                *ret_value;     /* Return value */
+    const H5O_stab_t    *stab = (const H5O_stab_t *) _mesg;
+    H5O_stab_t          *dest = (H5O_stab_t *) _dest;
+    void                *ret_value = NULL;     /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT
 
@@ -220,9 +221,9 @@ done:
  *-------------------------------------------------------------------------
  */
 static size_t
-H5O_stab_size(const H5F_t *f, hbool_t UNUSED disable_shared, const void UNUSED *_mesg)
+H5O_stab_size(const H5F_t *f, hbool_t H5_ATTR_UNUSED disable_shared, const void H5_ATTR_UNUSED *_mesg)
 {
-    size_t ret_value;   /* Return value */
+    size_t ret_value = 0;       /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -273,7 +274,7 @@ H5O_stab_free(void *mesg)
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5O_stab_delete(H5F_t *f, hid_t dxpl_id, H5O_t UNUSED *open_oh, void *mesg)
+H5O_stab_delete(H5F_t *f, hid_t dxpl_id, H5O_t H5_ATTR_UNUSED *open_oh, void *mesg)
 {
     herr_t ret_value = SUCCEED;   /* Return value */
 
@@ -308,14 +309,14 @@ done:
  */
 static void *
 H5O_stab_copy_file(H5F_t *file_src, void *native_src, H5F_t *file_dst,
-    hbool_t UNUSED *recompute_size, unsigned UNUSED *mesg_flags,
-    H5O_copy_t UNUSED *cpy_info, void *_udata, hid_t dxpl_id)
+    hbool_t H5_ATTR_UNUSED *recompute_size, unsigned H5_ATTR_UNUSED *mesg_flags,
+    H5O_copy_t H5_ATTR_UNUSED *cpy_info, void *_udata, hid_t dxpl_id)
 {
     H5O_stab_t          *stab_src = (H5O_stab_t *) native_src;
     H5O_stab_t          *stab_dst = NULL;
     H5G_copy_file_ud_t  *udata = (H5G_copy_file_ud_t *)_udata;
-    size_t              size_hint;              /* Local heap initial size */
-    void                *ret_value;             /* Return value */
+    size_t              size_hint;             /* Local heap initial size */
+    void                *ret_value = NULL;     /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT
 
@@ -331,9 +332,15 @@ H5O_stab_copy_file(H5F_t *file_src, void *native_src, H5F_t *file_dst,
     if(H5HL_get_size(file_src, dxpl_id, stab_src->heap_addr, &size_hint) < 0)
 	HGOTO_ERROR(H5E_SYM, H5E_CANTGETSIZE, NULL, "can't query local heap size")
 
+    /* Set copy metadata tag */
+    H5_BEGIN_TAG(dxpl_id, H5AC__COPIED_TAG, NULL);
+
     /* Create components of symbol table message */
     if(H5G__stab_create_components(file_dst, stab_dst, size_hint, dxpl_id) < 0)
-	HGOTO_ERROR(H5E_SYM, H5E_CANTINIT, NULL, "can't create symbol table components")
+	HGOTO_ERROR_TAG(H5E_SYM, H5E_CANTINIT, NULL, "can't create symbol table components")
+
+    /* Reset metadata tag */
+    H5_END_TAG(NULL);
 
     /* Cache stab in udata */
     udata->cache_type = H5G_CACHED_STAB;
@@ -366,7 +373,7 @@ done:
  */
 static herr_t
 H5O_stab_post_copy_file(const H5O_loc_t *src_oloc, const void *mesg_src,
-    H5O_loc_t *dst_oloc, void *mesg_dst, unsigned UNUSED *mesg_flags,
+    H5O_loc_t *dst_oloc, void *mesg_dst, unsigned H5_ATTR_UNUSED *mesg_flags,
     hid_t dxpl_id, H5O_copy_t *cpy_info)
 {
     const H5O_stab_t    *stab_src = (const H5O_stab_t *)mesg_src;
@@ -419,7 +426,7 @@ done:
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5O_stab_debug(H5F_t UNUSED *f, hid_t UNUSED dxpl_id, const void *_mesg, FILE * stream,
+H5O_stab_debug(H5F_t H5_ATTR_UNUSED *f, hid_t H5_ATTR_UNUSED dxpl_id, const void *_mesg, FILE * stream,
 	       int indent, int fwidth)
 {
     const H5O_stab_t       *stab = (const H5O_stab_t *) _mesg;

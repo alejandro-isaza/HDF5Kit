@@ -21,7 +21,7 @@
  *              only within the H5G package. Source files outside the
  *              H5G package should include H5Gprivate.h instead.
  */
-#ifndef H5G_PACKAGE
+#if !(defined H5G_FRIEND || defined H5G_MODULE)
 #error "Do not include this file outside the H5G package!"
 #endif
 
@@ -55,7 +55,7 @@
     + 2         /* Number of symbols */                                       \
                                                                               \
     /* Entries */                                                             \
-    + ((2 * H5F_SYM_LEAF_K(f)) * H5G_SIZEOF_ENTRY(f))                         \
+    + ((2 * H5F_SYM_LEAF_K(f)) * H5G_SIZEOF_ENTRY_FILE(f))                    \
     )
 
 
@@ -351,8 +351,6 @@ H5_DLL herr_t H5G__traverse_special(const H5G_loc_t *grp_loc,
 /*
  * Utility functions
  */
-H5_DLL herr_t H5G__init(void);
-H5_DLL herr_t H5G__term_deprec_interface(void);
 H5_DLL const char *H5G__component(const char *name, size_t *size_p);
 
 /*
@@ -518,7 +516,6 @@ H5_DLL herr_t H5G__name_init(H5G_name_t *name, const char *path);
 /*
  * These functions operate on group "locations"
  */
-H5_DLL herr_t H5G__loc_copy(H5G_loc_t *dst, const H5G_loc_t *src, H5_copy_depth_t depth);
 H5_DLL herr_t H5G__loc_insert(H5G_loc_t *grp_loc, const char *name,
     H5G_loc_t *obj_loc, H5O_type_t obj_type, const void *crt_info, hid_t dxpl_id);
 

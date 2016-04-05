@@ -20,7 +20,7 @@
  * Purpose:	"All" selection data space I/O functions.
  */
 
-#define H5S_PACKAGE		/*suppress error about including H5Spkg	  */
+#include "H5Smodule.h"          /* This source code file is part of the H5S module */
 
 
 #include "H5private.h"		/* Generic Functions			*/
@@ -39,10 +39,12 @@ static herr_t H5S_all_get_seq_list(const H5S_t *space, unsigned flags,
 static herr_t H5S_all_release(H5S_t *space);
 static htri_t H5S_all_is_valid(const H5S_t *space);
 static hssize_t H5S_all_serial_size(const H5S_t *space);
-static herr_t H5S_all_serialize(const H5S_t *space, uint8_t *buf);
-static herr_t H5S_all_deserialize(H5S_t *space, const uint8_t *buf);
+static herr_t H5S_all_serialize(const H5S_t *space, uint8_t **p);
+static herr_t H5S_all_deserialize(H5S_t *space, uint32_t version, uint8_t flags,
+    const uint8_t **p);
 static herr_t H5S_all_bounds(const H5S_t *space, hsize_t *start, hsize_t *end);
 static herr_t H5S_all_offset(const H5S_t *space, hsize_t *off);
+static int H5S__all_unlim_dim(const H5S_t *space);
 static htri_t H5S_all_is_contiguous(const H5S_t *space);
 static htri_t H5S_all_is_single(const H5S_t *space);
 static htri_t H5S_all_is_regular(const H5S_t *space);
@@ -74,6 +76,8 @@ const H5S_select_class_t H5S_sel_all[1] = {{
     H5S_all_deserialize,
     H5S_all_bounds,
     H5S_all_offset,
+    H5S__all_unlim_dim,
+    NULL,
     H5S_all_is_contiguous,
     H5S_all_is_single,
     H5S_all_is_regular,
@@ -255,7 +259,7 @@ H5S_all_iter_nelmts (const H5S_sel_iter_t *iter)
  REVISION LOG
 --------------------------------------------------------------------------*/
 static htri_t
-H5S_all_iter_has_next_block (const H5S_sel_iter_t UNUSED *iter)
+H5S_all_iter_has_next_block (const H5S_sel_iter_t H5_ATTR_UNUSED *iter)
 {
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -319,7 +323,7 @@ H5S_all_iter_next(H5S_sel_iter_t *iter, size_t nelem)
  REVISION LOG
 --------------------------------------------------------------------------*/
 static herr_t
-H5S_all_iter_next_block(H5S_sel_iter_t UNUSED *iter)
+H5S_all_iter_next_block(H5S_sel_iter_t H5_ATTR_UNUSED *iter)
 {
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -348,7 +352,7 @@ H5S_all_iter_next_block(H5S_sel_iter_t UNUSED *iter)
  REVISION LOG
 --------------------------------------------------------------------------*/
 static herr_t
-H5S_all_iter_release (H5S_sel_iter_t UNUSED * iter)
+H5S_all_iter_release (H5S_sel_iter_t H5_ATTR_UNUSED * iter)
 {
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -411,7 +415,7 @@ H5S_all_release(H5S_t *space)
  REVISION LOG
 --------------------------------------------------------------------------*/
 static herr_t
-H5S_all_copy(H5S_t *dst, const H5S_t UNUSED *src, hbool_t UNUSED share_selection)
+H5S_all_copy(H5S_t *dst, const H5S_t H5_ATTR_UNUSED *src, hbool_t H5_ATTR_UNUSED share_selection)
 {
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -446,7 +450,7 @@ H5S_all_copy(H5S_t *dst, const H5S_t UNUSED *src, hbool_t UNUSED share_selection
  REVISION LOG
 --------------------------------------------------------------------------*/
 static htri_t
-H5S_all_is_valid (const H5S_t UNUSED *space)
+H5S_all_is_valid (const H5S_t H5_ATTR_UNUSED *space)
 {
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -476,7 +480,7 @@ H5S_all_is_valid (const H5S_t UNUSED *space)
  REVISION LOG
 --------------------------------------------------------------------------*/
 static hssize_t
-H5S_all_serial_size (const H5S_t UNUSED *space)
+H5S_all_serial_size (const H5S_t H5_ATTR_UNUSED *space)
 {
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -496,9 +500,11 @@ H5S_all_serial_size (const H5S_t UNUSED *space)
  PURPOSE
     Serialize the current selection into a user-provided buffer.
  USAGE
-    herr_t H5S_all_serialize(space, buf)
-        H5S_t *space;           IN: Dataspace pointer of selection to serialize
-        uint8 *buf;             OUT: Buffer to put serialized selection into
+    herr_t H5S_all_serialize(space, p)
+        const H5S_t *space;     IN: Dataspace with selection to serialize
+        uint8_t **p;            OUT: Pointer to buffer to put serialized
+                                selection.  Will be advanced to end of
+                                serialized selection.
  RETURNS
     Non-negative on success/Negative on failure
  DESCRIPTION
@@ -510,17 +516,25 @@ H5S_all_serial_size (const H5S_t UNUSED *space)
  REVISION LOG
 --------------------------------------------------------------------------*/
 static herr_t
-H5S_all_serialize (const H5S_t *space, uint8_t *buf)
+H5S_all_serialize(const H5S_t *space, uint8_t **p)
 {
+    uint8_t *pp = (*p);         /* Local pointer for decoding */
+
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
+    /* Check args */
     HDassert(space);
+    HDassert(p);
+    HDassert(pp);
 
     /* Store the preamble information */
-    UINT32ENCODE(buf, (uint32_t)H5S_GET_SELECT_TYPE(space));  /* Store the type of selection */
-    UINT32ENCODE(buf, (uint32_t)1);  /* Store the version number */
-    UINT32ENCODE(buf, (uint32_t)0);  /* Store the un-used padding */
-    UINT32ENCODE(buf, (uint32_t)0);  /* Store the additional information length */
+    UINT32ENCODE(pp, (uint32_t)H5S_GET_SELECT_TYPE(space));  /* Store the type of selection */
+    UINT32ENCODE(pp, (uint32_t)1);  /* Store the version number */
+    UINT32ENCODE(pp, (uint32_t)0);  /* Store the un-used padding */
+    UINT32ENCODE(pp, (uint32_t)0);  /* Store the additional information length */
+
+    /* Update encoding pointer */
+    *p = pp;
 
     FUNC_LEAVE_NOAPI(SUCCEED)
 }   /* H5S_all_serialize() */
@@ -532,9 +546,14 @@ H5S_all_serialize (const H5S_t *space, uint8_t *buf)
  PURPOSE
     Deserialize the current selection from a user-provided buffer.
  USAGE
-    herr_t H5S_all_deserialize(space, buf)
-        H5S_t *space;           IN/OUT: Dataspace pointer to place selection into
-        uint8 *buf;             IN: Buffer to retrieve serialized selection from
+    herr_t H5S_all_deserialize(space, p)
+        H5S_t *space;           IN/OUT: Dataspace pointer to place
+                                selection into
+        uint32_t version        IN: Selection version
+        uint8_t flags           IN: Selection flags
+        uint8 **p;              OUT: Pointer to buffer holding serialized
+                                selection.  Will be advanced to end of
+                                serialized selection.
  RETURNS
     Non-negative on success/Negative on failure
  DESCRIPTION
@@ -546,16 +565,19 @@ H5S_all_serialize (const H5S_t *space, uint8_t *buf)
  REVISION LOG
 --------------------------------------------------------------------------*/
 static herr_t
-H5S_all_deserialize(H5S_t *space, const uint8_t UNUSED *buf)
+H5S_all_deserialize(H5S_t *space, uint32_t H5_ATTR_UNUSED version, uint8_t H5_ATTR_UNUSED flags,
+        const uint8_t H5_ATTR_UNUSED **p)
 {
-    herr_t ret_value;   /* return value */
+    herr_t ret_value = SUCCEED;   /* return value */
 
     FUNC_ENTER_NOAPI(FAIL)
 
     HDassert(space);
+    HDassert(p);
+    HDassert(*p);
 
     /* Change to "all" selection */
-    if((ret_value = H5S_select_all(space, TRUE)) < 0)
+    if(H5S_select_all(space, TRUE) < 0)
         HGOTO_ERROR(H5E_DATASPACE, H5E_CANTDELETE, FAIL, "can't change selection")
 
 done:
@@ -634,7 +656,7 @@ H5S_all_bounds(const H5S_t *space, hsize_t *start, hsize_t *end)
  REVISION LOG
 --------------------------------------------------------------------------*/
 static herr_t
-H5S_all_offset(const H5S_t UNUSED *space, hsize_t *offset)
+H5S_all_offset(const H5S_t H5_ATTR_UNUSED *space, hsize_t *offset)
 {
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -646,6 +668,36 @@ H5S_all_offset(const H5S_t UNUSED *space, hsize_t *offset)
 
     FUNC_LEAVE_NOAPI(SUCCEED)
 }   /* H5S_all_offset() */
+
+
+/*--------------------------------------------------------------------------
+ NAME
+    H5S__all_unlim_dim
+ PURPOSE
+    Return unlimited dimension of selection, or -1 if none
+ USAGE
+    int H5S__all_unlim_dim(space)
+        H5S_t *space;           IN: Dataspace pointer to check
+ RETURNS
+    Unlimited dimension of selection, or -1 if none (never fails).
+ DESCRIPTION
+    Returns the index of the unlimited dimension in this selection, or -1
+    if the selection has no unlimited dimension.  "All" selections are
+    always unlimited in every dimension, though this is not reflected in
+    other calls, where the selection is "clipped" against the current
+    extent, so for consistency this function always returns -1.
+ GLOBAL VARIABLES
+ COMMENTS, BUGS, ASSUMPTIONS
+ EXAMPLES
+ REVISION LOG
+--------------------------------------------------------------------------*/
+static int
+H5S__all_unlim_dim(const H5S_t H5_ATTR_UNUSED *space)
+{
+    FUNC_ENTER_STATIC_NOERR
+
+    FUNC_LEAVE_NOAPI(-1)
+} /* end H5S__all_unlim_dim() */
 
 
 /*--------------------------------------------------------------------------
@@ -667,7 +719,7 @@ H5S_all_offset(const H5S_t UNUSED *space, hsize_t *offset)
  REVISION LOG
 --------------------------------------------------------------------------*/
 static htri_t
-H5S_all_is_contiguous(const H5S_t UNUSED *space)
+H5S_all_is_contiguous(const H5S_t H5_ATTR_UNUSED *space)
 {
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -696,7 +748,7 @@ H5S_all_is_contiguous(const H5S_t UNUSED *space)
  REVISION LOG
 --------------------------------------------------------------------------*/
 static htri_t
-H5S_all_is_single(const H5S_t UNUSED *space)
+H5S_all_is_single(const H5S_t H5_ATTR_UNUSED *space)
 {
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -726,7 +778,7 @@ H5S_all_is_single(const H5S_t UNUSED *space)
  REVISION LOG
 --------------------------------------------------------------------------*/
 static htri_t
-H5S_all_is_regular(const H5S_t UNUSED *space)
+H5S_all_is_regular(const H5S_t H5_ATTR_UNUSED *space)
 {
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -756,7 +808,7 @@ H5S_all_is_regular(const H5S_t UNUSED *space)
  REVISION LOG
 --------------------------------------------------------------------------*/
 static herr_t
-H5S_all_adjust_u(H5S_t UNUSED *space, const hsize_t UNUSED *offset)
+H5S_all_adjust_u(H5S_t H5_ATTR_UNUSED *space, const hsize_t H5_ATTR_UNUSED *offset)
 {
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -782,7 +834,7 @@ H5S_all_adjust_u(H5S_t UNUSED *space, const hsize_t UNUSED *offset)
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5S_all_project_scalar(const H5S_t UNUSED *space, hsize_t *offset)
+H5S_all_project_scalar(const H5S_t H5_ATTR_UNUSED *space, hsize_t *offset)
 {
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -946,8 +998,8 @@ done:
  REVISION LOG
 --------------------------------------------------------------------------*/
 static herr_t
-H5S_all_get_seq_list(const H5S_t UNUSED *space, unsigned UNUSED flags, H5S_sel_iter_t *iter,
-    size_t UNUSED maxseq, size_t maxelem, size_t *nseq, size_t *nelem,
+H5S_all_get_seq_list(const H5S_t H5_ATTR_UNUSED *space, unsigned H5_ATTR_UNUSED flags, H5S_sel_iter_t *iter,
+    size_t H5_ATTR_UNUSED maxseq, size_t maxelem, size_t *nseq, size_t *nelem,
     hsize_t *off, size_t *len)
 {
     size_t elem_used;           /* The number of elements used */
@@ -967,6 +1019,7 @@ H5S_all_get_seq_list(const H5S_t UNUSED *space, unsigned UNUSED flags, H5S_sel_i
     /* Determine the actual number of elements to use */
     H5_CHECK_OVERFLOW(iter->elmt_left,hsize_t,size_t);
     elem_used=MIN(maxelem,(size_t)iter->elmt_left);
+    HDassert(elem_used > 0);
 
     /* Compute the offset in the dataset */
     off[0]=iter->u.all.byte_offset;

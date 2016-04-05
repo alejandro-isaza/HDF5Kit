@@ -15,11 +15,11 @@
 
 /*-------------------------------------------------------------------------
  *
- * Created:		H5HFtiny.c
- *			Aug 14 2006
- *			Quincey Koziol <koziol@hdfgroup.org>
+ * Created:     H5HFtiny.c
+ *              Aug 14 2006
+ *              Quincey Koziol <koziol@hdfgroup.org>
  *
- * Purpose:		Routines for "tiny" objects in fractal heap
+ * Purpose:     Routines for "tiny" objects in fractal heap
  *
  *-------------------------------------------------------------------------
  */
@@ -28,15 +28,15 @@
 /* Module Setup */
 /****************/
 
-#define H5HF_PACKAGE		/*suppress error about including H5HFpkg  */
+#include "H5HFmodule.h"         /* This source code file is part of the H5HF module */
 
 
 /***********/
 /* Headers */
 /***********/
-#include "H5private.h"		/* Generic Functions			*/
-#include "H5Eprivate.h"		/* Error handling		  	*/
-#include "H5HFpkg.h"		/* Fractal heaps			*/
+#include "H5private.h"      /* Generic Functions        */
+#include "H5Eprivate.h"     /* Error handling           */
+#include "H5HFpkg.h"        /* Fractal heaps            */
 
 
 /****************/
@@ -44,11 +44,11 @@
 /****************/
 
 /* Tiny object length information */
-#define H5HF_TINY_LEN_SHORT     16              /* Max. length able to be encoded in first heap ID byte */
-#define H5HF_TINY_MASK_SHORT    0x0F            /* Mask for length in first heap ID byte */
-#define H5HF_TINY_MASK_EXT      0x0FFF          /* Mask for length in two heap ID bytes */
-#define H5HF_TINY_MASK_EXT_1    0x0F00          /* Mask for length in first byte of two heap ID bytes */
-#define H5HF_TINY_MASK_EXT_2    0x00FF          /* Mask for length in second byte of two heap ID bytes */
+#define H5HF_TINY_LEN_SHORT     16          /* Max. length able to be encoded in first heap ID byte */
+#define H5HF_TINY_MASK_SHORT    0x0F        /* Mask for length in first heap ID byte                */
+#define H5HF_TINY_MASK_EXT      0x0FFF      /* Mask for length in two heap ID bytes                 */
+#define H5HF_TINY_MASK_EXT_1    0x0F00      /* Mask for length in first byte of two heap ID bytes   */
+#define H5HF_TINY_MASK_EXT_2    0x00FF      /* Mask for length in second byte of two heap ID bytes  */
 
 
 /******************/
@@ -84,15 +84,15 @@ static herr_t H5HF_tiny_op_real(H5HF_hdr_t *hdr, const uint8_t *id,
 
 
 /*-------------------------------------------------------------------------
- * Function:	H5HF_tiny_init
+ * Function:    H5HF_tiny_init
  *
- * Purpose:	Initialize information for tracking 'tiny' objects
+ * Purpose:     Initialize information for tracking 'tiny' objects
  *
- * Return:	SUCCEED/FAIL
+ * Return:      SUCCEED/FAIL
  *
- * Programmer:	Quincey Koziol
- *		koziol@hdfgroup.org
- *		Aug 14 2006
+ * Programmer:  Quincey Koziol
+ *              koziol@hdfgroup.org
+ *              Aug 14 2006
  *
  *-------------------------------------------------------------------------
  */
@@ -131,15 +131,15 @@ H5HF_tiny_init(H5HF_hdr_t *hdr)
 
 
 /*-------------------------------------------------------------------------
- * Function:	H5HF_tiny_insert
+ * Function:    H5HF_tiny_insert
  *
- * Purpose:	Pack a 'tiny' object in a heap ID
+ * Purpose:     Pack a 'tiny' object in a heap ID
  *
- * Return:	SUCCEED/FAIL
+ * Return:      SUCCEED/FAIL
  *
- * Programmer:	Quincey Koziol
- *		koziol@hdfgroup.org
- *		Aug 14 2006
+ * Programmer:  Quincey Koziol
+ *              koziol@hdfgroup.org
+ *              Aug 14 2006
  *
  *-------------------------------------------------------------------------
  */
@@ -169,18 +169,17 @@ HDfprintf(stderr, "%s: obj_size = %Zu\n", FUNC, obj_size);
 
     /* Encode object into ID */
     if(!hdr->tiny_len_extended) {
-        *id++ = H5HF_ID_VERS_CURR | H5HF_ID_TYPE_TINY |
-                (enc_obj_size & H5HF_TINY_MASK_SHORT);
+        *id++ = (uint8_t)(H5HF_ID_VERS_CURR | H5HF_ID_TYPE_TINY |
+                (enc_obj_size & H5HF_TINY_MASK_SHORT));
     } /* end if */
     else {
-        *id++ = H5HF_ID_VERS_CURR | H5HF_ID_TYPE_TINY |
-                ((enc_obj_size & H5HF_TINY_MASK_EXT_1) >> 8);
+        *id++ = (uint8_t)(H5HF_ID_VERS_CURR | H5HF_ID_TYPE_TINY |
+                ((enc_obj_size & H5HF_TINY_MASK_EXT_1) >> 8));
         *id++ = enc_obj_size & H5HF_TINY_MASK_EXT_2;
     } /* end else */
+
     HDmemcpy(id, obj, obj_size);
-#ifdef H5_CLEAR_MEMORY
-HDmemset(id + obj_size, 0, (hdr->id_len - (1 + hdr->tiny_len_extended + obj_size)));
-#endif /* H5_CLEAR_MEMORY */
+    HDmemset(id + obj_size, 0, (hdr->id_len - ((size_t)1 + (size_t)hdr->tiny_len_extended + obj_size)));
 
     /* Update statistics about heap */
     hdr->tiny_size += obj_size;
@@ -196,15 +195,15 @@ done:
 
 
 /*-------------------------------------------------------------------------
- * Function:	H5HF_tiny_get_obj_len
+ * Function:    H5HF_tiny_get_obj_len
  *
- * Purpose:	Get the size of a 'tiny' object in a fractal heap
+ * Purpose:     Get the size of a 'tiny' object in a fractal heap
  *
- * Return:	SUCCEED/FAIL
+ * Return:      SUCCEED (Can't fail)
  *
- * Programmer:	Quincey Koziol
- *		koziol@hdfgroup.org
- *		Aug 14 2006
+ * Programmer:  Quincey Koziol
+ *              koziol@hdfgroup.org
+ *              Aug 14 2006
  *
  *-------------------------------------------------------------------------
  */
@@ -226,10 +225,10 @@ H5HF_tiny_get_obj_len(H5HF_hdr_t *hdr, const uint8_t *id, size_t *obj_len_p)
     if(!hdr->tiny_len_extended)
         enc_obj_size = *id & H5HF_TINY_MASK_SHORT;
     else
-	/* (performed in this odd way to avoid compiler bug on tg-login3 with
-	 *  gcc 3.2.2 - QAK)
-	 */
-        enc_obj_size = *(id + 1) | ((*id & H5HF_TINY_MASK_EXT_1) << 8);
+        /* (performed in this odd way to avoid compiler bug on tg-login3 with
+         *  gcc 3.2.2 - QAK)
+         */
+        enc_obj_size = (size_t)*(id + 1) | ((size_t)(*id & H5HF_TINY_MASK_EXT_1) << 8);
 
     /* Set the object's length */
     *obj_len_p = enc_obj_size + 1;
@@ -239,15 +238,15 @@ H5HF_tiny_get_obj_len(H5HF_hdr_t *hdr, const uint8_t *id, size_t *obj_len_p)
 
 
 /*-------------------------------------------------------------------------
- * Function:	H5HF_tiny_op_real
+ * Function:    H5HF_tiny_op_real
  *
- * Purpose:	Internal routine to perform operation on 'tiny' object
+ * Purpose:     Internal routine to perform operation on 'tiny' object
  *
- * Return:	SUCCEED/FAIL
+ * Return:      SUCCEED/FAIL
  *
- * Programmer:	Quincey Koziol
- *		koziol@hdfgroup.org
- *		Sep 11 2006
+ * Programmer:  Quincey Koziol
+ *              koziol@hdfgroup.org
+ *              Sep 11 2006
  *
  *-------------------------------------------------------------------------
  */
@@ -266,31 +265,23 @@ H5HF_tiny_op_real(H5HF_hdr_t *hdr, const uint8_t *id, H5HF_operator_t op,
     HDassert(hdr);
     HDassert(id);
     HDassert(op);
-
-    /* Check if 'tiny' object ID is in extended form */
-    if(!hdr->tiny_len_extended) {
-        /* Retrieve the object's encoded length */
-        enc_obj_size = *id & H5HF_TINY_MASK_SHORT;
-
-        /* Advance past flag byte(s) */
+    
+    /* Get the object's encoded length */
+    /* H5HF_tiny_obj_len can't fail */
+    ret_value = H5HF_tiny_get_obj_len(hdr, id, &enc_obj_size);
+    
+    /* Advance past flag byte(s) */
+    if(!hdr->tiny_len_extended)
         id++;
-    } /* end if */
     else {
-        /* Retrieve the object's encoded length */
-	/* (performed in this odd way to avoid compiler bug on tg-login3 with
-	 *  gcc 3.2.2 - QAK)
-	 */
-        enc_obj_size = *(id + 1) | ((*id & H5HF_TINY_MASK_EXT_1) << 8);
-
-        /* Advance past flag byte(s) */
-	/* (performed in two steps to avoid compiler bug on tg-login3 with
-	 *  gcc 3.2.2 - QAK)
-	 */
+        /* (performed in two steps to avoid compiler bug on tg-login3 with
+         *  gcc 3.2.2 - QAK)
+         */
         id++; id++;
-    } /* end else */
+    }
 
     /* Call the user's 'op' callback */
-    if(op(id, (enc_obj_size + 1), op_data) < 0)
+    if(op(id, enc_obj_size, op_data) < 0)
         HGOTO_ERROR(H5E_HEAP, H5E_CANTOPERATE, FAIL, "application's callback failed")
 
 done:
@@ -299,15 +290,15 @@ done:
 
 
 /*-------------------------------------------------------------------------
- * Function:	H5HF_tiny_read
+ * Function:    H5HF_tiny_read
  *
- * Purpose:	Read a 'tiny' object from the heap
+ * Purpose:     Read a 'tiny' object from the heap
  *
- * Return:	SUCCEED/FAIL
+ * Return:      SUCCEED/FAIL
  *
- * Programmer:	Quincey Koziol
- *		koziol@hdfgroup.org
- *		Aug  8 2006
+ * Programmer:  Quincey Koziol
+ *              koziol@hdfgroup.org
+ *              Aug  8 2006
  *
  *-------------------------------------------------------------------------
  */
@@ -335,15 +326,15 @@ done:
 
 
 /*-------------------------------------------------------------------------
- * Function:	H5HF_tiny_op
+ * Function:    H5HF_tiny_op
  *
- * Purpose:	Operate directly on a 'tiny' object
+ * Purpose:     Operate directly on a 'tiny' object
  *
- * Return:	SUCCEED/FAIL
+ * Return:      SUCCEED/FAIL
  *
- * Programmer:	Quincey Koziol
- *		koziol@ncsa.uiuc.edu
- *		Sept 11 2006
+ * Programmer:  Quincey Koziol
+ *              koziol@hdfgroup.org
+ *              Sept 11 2006
  *
  *-------------------------------------------------------------------------
  */
@@ -372,15 +363,15 @@ done:
 
 
 /*-------------------------------------------------------------------------
- * Function:	H5HF_tiny_remove
+ * Function:    H5HF_tiny_remove
  *
- * Purpose:	Remove a 'tiny' object from the heap statistics
+ * Purpose:     Remove a 'tiny' object from the heap statistics
  *
- * Return:	SUCCEED/FAIL
+ * Return:      SUCCEED/FAIL
  *
- * Programmer:	Quincey Koziol
- *		koziol@hdfgroup.org
- *		Aug 14 2006
+ * Programmer:  Quincey Koziol
+ *              koziol@hdfgroup.org
+ *              Aug 14 2006
  *
  *-------------------------------------------------------------------------
  */
@@ -398,17 +389,12 @@ H5HF_tiny_remove(H5HF_hdr_t *hdr, const uint8_t *id)
     HDassert(hdr);
     HDassert(id);
 
-    /* Check if 'tiny' object ID is in extended form */
-    if(!hdr->tiny_len_extended)
-        enc_obj_size = *id & H5HF_TINY_MASK_SHORT;
-    else
-	/* (performed in this odd way to avoid compiler bug on tg-login3 with
-	 *  gcc 3.2.2 - QAK)
-	 */
-        enc_obj_size = *(id + 1) | ((*id & H5HF_TINY_MASK_EXT_1) << 8);
+    /* Get the object's encoded length */
+    /* H5HF_tiny_obj_len can't fail */
+    ret_value = H5HF_tiny_get_obj_len(hdr, id, &enc_obj_size);
 
     /* Update statistics about heap */
-    hdr->tiny_size -= (enc_obj_size + 1);
+    hdr->tiny_size -= enc_obj_size;
     hdr->tiny_nobjs--;
 
     /* Mark heap header as modified */
@@ -418,4 +404,3 @@ H5HF_tiny_remove(H5HF_hdr_t *hdr, const uint8_t *id)
 done:
     FUNC_LEAVE_NOAPI(ret_value)
 } /* end H5HF_tiny_remove() */
-

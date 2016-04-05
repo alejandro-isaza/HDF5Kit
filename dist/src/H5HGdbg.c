@@ -23,7 +23,7 @@
 /* Module Setup */
 /****************/
 
-#define H5HG_PACKAGE		/*suppress error about including H5HGpkg	  */
+#include "H5HGmodule.h"         /* This source code file is part of the H5HG module */
 
 
 /***********/
@@ -103,7 +103,7 @@ H5HG_debug(H5F_t *f, hid_t dxpl_id, haddr_t addr, FILE *stream, int indent,
     HDassert(indent >= 0);
     HDassert(fwidth >= 0);
 
-    if(NULL == (h = H5HG_protect(f, dxpl_id, addr, H5AC_READ)))
+    if(NULL == (h = H5HG_protect(f, dxpl_id, addr, H5AC__READ_ONLY_FLAG)))
         HGOTO_ERROR(H5E_HEAP, H5E_CANTPROTECT, FAIL, "unable to protect global heap collection");
 
     HDfprintf(stream, "%*sGlobal Heap Collection...\n", indent, "");

@@ -798,7 +798,7 @@ test_vltypes_vlen_compound(void)
                 TestErrPrintf("VL data values don't match!, wdata[%d].p[%d].i=%d, rdata[%d].p[%d].i=%d\n",(int)i,(int)j, (int)((s1 *)wdata[i].p)[j].i, (int)i,(int)j, (int)((s1 *)rdata[i].p)[j].i);
                 continue;
             } /* end if */
-            if(!FLT_ABS_EQUAL(((s1 *)wdata[i].p)[j].f,((s1 *)rdata[i].p)[j].f)) {
+            if(!H5_FLT_ABS_EQUAL(((s1 *)wdata[i].p)[j].f,((s1 *)rdata[i].p)[j].f)) {
                 TestErrPrintf("VL data values don't match!, wdata[%d].p[%d].f=%f, rdata[%d].p[%d].f=%f\n",(int)i,(int)j, (double)((s1 *)wdata[i].p)[j].f, (int)i,(int)j, (double)((s1 *)rdata[i].p)[j].f);
                 continue;
             } /* end if */
@@ -943,7 +943,7 @@ rewrite_vltypes_vlen_compound(void)
                 TestErrPrintf("VL data values don't match!, wdata[%d].p[%d].i=%d, rdata[%d].p[%d].i=%d\n",(int)i,(int)j, (int)((s1 *)wdata[i].p)[j].i, (int)i,(int)j, (int)((s1 *)rdata[i].p)[j].i);
                 continue;
             } /* end if */
-            if(!FLT_ABS_EQUAL(((s1 *)wdata[i].p)[j].f,((s1 *)rdata[i].p)[j].f)) {
+            if(!H5_FLT_ABS_EQUAL(((s1 *)wdata[i].p)[j].f,((s1 *)rdata[i].p)[j].f)) {
                 TestErrPrintf("VL data values don't match!, wdata[%d].p[%d].f=%f, rdata[%d].p[%d].f=%f\n",(int)i,(int)j, (double)((s1 *)wdata[i].p)[j].f, (int)i,(int)j, (double)((s1 *)rdata[i].p)[j].f);
                 continue;
             } /* end if */
@@ -1021,7 +1021,7 @@ test_vltypes_compound_vlen_vlen(void)
         wdata[i].f=(float)((i*20)/3.0F);
         wdata[i].v.p=HDmalloc((i+L1_INCM)*sizeof(hvl_t));
         wdata[i].v.len=i+L1_INCM;
-        for(t1=(wdata[i].v).p,j=0; j<(i+L1_INCM); j++, t1++) {
+        for(t1=(hvl_t *)((wdata[i].v).p),j=0; j<(i+L1_INCM); j++, t1++) {
             t1->p=HDmalloc((j+L2_INCM)*sizeof(unsigned int));
             t1->len=j+L2_INCM;
             for(k=0; k<j+L2_INCM; k++)
@@ -1092,7 +1092,7 @@ test_vltypes_compound_vlen_vlen(void)
             TestErrPrintf("Integer components don't match!, wdata[%d].i=%d, rdata[%d].i=%d\n",(int)i,(int)wdata[i].i,(int)i,(int)rdata[i].i);
             continue;
         } /* end if */
-        if(!FLT_ABS_EQUAL(wdata[i].f,rdata[i].f)) {
+        if(!H5_FLT_ABS_EQUAL(wdata[i].f,rdata[i].f)) {
             TestErrPrintf("Float components don't match!, wdata[%d].f=%f, rdata[%d].f=%f\n",(int)i,(double)wdata[i].f,(int)i,(double)rdata[i].f);
             continue;
         } /* end if */
@@ -1102,7 +1102,7 @@ test_vltypes_compound_vlen_vlen(void)
             continue;
         } /* end if */
 
-        for(t1=wdata[i].v.p, t2=rdata[i].v.p, j=0; j<rdata[i].v.len; j++, t1++, t2++) {
+        for(t1=(hvl_t *)(wdata[i].v.p), t2=(hvl_t *)(rdata[i].v.p), j=0; j<rdata[i].v.len; j++, t1++, t2++) {
             if(t1->len != t2->len) {
                 TestErrPrintf("%d: VL data length don't match!, i=%d, j=%d, t1->len=%d, t2->len=%d\n",__LINE__,(int)i,(int)j,(int)t1->len,(int)t2->len);
                 continue;
@@ -1161,13 +1161,13 @@ static void
 test_vltypes_compound_vlstr(void)
 {
     typedef enum {
-	red,
-	blue,
-	green
+        red,
+        blue,
+        green
     } e1;
     typedef struct {
         char *string;
-	e1   color;
+        e1   color;
     } s2;
     typedef struct {                    /* Struct that the compound type are composed of */
         hvl_t v;
@@ -1199,12 +1199,12 @@ test_vltypes_compound_vlstr(void)
     for(i=0; i<SPACE1_DIM1; i++) {
         wdata[i].v.p=(s2*)HDmalloc((i+L3_INCM)*sizeof(s2));
         wdata[i].v.len=i+L3_INCM;
-        for(t1=(wdata[i].v).p, j=0; j<(i+L3_INCM); j++, t1++) {
-	    strcat(str, "m");
-	    t1->string = (char*)HDmalloc(strlen(str)*sizeof(char)+1);
+        for(t1=(s2 *)((wdata[i].v).p), j=0; j<(i+L3_INCM); j++, t1++) {
+            strcat(str, "m");
+            t1->string = (char*)HDmalloc(strlen(str)*sizeof(char)+1);
             strcpy(t1->string, str);
-	    /*t1->color = red;*/
-	    t1->color = blue;
+            /*t1->color = red;*/
+            t1->color = blue;
         }
     } /* end for */
 
@@ -1342,7 +1342,7 @@ test_vltypes_compound_vlstr(void)
             continue;
         } /* end if */
 
-        for(t1=wdata[i].v.p, t2=rdata[i].v.p, j=0; j<rdata[i].v.len; j++, t1++, t2++) {
+        for(t1=(s2 *)(wdata[i].v.p), t2=(s2 *)(rdata[i].v.p), j=0; j<rdata[i].v.len; j++, t1++, t2++) {
                 if( strcmp(t1->string, t2->string) ) {
                     TestErrPrintf("VL data values don't match!, t1->string=%s, t2->string=%s\n",t1->string, t2->string);
                     continue;
@@ -1400,7 +1400,7 @@ test_vltypes_compound_vlstr(void)
             continue;
         } /* end if */
 
-        for(t1=wdata2[i].v.p, t2=rdata2[i].v.p, j=0; j<rdata2[i].v.len; j++, t1++, t2++) {
+        for(t1=(s2 *)(wdata2[i].v.p), t2=(s2 *)(rdata2[i].v.p), j=0; j<rdata2[i].v.len; j++, t1++, t2++) {
                 if( strcmp(t1->string, t2->string) ) {
                     TestErrPrintf("VL data values don't match!, t1->string=%s, t2->string=%s\n",t1->string, t2->string);
                     continue;
@@ -1546,7 +1546,7 @@ test_vltypes_compound_vlen_atomic(void)
             TestErrPrintf("Integer components don't match!, wdata[%d].i=%d, rdata[%d].i=%d\n",(int)i,(int)wdata[i].i,(int)i,(int)rdata[i].i);
             continue;
         } /* end if */
-        if(!FLT_ABS_EQUAL(wdata[i].f,rdata[i].f)) {
+        if(!H5_FLT_ABS_EQUAL(wdata[i].f,rdata[i].f)) {
             TestErrPrintf("Float components don't match!, wdata[%d].f=%f, rdata[%d].f=%f\n",(int)i,(double)wdata[i].f,(int)i,(double)rdata[i].f);
             continue;
         } /* end if */
@@ -1595,8 +1595,8 @@ test_vltypes_compound_vlen_atomic(void)
 
     /* Check data read in */
     for(i = 0; i < SPACE1_DIM1; i++)
-        if(rdata[i].i != 0 || !FLT_ABS_EQUAL(rdata[i].f, 0.0F) || rdata[i].v.len != 0 || rdata[i].v.p != NULL)
-            TestErrPrintf("VL doesn't match!, rdata[%d].i=%d, rdata[%d].f=%f, rdata[%d].v.len=%u, rdata[%d].v.p=%p\n",(int)i,rdata[i].i,(int)i,rdata[i].f,(int)i,(unsigned)rdata[i].v.len,(int)i,rdata[i].v.p);
+        if(rdata[i].i != 0 || !H5_FLT_ABS_EQUAL(rdata[i].f, 0.0F) || rdata[i].v.len != 0 || rdata[i].v.p != NULL)
+            TestErrPrintf("VL doesn't match!, rdata[%d].i=%d, rdata[%d].f=%f, rdata[%d].v.len=%u, rdata[%d].v.p=%p\n",(int)i,rdata[i].i,(int)i,(double)rdata[i].f,(int)i,(unsigned)rdata[i].v.len,(int)i,rdata[i].v.p);
 
     /* Write dataset to disk */
     ret = H5Dwrite(dataset, tid2, H5S_ALL, H5S_ALL, H5P_DEFAULT, wdata);
@@ -1612,7 +1612,7 @@ test_vltypes_compound_vlen_atomic(void)
             TestErrPrintf("Integer components don't match!, wdata[%d].i=%d, rdata[%d].i=%d\n",(int)i,(int)wdata[i].i,(int)i,(int)rdata[i].i);
             continue;
         } /* end if */
-        if(!FLT_ABS_EQUAL(wdata[i].f,rdata[i].f)) {
+        if(!H5_FLT_ABS_EQUAL(wdata[i].f,rdata[i].f)) {
             TestErrPrintf("Float components don't match!, wdata[%d].f=%f, rdata[%d].f=%f\n",(int)i,(double)wdata[i].f,(int)i,(double)rdata[i].f);
             continue;
         } /* end if */
@@ -1764,7 +1764,7 @@ rewrite_vltypes_compound_vlen_atomic(void)
             TestErrPrintf("Integer components don't match!, wdata[%d].i=%d, rdata[%d].i=%d\n",(int)i,(int)wdata[i].i,(int)i,(int)rdata[i].i);
             continue;
         } /* end if */
-        if(!FLT_ABS_EQUAL(wdata[i].f,rdata[i].f)) {
+        if(!H5_FLT_ABS_EQUAL(wdata[i].f,rdata[i].f)) {
             TestErrPrintf("Float components don't match!, wdata[%d].f=%f, rdata[%d].f=%f\n",(int)i,(double)wdata[i].f,(int)i,(double)rdata[i].f);
             continue;
         } /* end if */
@@ -1871,7 +1871,7 @@ test_vltypes_vlen_vlen_atomic(void)
             return;
         } /* end if */
         wdata[i].len=i+1;
-        for(t1=wdata[i].p,j=0; j<(i+1); j++, t1++) {
+        for(t1=(hvl_t *)(wdata[i].p),j=0; j<(i+1); j++, t1++) {
             t1->p=HDmalloc((j+1)*sizeof(unsigned int));
             if(t1->p==NULL) {
                 TestErrPrintf("Cannot allocate memory for VL data! i=%u, j=%u\n",i,j);
@@ -1977,7 +1977,7 @@ test_vltypes_vlen_vlen_atomic(void)
             TestErrPrintf("%d: VL data length don't match!, wdata[%d].len=%d, rdata[%d].len=%d\n",__LINE__,(int)i,(int)wdata[i].len,(int)i,(int)rdata[i].len);
             continue;
         } /* end if */
-        for(t1=wdata[i].p, t2=rdata[i].p, j=0; j<rdata[i].len; j++, t1++, t2++) {
+        for(t1=(hvl_t *)wdata[i].p, t2=(hvl_t *)(rdata[i].p), j=0; j<rdata[i].len; j++, t1++, t2++) {
             if(t1->len!=t2->len) {
                 TestErrPrintf("%d: VL data length don't match!, i=%d, j=%d, t1->len=%d, t2->len=%d\n",__LINE__,(int)i,(int)j,(int)t1->len,(int)t2->len);
                 continue;
@@ -2062,7 +2062,7 @@ rewrite_longer_vltypes_vlen_vlen_atomic(void)
             return;
         } /* end if */
         wdata[i].len = i + increment;
-        for(t1 = wdata[i].p, j = 0; j < (i + increment); j++, t1++) {
+        for(t1 = (hvl_t *)(wdata[i].p), j = 0; j < (i + increment); j++, t1++) {
             t1->p = HDmalloc((j + 1) * sizeof(unsigned int));
             if(t1->p == NULL) {
                 TestErrPrintf("Cannot allocate memory for VL data! i=%u, j=%u\n", i, j);
@@ -2157,7 +2157,7 @@ rewrite_longer_vltypes_vlen_vlen_atomic(void)
             TestErrPrintf("%d: VL data length don't match!, wdata[%d].len=%d, rdata[%d].len=%d\n",__LINE__,(int)i,(int)wdata[i].len,(int)i,(int)rdata[i].len);
             continue;
         } /* end if */
-        for(t1=wdata[i].p, t2=rdata[i].p, j=0; j<rdata[i].len; j++, t1++, t2++) {
+        for(t1=(hvl_t *)(wdata[i].p), t2=(hvl_t *)(rdata[i].p), j=0; j<rdata[i].len; j++, t1++, t2++) {
             if(t1->len!=t2->len) {
                 TestErrPrintf("%d: VL data length don't match!, i=%d, j=%d, t1->len=%d, t2->len=%d\n",__LINE__,(int)i,(int)j,(int)t1->len,(int)t2->len);
                 continue;
@@ -2238,7 +2238,7 @@ rewrite_shorter_vltypes_vlen_vlen_atomic(void)
             return;
         } /* end if */
         wdata[i].len=i+increment;
-        for(t1=wdata[i].p,j=0; j<(i+increment); j++, t1++) {
+        for(t1=(hvl_t *)(wdata[i].p),j=0; j<(i+increment); j++, t1++) {
             t1->p=HDmalloc((j+1)*sizeof(unsigned int));
             if(t1->p==NULL) {
                 TestErrPrintf("Cannot allocate memory for VL data! i=%u, j=%u\n",i,j);
@@ -2333,7 +2333,7 @@ rewrite_shorter_vltypes_vlen_vlen_atomic(void)
             TestErrPrintf("%d: VL data length don't match!, wdata[%d].len=%d, rdata[%d].len=%d\n",__LINE__,(int)i,(int)wdata[i].len,(int)i,(int)rdata[i].len);
             continue;
         } /* end if */
-        for(t1=wdata[i].p, t2=rdata[i].p, j=0; j<rdata[i].len; j++, t1++, t2++) {
+        for(t1=(hvl_t *)(wdata[i].p), t2=(hvl_t *)(rdata[i].p), j=0; j<rdata[i].len; j++, t1++, t2++) {
             if(t1->len!=t2->len) {
                 TestErrPrintf("%d: VL data length don't match!, i=%d, j=%d, t1->len=%d, t2->len=%d\n",__LINE__,(int)i,(int)j,(int)t1->len,(int)t2->len);
                 continue;
@@ -2496,7 +2496,7 @@ test_vltypes_fill_value(void)
 
 
     /* Allocate space for the buffer to read data */
-    rbuf = HDmalloc(SPACE4_DIM_LARGE * sizeof(dtype1_struct));
+    rbuf = (dtype1_struct *)HDmalloc(SPACE4_DIM_LARGE * sizeof(dtype1_struct));
     CHECK(rbuf, NULL, "HDmalloc");
 
 
@@ -2538,7 +2538,7 @@ test_vltypes_fill_value(void)
     CHECK(file_id, FAIL, "H5Fcreate");
 
     /* Create datasets with different storage layouts */
-    for(layout = H5D_COMPACT; layout <= H5D_CHUNKED; layout++) {
+    for(layout = H5D_COMPACT; layout <= H5D_CHUNKED; H5_INC_ENUM(H5D_layout_t, layout)) {
         unsigned compress_loop;         /* # of times to run loop, for testing compressed chunked dataset */
         unsigned test_loop;             /* Loop over datasets */
 
@@ -2597,6 +2597,8 @@ test_vltypes_fill_value(void)
                     }
                     break;
 
+                case H5D_LAYOUT_ERROR:
+                case H5D_NLAYOUTS:
                 default:
                     assert(0 && "Unknown layout type!");
                     break;
@@ -2648,7 +2650,7 @@ test_vltypes_fill_value(void)
     CHECK(file_id, FAIL, "H5Fopen");
 
     /* Read empty datasets with different storage layouts */
-    for(layout = H5D_COMPACT; layout <= H5D_CHUNKED; layout++) {
+    for(layout = H5D_COMPACT; layout <= H5D_CHUNKED; H5_INC_ENUM(H5D_layout_t, layout)) {
         unsigned compress_loop;         /* # of times to run loop, for testing compressed chunked dataset */
         unsigned test_loop;             /* Loop over datasets */
 
@@ -2698,6 +2700,8 @@ test_vltypes_fill_value(void)
                     dset_elmts = SPACE4_DIM_LARGE;
                     break;
 
+                case H5D_LAYOUT_ERROR:
+                case H5D_NLAYOUTS:
                 default:
                     assert(0 && "Unknown layout type!");
                     break;
@@ -2843,7 +2847,7 @@ test_vltypes_fill_value(void)
     CHECK(file_id, FAIL, "H5Fopen");
 
     /* Write one element & fill values to  datasets with different storage layouts */
-    for(layout = H5D_COMPACT; layout <= H5D_CHUNKED; layout++) {
+    for(layout = H5D_COMPACT; layout <= H5D_CHUNKED; H5_INC_ENUM(H5D_layout_t, layout)) {
         unsigned compress_loop;         /* # of times to run loop, for testing compressed chunked dataset */
         unsigned test_loop;             /* Loop over datasets */
 
@@ -2893,6 +2897,8 @@ test_vltypes_fill_value(void)
                     dset_elmts = SPACE4_DIM_LARGE;
                     break;
 
+                case H5D_LAYOUT_ERROR:
+                case H5D_NLAYOUTS:
                 default:
                     assert(0 && "Unknown layout type!");
                     break;

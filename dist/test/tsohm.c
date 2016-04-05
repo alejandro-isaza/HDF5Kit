@@ -27,7 +27,7 @@
  * This file needs to access private information from the H5F package.
  * This file also needs to access the file testing code.
  */
-#define H5F_PACKAGE
+#define H5F_FRIEND		/*suppress error about including H5Fpkg	  */
 #define H5F_TESTING
 #include "H5Fpkg.h"		/* File access	 			*/
 
@@ -1279,7 +1279,7 @@ static void size2_verify_plist1(hid_t plist)
     CHECK_I(ret, "H5Pget_fill_value");
 
     ret = memcmp(&fill1, &fill1_correct, sizeof(fill1_correct));
-    VERIFY(ret, 0, memcmp);
+    VERIFY(ret, 0, "memcmp");
 
     ret = H5Tclose(dtype1_id);
     CHECK_I(ret, "H5Tclose");
@@ -1350,7 +1350,7 @@ static void size2_verify_plist2(hid_t plist)
     CHECK_I(ret, "H5Pget_fill_value");
 
     ret = HDmemcmp(&fill2, &fill2_correct, (size_t)DTYPE2_SIZE);
-    VERIFY(ret, 0, memcmp);
+    VERIFY(ret, 0, "memcmp");
 
     ret = H5Tclose(dtype2_id);
     CHECK_I(ret, "H5Tclose");
@@ -2469,11 +2469,11 @@ static void test_sohm_size2(int close_reopen)
      * this happens because it's hard to predict exactly how much space this
      * will take.
      */
-     if((mult_index_med.attrs2 - mult_index_med.attrs1) !=
-            (list_index_med.attrs2 - list_index_med.attrs1))
+     if((mult_index_med.attrs2 - mult_index_med.attrs1) >
+            (list_index_med.attrs2 - list_index_med.attrs1) * OVERHEAD_ALLOWED)
         VERIFY(0, 1, "h5_get_file_size");
-     if((mult_index_btree.attrs2 - mult_index_btree.attrs1) !=
-            (btree_index.attrs2 - btree_index.attrs1))
+     if((mult_index_btree.attrs2 - mult_index_btree.attrs1) >
+            (btree_index.attrs2 - btree_index.attrs1) * OVERHEAD_ALLOWED)
         VERIFY(0, 1, "h5_get_file_size");
 
     /* The final file size for both of the multiple index files should be
@@ -3884,7 +3884,7 @@ test_sohm_external_dtype(void)
     CHECK_I(dset1_tid, "H5Dget_type");
 
     /* Allocate space and initialize data */
-    orig = (s1_t*)malloc(NX * NY * sizeof(s1_t));
+    orig = (s1_t*)HDmalloc(NX * NY * sizeof(s1_t));
     for(i=0; i<NX*NY; i++) {
         s_ptr = (s1_t*)orig + i;
         s_ptr->a = i*3 + 1;
@@ -3963,7 +3963,7 @@ test_sohm_external_dtype(void)
     ret = H5Fclose(file2);
     CHECK_I(ret, "H5Fclose");
 
-    free(orig);
+    HDfree(orig);
 }
 
 
@@ -3988,10 +3988,7 @@ test_sohm(void)
     test_sohm_delete();         /* Test deleting shared messages */
     test_sohm_delete_revert();  /* Test that a file with SOHMs becomes an
                                  * empty file again when they are deleted. */
-#ifndef  H5_CANNOT_OPEN_TWICE   /* On VMS this test fails since it tries to
-                                   open target file the second time */
     test_sohm_extlink();        /* Test SOHMs when external links are used */
-#endif /* H5_CANNOT_OPEN_TWICE */
 
     test_sohm_extend_dset();    /* Test extending shared datasets */
     test_sohm_external_dtype(); /* Test using datatype in another file */

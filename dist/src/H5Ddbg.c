@@ -17,10 +17,7 @@
 /* Module Setup */
 /****************/
 
-#define H5D_PACKAGE		/*suppress error about including H5Dpkg	  */
-
-/* Interface initialization */
-#define H5_INTERFACE_INIT_FUNC	H5D__init_dbg_interface
+#include "H5Dmodule.h"          /* This source code file is part of the H5D module */
 
 
 /***********/
@@ -61,26 +58,6 @@
 /* Local Variables */
 /*******************/
 
-
-/*--------------------------------------------------------------------------
-NAME
-   H5D__init_dbg_interface -- Initialize interface-specific information
-USAGE
-    herr_t H5D__init_dbg_interface()
-RETURNS
-    Non-negative on success/Negative on failure
-DESCRIPTION
-    Initializes any interface-specific data or routines.  (Just calls
-    H5D_init() currently).
-
---------------------------------------------------------------------------*/
-static herr_t
-H5D__init_dbg_interface(void)
-{
-    FUNC_ENTER_STATIC_NOERR
-
-    FUNC_LEAVE_NOAPI(H5D_init())
-} /* H5D__init_dbg_interface() */
 
 
 /*-------------------------------------------------------------------------
@@ -113,7 +90,7 @@ H5Ddebug(hid_t dset_id)
 
     /* Print B-tree information */
     if(H5D_CHUNKED == dset->shared->layout.type)
-	(void)H5D__chunk_dump_index(dset, H5AC_dxpl_id, stdout);
+	(void)H5D__chunk_dump_index(dset, H5AC_ind_read_dxpl_id, stdout);
     else if(H5D_CONTIGUOUS == dset->shared->layout.type)
 	HDfprintf(stdout, "    %-10s %a\n", "Address:", dset->shared->layout.storage.u.contig.addr);
 

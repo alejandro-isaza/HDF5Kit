@@ -80,7 +80,7 @@ void Abrt_Handler (int sig);
 
 /* Handler for SIGABRT - prints the reference count on each id */
 void
-Abrt_Handler (int UNUSED sig)
+Abrt_Handler (int H5_ATTR_UNUSED sig)
 {
     int i, n;
 
@@ -185,6 +185,10 @@ main (void)
 
     PASSED();
 
+    /* Restore the default error handler (set in h5_reset()) */
+    h5_restore_err();
+
+    /* Clean up any file(s) created */
     h5_reset();
     fapl = H5Pcreate (H5P_FILE_ACCESS);
     h5_cleanup (FILENAME, fapl);

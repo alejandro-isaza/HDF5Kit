@@ -29,7 +29,7 @@
  * This file needs to access private information from the H5O package.
  * This file also needs to access the object header testing code.
  */
-#define H5O_PACKAGE
+#define H5O_FRIEND		/*suppress error about including H5Opkg	  */
 #define H5O_TESTING
 #include "H5Opkg.h"		/* Object headers 			*/
 
@@ -37,7 +37,7 @@
  * This file needs to access private information from the H5A package.
  * This file also needs to access the attribute testing code.
  */
-#define H5A_PACKAGE
+#define H5A_FRIEND		/*suppress error about including H5Apkg	  */
 #define H5A_TESTING
 #include "H5Apkg.h"		/* Attributes	 			*/
 
@@ -45,7 +45,7 @@
  * This file needs to access private information from the H5F package.
  * This file also needs to access the file testing code.
  */
-#define H5F_PACKAGE
+#define H5F_FRIEND		/*suppress error about including H5Fpkg	  */
 #define H5F_TESTING
 #include "H5Fpkg.h"		/* File access	 			*/
 
@@ -178,6 +178,7 @@ test_attr_basic_write(hid_t fapl)
     hsize_t		dims3[] = {ATTR2_DIM1,ATTR2_DIM2};
     int       read_data1[ATTR1_DIM1]={0}; /* Buffer for reading 1st attribute */
     int         i;
+    hid_t		ret_id;		/* Generic hid_t return value	*/
     herr_t		ret;		/* Generic return value		*/
 
     /* Output message about test being performed */
@@ -228,8 +229,8 @@ test_attr_basic_write(hid_t fapl)
     CHECK(attr, FAIL, "H5Acreate2");
 
     /* Try to create the same attribute again (should fail) */
-    ret = H5Acreate2(dataset, ATTR1_NAME, H5T_NATIVE_INT, sid2, H5P_DEFAULT, H5P_DEFAULT);
-    VERIFY(ret, FAIL, "H5Acreate2");
+    ret_id = H5Acreate2(dataset, ATTR1_NAME, H5T_NATIVE_INT, sid2, H5P_DEFAULT, H5P_DEFAULT);
+    VERIFY(ret_id, FAIL, "H5Acreate2");
 
     /* Write attribute information */
     ret = H5Awrite(attr, H5T_NATIVE_INT, attr_data1);
@@ -366,8 +367,8 @@ test_attr_basic_write(hid_t fapl)
     VERIFY(attr_size, (ATTR2_DIM1 * ATTR2_DIM2 * sizeof(int)), "H5Aget_storage_size");
 
     /* Try to create the same attribute again (should fail) */
-    ret = H5Acreate2(group, ATTR2_NAME, H5T_NATIVE_INT, sid2, H5P_DEFAULT, H5P_DEFAULT);
-    VERIFY(ret, FAIL, "H5Acreate2");
+    ret_id = H5Acreate2(group, ATTR2_NAME, H5T_NATIVE_INT, sid2, H5P_DEFAULT, H5P_DEFAULT);
+    VERIFY(ret_id, FAIL, "H5Acreate2");
 
     /* Write attribute information */
     ret = H5Awrite(attr, H5T_NATIVE_INT, attr_data2);
@@ -521,8 +522,8 @@ test_attr_flush(hid_t fapl)
     ret=H5Aread(att, H5T_NATIVE_DOUBLE, &rdata);
     CHECK(ret, FAIL, "H5Awrite");
 
-    if(!DBL_ABS_EQUAL(rdata,0.0F))
-        TestErrPrintf("attribute value wrong: rdata=%f, should be %f\n",rdata,0.0F);
+    if(!H5_DBL_ABS_EQUAL(rdata,0.0F))
+        TestErrPrintf("attribute value wrong: rdata=%f, should be %f\n",rdata,(double)0.0F);
 
     ret=H5Fflush(fil, H5F_SCOPE_GLOBAL);
     CHECK(ret, FAIL, "H5Fflush");
@@ -530,8 +531,8 @@ test_attr_flush(hid_t fapl)
     ret=H5Aread(att, H5T_NATIVE_DOUBLE, &rdata);
     CHECK(ret, FAIL, "H5Awrite");
 
-    if(!DBL_ABS_EQUAL(rdata,0.0F))
-        TestErrPrintf("attribute value wrong: rdata=%f, should be %f\n",rdata,0.0F);
+    if(!H5_DBL_ABS_EQUAL(rdata,0.0F))
+        TestErrPrintf("attribute value wrong: rdata=%f, should be %f\n",rdata,(double)0.0F);
 
     ret=H5Awrite(att, H5T_NATIVE_DOUBLE, &wdata);
     CHECK(ret, FAIL, "H5Awrite");
@@ -539,7 +540,7 @@ test_attr_flush(hid_t fapl)
     ret=H5Aread(att, H5T_NATIVE_DOUBLE, &rdata);
     CHECK(ret, FAIL, "H5Awrite");
 
-    if(!DBL_ABS_EQUAL(rdata,wdata))
+    if(!H5_DBL_ABS_EQUAL(rdata,wdata))
         TestErrPrintf("attribute value wrong: rdata=%f, should be %f\n",rdata,wdata);
 
     ret=H5Sclose(spc);
@@ -682,6 +683,7 @@ test_attr_compound_write(hid_t fapl)
     hid_t		attr;	    /* Attribute ID			*/
     hsize_t		dims1[] = {SPACE1_DIM1, SPACE1_DIM2, SPACE1_DIM3};
     hsize_t		dims2[] = {ATTR4_DIM1,ATTR4_DIM2};
+    hid_t		ret_id;		/* Generic hid_t return value	*/
     herr_t		ret;		/* Generic return value		*/
 
     /* Output message about test being performed */
@@ -725,8 +727,8 @@ test_attr_compound_write(hid_t fapl)
     CHECK(attr, FAIL, "H5Acreate2");
 
     /* Try to create the same attribute again (should fail) */
-    ret = H5Acreate2(dataset, ATTR4_NAME, tid1, sid2, H5P_DEFAULT, H5P_DEFAULT);
-    VERIFY(ret, FAIL, "H5Acreate2");
+    ret_id = H5Acreate2(dataset, ATTR4_NAME, tid1, sid2, H5P_DEFAULT, H5P_DEFAULT);
+    VERIFY(ret_id, FAIL, "H5Acreate2");
 
     /* Write complex attribute data */
     ret = H5Awrite(attr, tid1, attr_data4);
@@ -844,7 +846,7 @@ test_attr_compound_read(hid_t fapl)
     t_class = H5Tget_class(field);
     VERIFY(t_class, H5T_INTEGER, "H5Tget_class");
     order = H5Tget_order(field);
-    VERIFY(order, H5Tget_order(H5T_NATIVE_INT), "H5Tget_order");
+    VERIFY_TYPE(order, H5Tget_order(H5T_NATIVE_INT), H5T_order_t, "%d", "H5Tget_order");
     size = H5Tget_size(field);
     VERIFY(size, H5Tget_size(H5T_NATIVE_INT), "H5Tget_size");
     H5Tclose(field);
@@ -853,7 +855,7 @@ test_attr_compound_read(hid_t fapl)
     t_class = H5Tget_class(field);
     VERIFY(t_class, H5T_FLOAT, "H5Tget_class");
     order = H5Tget_order(field);
-    VERIFY(order, H5Tget_order(H5T_NATIVE_DOUBLE), "H5Tget_order");
+    VERIFY_TYPE(order, H5Tget_order(H5T_NATIVE_DOUBLE), H5T_order_t, "%d", "H5Tget_order");
     size = H5Tget_size(field);
     VERIFY(size, H5Tget_size(H5T_NATIVE_DOUBLE), "H5Tget_size");
     H5Tclose(field);
@@ -862,7 +864,7 @@ test_attr_compound_read(hid_t fapl)
     t_class = H5Tget_class(field);
     VERIFY(t_class, H5T_INTEGER, "H5Tget_class");
     order = H5Tget_order(field);
-    VERIFY(order, H5Tget_order(H5T_NATIVE_SCHAR), "H5Tget_order");
+    VERIFY_TYPE(order, H5Tget_order(H5T_NATIVE_SCHAR), H5T_order_t, "%d", "H5Tget_order");
     size = H5Tget_size(field);
     VERIFY(size, H5Tget_size(H5T_NATIVE_SCHAR), "H5Tget_size");
     H5Tclose(field);
@@ -917,6 +919,7 @@ test_attr_scalar_write(hid_t fapl)
     hid_t		sid1,sid2;	/* Dataspace ID			*/
     hid_t		attr;	    /* Attribute ID			*/
     hsize_t		dims1[] = {SPACE1_DIM1, SPACE1_DIM2, SPACE1_DIM3};
+    hid_t		ret_id;		/* Generic hid_t return value	*/
     herr_t		ret;		/* Generic return value		*/
 
     /* Output message about test being performed */
@@ -943,8 +946,8 @@ test_attr_scalar_write(hid_t fapl)
     CHECK(attr, FAIL, "H5Acreate2");
 
     /* Try to create the same attribute again (should fail) */
-    ret = H5Acreate2(dataset, ATTR5_NAME, H5T_NATIVE_FLOAT, sid2, H5P_DEFAULT, H5P_DEFAULT);
-    VERIFY(ret, FAIL, "H5Acreate2");
+    ret_id = H5Acreate2(dataset, ATTR5_NAME, H5T_NATIVE_FLOAT, sid2, H5P_DEFAULT, H5P_DEFAULT);
+    VERIFY(ret_id, FAIL, "H5Acreate2");
 
     /* Write attribute information */
     ret = H5Awrite(attr, H5T_NATIVE_FLOAT, &attr_data5);
@@ -1011,9 +1014,9 @@ test_attr_scalar_read(hid_t fapl)
     CHECK(ret, FAIL, "H5Aread");
 
     /* Verify the floating-poing value in this way to avoid compiler warning. */
-    if(!FLT_ABS_EQUAL(rdata, attr_data5))
+    if(!H5_FLT_ABS_EQUAL(rdata, attr_data5))
 	printf("*** UNEXPECTED VALUE from %s should be %f, but is %f at line %4d in %s\n",
-	    "H5Aread", attr_data5, rdata, (int)__LINE__, __FILE__);
+	    "H5Aread", (double)attr_data5, (double)rdata, (int)__LINE__, __FILE__);
 
     /* Get the attribute's dataspace */
     sid = H5Aget_space(attr);
@@ -1057,6 +1060,7 @@ test_attr_mult_write(hid_t fapl)
     hsize_t		dims2[] = {ATTR1_DIM1};
     hsize_t		dims3[] = {ATTR2_DIM1,ATTR2_DIM2};
     hsize_t		dims4[] = {ATTR3_DIM1,ATTR3_DIM2,ATTR3_DIM3};
+    hid_t		ret_id;		/* Generic hid_t return value	*/
     herr_t		ret;		/* Generic return value		*/
 
     /* Output message about test being performed */
@@ -1087,8 +1091,8 @@ test_attr_mult_write(hid_t fapl)
     CHECK(attr, FAIL, "H5Acreate2");
 
     /* Try to create the same attribute again (should fail) */
-    ret = H5Acreate2(dataset, ATTR1_NAME, H5T_NATIVE_INT, sid2, H5P_DEFAULT, H5P_DEFAULT);
-    VERIFY(ret, FAIL, "H5Acreate2");
+    ret_id = H5Acreate2(dataset, ATTR1_NAME, H5T_NATIVE_INT, sid2, H5P_DEFAULT, H5P_DEFAULT);
+    VERIFY(ret_id, FAIL, "H5Acreate2");
 
     /* Write 1st attribute data */
     ret = H5Awrite(attr, H5T_NATIVE_INT, attr_data1);
@@ -1111,8 +1115,8 @@ test_attr_mult_write(hid_t fapl)
     CHECK(attr, FAIL, "H5Acreate2");
 
     /* Try to create the same attribute again (should fail) */
-    ret = H5Acreate2(dataset, ATTR2_NAME, H5T_NATIVE_INT, sid2, H5P_DEFAULT, H5P_DEFAULT);
-    VERIFY(ret, FAIL, "H5Acreate2");
+    ret_id = H5Acreate2(dataset, ATTR2_NAME, H5T_NATIVE_INT, sid2, H5P_DEFAULT, H5P_DEFAULT);
+    VERIFY(ret_id, FAIL, "H5Acreate2");
 
     /* Write 2nd attribute information */
     ret = H5Awrite(attr, H5T_NATIVE_INT, attr_data2);
@@ -1135,8 +1139,8 @@ test_attr_mult_write(hid_t fapl)
     CHECK(attr, FAIL, "H5Acreate2");
 
     /* Try to create the same attribute again (should fail) */
-    ret = H5Acreate2(dataset, ATTR3_NAME, H5T_NATIVE_DOUBLE, sid2, H5P_DEFAULT, H5P_DEFAULT);
-    VERIFY(ret, FAIL, "H5Acreate2");
+    ret_id = H5Acreate2(dataset, ATTR3_NAME, H5T_NATIVE_DOUBLE, sid2, H5P_DEFAULT, H5P_DEFAULT);
+    VERIFY(ret_id, FAIL, "H5Acreate2");
 
     /* Write 3rd attribute information */
     ret = H5Awrite(attr, H5T_NATIVE_DOUBLE, attr_data3);
@@ -1225,7 +1229,7 @@ test_attr_mult_read(hid_t fapl)
     t_class = H5Tget_class(type);
     VERIFY(t_class, H5T_INTEGER, "H5Tget_class");
     order = H5Tget_order(type);
-    VERIFY(order, H5Tget_order(H5T_NATIVE_INT), "H5Tget_order");
+    VERIFY_TYPE(order, H5Tget_order(H5T_NATIVE_INT), H5T_order_t, "%d", "H5Tget_order");
     size = H5Tget_size(type);
     VERIFY(size, H5Tget_size(H5T_NATIVE_INT), "H5Tget_size");
     H5Tclose(type);
@@ -1280,7 +1284,7 @@ test_attr_mult_read(hid_t fapl)
     t_class = H5Tget_class(type);
     VERIFY(t_class, H5T_INTEGER, "H5Tget_class");
     order = H5Tget_order(type);
-    VERIFY(order, H5Tget_order(H5T_NATIVE_INT), "H5Tget_order");
+    VERIFY_TYPE(order, H5Tget_order(H5T_NATIVE_INT), H5T_order_t, "%d", "H5Tget_order");
     size = H5Tget_size(type);
     VERIFY(size, H5Tget_size(H5T_NATIVE_INT), "H5Tget_size");
     H5Tclose(type);
@@ -1338,7 +1342,7 @@ test_attr_mult_read(hid_t fapl)
     t_class = H5Tget_class(type);
     VERIFY(t_class, H5T_FLOAT, "H5Tget_class");
     order = H5Tget_order(type);
-    VERIFY(order, H5Tget_order(H5T_NATIVE_DOUBLE), "H5Tget_order");
+    VERIFY_TYPE(order, H5Tget_order(H5T_NATIVE_DOUBLE), H5T_order_t, "%d", "H5Tget_order");
     size = H5Tget_size(type);
     VERIFY(size, H5Tget_size(H5T_NATIVE_DOUBLE), "H5Tget_size");
     H5Tclose(type);
@@ -1351,7 +1355,7 @@ test_attr_mult_read(hid_t fapl)
     for(i = 0; i < ATTR3_DIM1; i++)
         for(j = 0; j < ATTR3_DIM2; j++)
             for(k = 0; k < ATTR3_DIM3; k++)
-                if(!DBL_ABS_EQUAL(attr_data3[i][j][k], read_data3[i][j][k]))
+                if(!H5_DBL_ABS_EQUAL(attr_data3[i][j][k], read_data3[i][j][k]))
                     TestErrPrintf("%d: attribute data different: attr_data3[%d][%d][%d]=%f, read_data3[%d][%d][%d]=%f\n", __LINE__, i, j, k, attr_data3[i][j][k], i, j, k, read_data3[i][j][k]);
 
     /* Verify Name */
@@ -1388,7 +1392,7 @@ test_attr_mult_read(hid_t fapl)
 **
 ****************************************************************/
 static herr_t
-attr_op1(hid_t UNUSED loc_id, const char *name, const H5A_info_t UNUSED *ainfo,
+attr_op1(hid_t H5_ATTR_UNUSED loc_id, const char *name, const H5A_info_t H5_ATTR_UNUSED *ainfo,
     void *op_data)
 {
     int *count = (int *)op_data;
@@ -5334,7 +5338,7 @@ test_attr_corder_delete(hid_t fcpl, hid_t fapl)
     hsize_t     nattrs;         /* Number of attributes on object */
     hsize_t     name_count;     /* # of records in name index */
     hsize_t     corder_count;   /* # of records in creation order index */
-    hbool_t     reopen_file;            /* Whether to re-open the file before deleting group */
+    unsigned     reopen_file;            /* Whether to re-open the file before deleting group */
     char	attrname[NAME_BUF_SIZE];        /* Name of attribute */
 #ifdef LATER
     h5_stat_size_t empty_size;  /* Size of empty file */
@@ -5683,7 +5687,7 @@ test_attr_info_by_idx(hbool_t new_format, hid_t fcpl, hid_t fapl)
     hsize_t     nattrs;         /* Number of attributes on object */
     hsize_t     name_count;     /* # of records in name index */
     hsize_t     corder_count;   /* # of records in creation order index */
-    hbool_t     use_index;      /* Use index on creation order values */
+    unsigned     use_index;     /* Use index on creation order values */
     char	attrname[NAME_BUF_SIZE];    /* Name of attribute */
     char        tmpname[NAME_BUF_SIZE];     /* Temporary attribute name */
     unsigned    curr_dset;      /* Current dataset to work on */
@@ -5895,7 +5899,7 @@ test_attr_delete_by_idx(hbool_t new_format, hid_t fcpl, hid_t fapl)
     hsize_t     corder_count;   /* # of records in creation order index */
     H5_index_t idx_type;        /* Type of index to operate on */
     H5_iter_order_t order;      /* Order within in the index */
-    hbool_t     use_index;      /* Use index on creation order values */
+    unsigned     use_index;     /* Use index on creation order values */
     char	attrname[NAME_BUF_SIZE];    /* Name of attribute */
     char        tmpname[NAME_BUF_SIZE];     /* Temporary attribute name */
     unsigned    curr_dset;      /* Current dataset to work on */
@@ -5915,9 +5919,9 @@ test_attr_delete_by_idx(hbool_t new_format, hid_t fcpl, hid_t fapl)
     CHECK(ret, FAIL, "H5Pget_attr_phase_change");
 
     /* Loop over operating on different indices on link fields */
-    for(idx_type = H5_INDEX_NAME; idx_type <=H5_INDEX_CRT_ORDER; idx_type++) {
+    for(idx_type = H5_INDEX_NAME; idx_type <= H5_INDEX_CRT_ORDER; H5_INC_ENUM(H5_index_t, idx_type)) {
         /* Loop over operating in different orders */
-        for(order = H5_ITER_INC; order <=H5_ITER_DEC; order++) {
+        for(order = H5_ITER_INC; order <= H5_ITER_DEC; H5_INC_ENUM(H5_iter_order_t, order)) {
             /* Loop over using index for creation order value */
             for(use_index = FALSE; use_index <= TRUE; use_index++) {
                 /* Print appropriate test message */
@@ -6504,8 +6508,8 @@ attr_iterate1_cb(hid_t loc_id, const char *attr_name, void *_op_data)
  *-------------------------------------------------------------------------
  */
 static int
-attr_iterate2_fail_cb(hid_t UNUSED group_id, const char UNUSED *attr_name,
-    const H5A_info_t UNUSED *info, void UNUSED *_op_data)
+attr_iterate2_fail_cb(hid_t H5_ATTR_UNUSED group_id, const char H5_ATTR_UNUSED *attr_name,
+    const H5A_info_t H5_ATTR_UNUSED *info, void H5_ATTR_UNUSED *_op_data)
 {
     return(H5_ITER_ERROR);
 } /* end attr_iterate2_fail_cb() */
@@ -6838,7 +6842,7 @@ test_attr_iterate2(hbool_t new_format, hid_t fcpl, hid_t fapl)
     attr_iter_info_t iter_info; /* Iterator info */
     hbool_t     *visited = NULL;        /* Array of flags for visiting links */
     hsize_t     idx;            /* Start index for iteration */
-    hbool_t     use_index;      /* Use index on creation order values */
+    unsigned     use_index;     /* Use index on creation order values */
     const char *dsetname;       /* Name of dataset for attributes */
     char	attrname[NAME_BUF_SIZE];    /* Name of attribute */
     unsigned    curr_dset;      /* Current dataset to work on */
@@ -6864,9 +6868,9 @@ test_attr_iterate2(hbool_t new_format, hid_t fcpl, hid_t fapl)
     iter_info.visited = visited;
 
     /* Loop over operating on different indices on link fields */
-    for(idx_type = H5_INDEX_NAME; idx_type <=H5_INDEX_CRT_ORDER; idx_type++) {
+    for(idx_type = H5_INDEX_NAME; idx_type <= H5_INDEX_CRT_ORDER; H5_INC_ENUM(H5_index_t, idx_type)) {
         /* Loop over operating in different orders */
-        for(order = H5_ITER_INC; order <=H5_ITER_DEC; order++) {
+        for(order = H5_ITER_INC; order <= H5_ITER_DEC; H5_INC_ENUM(H5_iter_order_t, order)) {
             /* Loop over using index for creation order value */
             for(use_index = FALSE; use_index <= TRUE; use_index++) {
                 /* Print appropriate test message */
@@ -7199,10 +7203,11 @@ test_attr_open_by_idx(hbool_t new_format, hid_t fcpl, hid_t fapl)
     hsize_t     corder_count;   /* # of records in creation order index */
     H5_index_t idx_type;        /* Type of index to operate on */
     H5_iter_order_t order;      /* Order within in the index */
-    hbool_t     use_index;      /* Use index on creation order values */
+    unsigned     use_index;     /* Use index on creation order values */
     char	attrname[NAME_BUF_SIZE];    /* Name of attribute */
     unsigned    curr_dset;      /* Current dataset to work on */
     unsigned    u;              /* Local index variable */
+    hid_t	ret_id;		/* Generic hid_t return value	*/
     herr_t	ret;		/* Generic return value		*/
 
     /* Create dataspace for dataset & attributes */
@@ -7218,9 +7223,9 @@ test_attr_open_by_idx(hbool_t new_format, hid_t fcpl, hid_t fapl)
     CHECK(ret, FAIL, "H5Pget_attr_phase_change");
 
     /* Loop over operating on different indices on link fields */
-    for(idx_type = H5_INDEX_NAME; idx_type <=H5_INDEX_CRT_ORDER; idx_type++) {
+    for(idx_type = H5_INDEX_NAME; idx_type <= H5_INDEX_CRT_ORDER; H5_INC_ENUM(H5_index_t, idx_type)) {
         /* Loop over operating in different orders */
-        for(order = H5_ITER_INC; order <=H5_ITER_DEC; order++) {
+        for(order = H5_ITER_INC; order <= H5_ITER_DEC; H5_INC_ENUM(H5_iter_order_t, order)) {
             /* Loop over using index for creation order value */
             for(use_index = FALSE; use_index <= TRUE; use_index++) {
                 /* Print appropriate test message */
@@ -7297,8 +7302,8 @@ test_attr_open_by_idx(hbool_t new_format, hid_t fcpl, hid_t fapl)
                     VERIFY(is_dense, FALSE, "H5O_is_attr_dense_test");
 
                     /* Check for opening an attribute on an object with no attributes */
-                    ret = H5Aopen_by_idx(my_dataset, ".", idx_type, order, (hsize_t)0, H5P_DEFAULT, H5P_DEFAULT);
-                    VERIFY(ret, FAIL, "H5Aopen_by_idx");
+                    ret_id = H5Aopen_by_idx(my_dataset, ".", idx_type, order, (hsize_t)0, H5P_DEFAULT, H5P_DEFAULT);
+                    VERIFY(ret_id, FAIL, "H5Aopen_by_idx");
 
                     /* Create attributes, up to limit of compact form */
                     for(u = 0; u < max_compact; u++) {
@@ -7330,8 +7335,8 @@ test_attr_open_by_idx(hbool_t new_format, hid_t fcpl, hid_t fapl)
                     VERIFY(is_dense, FALSE, "H5O_is_attr_dense_test");
 
                     /* Check for out of bound opening an attribute on an object */
-                    ret = H5Aopen_by_idx(my_dataset, ".", idx_type, order, (hsize_t)u, H5P_DEFAULT, H5P_DEFAULT);
-                    VERIFY(ret, FAIL, "H5Aopen_by_idx");
+                    ret_id = H5Aopen_by_idx(my_dataset, ".", idx_type, order, (hsize_t)u, H5P_DEFAULT, H5P_DEFAULT);
+                    VERIFY(ret_id, FAIL, "H5Aopen_by_idx");
 
                     /* Test opening attributes by index stored compactly */
                     ret = attr_open_by_idx_check(my_dataset, idx_type, order, u);
@@ -7403,8 +7408,8 @@ test_attr_open_by_idx(hbool_t new_format, hid_t fcpl, hid_t fapl)
                     } /* end if */
 
                     /* Check for out of bound opening an attribute on an object */
-                    ret = H5Aopen_by_idx(my_dataset, ".", idx_type, order, (hsize_t)u, H5P_DEFAULT, H5P_DEFAULT);
-                    VERIFY(ret, FAIL, "H5Aopen_by_idx");
+                    ret_id = H5Aopen_by_idx(my_dataset, ".", idx_type, order, (hsize_t)u, H5P_DEFAULT, H5P_DEFAULT);
+                    VERIFY(ret_id, FAIL, "H5Aopen_by_idx");
 
                     /* Test opening attributes by index stored compactly */
                     ret = attr_open_by_idx_check(my_dataset, idx_type, order, u);
@@ -7544,11 +7549,12 @@ test_attr_open_by_name(hbool_t new_format, hid_t fcpl, hid_t fapl)
     hsize_t     nattrs;         /* Number of attributes on object */
     hsize_t     name_count;     /* # of records in name index */
     hsize_t     corder_count;   /* # of records in creation order index */
-    hbool_t     use_index;      /* Use index on creation order values */
+    unsigned    use_index;      /* Use index on creation order values */
     const char *dsetname;       /* Name of dataset for attributes */
     char	attrname[NAME_BUF_SIZE];    /* Name of attribute */
     unsigned    curr_dset;      /* Current dataset to work on */
     unsigned    u;              /* Local index variable */
+    hid_t	ret_id;		/* Generic hid_t return value	*/
     herr_t	ret;		/* Generic return value		*/
 
     /* Create dataspace for dataset & attributes */
@@ -7618,14 +7624,14 @@ test_attr_open_by_name(hbool_t new_format, hid_t fcpl, hid_t fapl)
             VERIFY(is_dense, FALSE, "H5O_is_attr_dense_test");
 
             /* Check for opening a non-existant attribute on an object with no attributes */
-            ret = H5Aopen(my_dataset, "foo", H5P_DEFAULT);
-            VERIFY(ret, FAIL, "H5Aopen");
+            ret_id = H5Aopen(my_dataset, "foo", H5P_DEFAULT);
+            VERIFY(ret_id, FAIL, "H5Aopen");
 
-            ret = H5Aopen_by_name(my_dataset, ".", "foo", H5P_DEFAULT, H5P_DEFAULT);
-            VERIFY(ret, FAIL, "H5Aopen_by_name");
+            ret_id = H5Aopen_by_name(my_dataset, ".", "foo", H5P_DEFAULT, H5P_DEFAULT);
+            VERIFY(ret_id, FAIL, "H5Aopen_by_name");
 
-            ret = H5Aopen_by_name(fid, dsetname, "foo", H5P_DEFAULT, H5P_DEFAULT);
-            VERIFY(ret, FAIL, "H5Aopen_by_name");
+            ret_id = H5Aopen_by_name(fid, dsetname, "foo", H5P_DEFAULT, H5P_DEFAULT);
+            VERIFY(ret_id, FAIL, "H5Aopen_by_name");
 
             /* Create attributes, up to limit of compact form */
             for(u = 0; u < max_compact; u++) {
@@ -7657,14 +7663,14 @@ test_attr_open_by_name(hbool_t new_format, hid_t fcpl, hid_t fapl)
             VERIFY(is_dense, FALSE, "H5O_is_attr_dense_test");
 
             /* Check for opening a non-existant attribute on an object with compact attribute storage */
-            ret = H5Aopen(my_dataset, "foo", H5P_DEFAULT);
-            VERIFY(ret, FAIL, "H5Aopen");
+            ret_id = H5Aopen(my_dataset, "foo", H5P_DEFAULT);
+            VERIFY(ret_id, FAIL, "H5Aopen");
 
-            ret = H5Aopen_by_name(my_dataset, ".", "foo", H5P_DEFAULT, H5P_DEFAULT);
-            VERIFY(ret, FAIL, "H5Aopen_by_name");
+            ret_id = H5Aopen_by_name(my_dataset, ".", "foo", H5P_DEFAULT, H5P_DEFAULT);
+            VERIFY(ret_id, FAIL, "H5Aopen_by_name");
 
-            ret = H5Aopen_by_name(fid, dsetname, "foo", H5P_DEFAULT, H5P_DEFAULT);
-            VERIFY(ret, FAIL, "H5Aopen_by_name");
+            ret_id = H5Aopen_by_name(fid, dsetname, "foo", H5P_DEFAULT, H5P_DEFAULT);
+            VERIFY(ret_id, FAIL, "H5Aopen_by_name");
 
             /* Test opening attributes stored compactly */
             ret = attr_open_check(fid, dsetname, my_dataset, u);
@@ -7739,14 +7745,14 @@ test_attr_open_by_name(hbool_t new_format, hid_t fcpl, hid_t fapl)
             } /* end if */
 
             /* Check for opening a non-existant attribute on an object with dense attribute storage */
-            ret = H5Aopen(my_dataset, "foo", H5P_DEFAULT);
-            VERIFY(ret, FAIL, "H5Aopen");
+            ret_id = H5Aopen(my_dataset, "foo", H5P_DEFAULT);
+            VERIFY(ret_id, FAIL, "H5Aopen");
 
-            ret = H5Aopen_by_name(my_dataset, ".", "foo", H5P_DEFAULT, H5P_DEFAULT);
-            VERIFY(ret, FAIL, "H5Aopen_by_name");
+            ret_id = H5Aopen_by_name(my_dataset, ".", "foo", H5P_DEFAULT, H5P_DEFAULT);
+            VERIFY(ret_id, FAIL, "H5Aopen_by_name");
 
-            ret = H5Aopen_by_name(fid, dsetname, "foo", H5P_DEFAULT, H5P_DEFAULT);
-            VERIFY(ret, FAIL, "H5Aopen_by_name");
+            ret_id = H5Aopen_by_name(fid, dsetname, "foo", H5P_DEFAULT, H5P_DEFAULT);
+            VERIFY(ret_id, FAIL, "H5Aopen_by_name");
 
             /* Test opening attributes stored compactly */
             ret = attr_open_check(fid, dsetname, my_dataset, u);
@@ -7798,7 +7804,7 @@ test_attr_create_by_name(hbool_t new_format, hid_t fcpl, hid_t fapl)
     hsize_t     nattrs;         /* Number of attributes on object */
     hsize_t     name_count;     /* # of records in name index */
     hsize_t     corder_count;   /* # of records in creation order index */
-    hbool_t     use_index;      /* Use index on creation order values */
+    unsigned    use_index;      /* Use index on creation order values */
     const char *dsetname;       /* Name of dataset for attributes */
     char	attrname[NAME_BUF_SIZE];    /* Name of attribute */
     unsigned    curr_dset;      /* Current dataset to work on */
@@ -10562,8 +10568,8 @@ test_attr(void)
 {
     hid_t	fapl = (-1), fapl2 = (-1);    /* File access property lists */
     hid_t	fcpl = (-1), fcpl2 = (-1);    /* File creation property lists */
-    hbool_t new_format;         /* Whether to use the new format or not */
-    hbool_t use_shared;         /* Whether to use shared attributes or not */
+    unsigned new_format;        /* Whether to use the new format or not */
+    unsigned use_shared;        /* Whether to use shared attributes or not */
     herr_t ret;                 /* Generic return value */
 
     /* Output message about test being performed */

@@ -164,7 +164,7 @@ test_h5o_close(void)
     /* Create the group and close it with H5Oclose */
     grp = H5Gcreate2(fid, "group", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
     CHECK(grp, FAIL, "H5Gcreate2");
-    VERIFY(H5Iget_type(grp), H5I_GROUP, "H5Iget_type");
+    VERIFY_TYPE(H5Iget_type(grp), H5I_GROUP, H5I_type_t, "%d", "H5Iget_type");
     ret = H5Oclose(grp);
     CHECK(ret, FAIL, "H5Oclose");
 
@@ -669,7 +669,7 @@ test_h5o_plist(void)
     gcpl = H5Gget_create_plist(grp);
     CHECK(gcpl, FAIL, "H5Gget_create_plist");
     tcpl = H5Tget_create_plist(dtype);
-    CHECK(dcpl, FAIL, "H5Tget_create_plist");
+    CHECK(tcpl, FAIL, "H5Tget_create_plist");
     dcpl = H5Dget_create_plist(dset);
     CHECK(dcpl, FAIL, "H5Dget_create_plist");
 
@@ -719,7 +719,7 @@ test_h5o_plist(void)
     gcpl = H5Gget_create_plist(grp);
     CHECK(gcpl, FAIL, "H5Gget_create_plist");
     tcpl = H5Tget_create_plist(dtype);
-    CHECK(dcpl, FAIL, "H5Tget_create_plist");
+    CHECK(tcpl, FAIL, "H5Tget_create_plist");
     dcpl = H5Dget_create_plist(dset);
     CHECK(dcpl, FAIL, "H5Dget_create_plist");
 
@@ -776,7 +776,7 @@ test_h5o_link(void)
     hid_t lcpl_id=-1;
     hsize_t dims[2] = {TEST6_DIM1, TEST6_DIM2};
     htri_t committed;           /* Whether the named datatype is committed */
-    hbool_t new_format;         /* Whether to use the new format or not */
+    unsigned new_format;        /* Whether to use the new format or not */
     int wdata[TEST6_DIM1][TEST6_DIM2];
     int rdata[TEST6_DIM1][TEST6_DIM2];
     int i, n, j;
@@ -1335,6 +1335,7 @@ test_h5o_getinfo_same_file(void)
 
 } /* test_h5o_getinfo_same_file() */
 
+
 
 /****************************************************************
 **
@@ -1355,9 +1356,7 @@ test_h5o(void)
     test_h5o_link();            /* Test object link routine */
     test_h5o_comment();         /* Test routines for comment */
     test_h5o_comment_by_name(); /* Test routines for comment by name */
-#ifndef  H5_CANNOT_OPEN_TWICE   /* OpenVMS can't open a file twice */
     test_h5o_getinfo_same_file(); /* Test info for objects in the same file */
-#endif /* H5_CANNOT_OPEN_TWICE */
 } /* test_h5o() */
 
 

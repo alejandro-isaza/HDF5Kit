@@ -21,7 +21,8 @@
  *              information in the superblock extension.
  */
 
-#define H5O_PACKAGE		/*suppress error about including H5Opkg	  */
+#include "H5Omodule.h"          /* This source code file is part of the H5O module */
+
 
 #include "H5private.h"		/* Generic Functions			*/
 #include "H5Eprivate.h"		/* Error handling		  	*/
@@ -79,11 +80,11 @@ const H5O_msg_class_t H5O_MSG_BTREEK[1] = {{
  *-------------------------------------------------------------------------
  */
 static void *
-H5O_btreek_decode(H5F_t UNUSED *f, hid_t UNUSED dxpl_id, H5O_t UNUSED *open_oh,
-    unsigned UNUSED mesg_flags, unsigned UNUSED *ioflags, const uint8_t *p)
+H5O_btreek_decode(H5F_t H5_ATTR_UNUSED *f, hid_t H5_ATTR_UNUSED dxpl_id, H5O_t H5_ATTR_UNUSED *open_oh,
+    unsigned H5_ATTR_UNUSED mesg_flags, unsigned H5_ATTR_UNUSED *ioflags, const uint8_t *p)
 {
     H5O_btreek_t	*mesg;          /* Native message */
-    void                *ret_value;     /* Return value */
+    void		*ret_value = NULL;      /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT
 
@@ -125,7 +126,7 @@ done:
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5O_btreek_encode(H5F_t UNUSED *f, hbool_t UNUSED disable_shared, uint8_t *p, const void *_mesg)
+H5O_btreek_encode(H5F_t H5_ATTR_UNUSED *f, hbool_t H5_ATTR_UNUSED disable_shared, uint8_t *p, const void *_mesg)
 {
     const H5O_btreek_t *mesg = (const H5O_btreek_t *)_mesg;
 
@@ -165,7 +166,7 @@ H5O_btreek_copy(const void *_mesg, void *_dest)
 {
     const H5O_btreek_t	*mesg = (const H5O_btreek_t *)_mesg;
     H5O_btreek_t	*dest = (H5O_btreek_t *)_dest;
-    void		*ret_value;
+    void		*ret_value = NULL;      /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT
 
@@ -201,7 +202,7 @@ done:
  *-------------------------------------------------------------------------
  */
 static size_t
-H5O_btreek_size(const H5F_t UNUSED *f, hbool_t UNUSED disable_shared, const void UNUSED *_mesg)
+H5O_btreek_size(const H5F_t H5_ATTR_UNUSED *f, hbool_t H5_ATTR_UNUSED disable_shared, const void H5_ATTR_UNUSED *_mesg)
 {
     size_t                   ret_value;
 
@@ -232,7 +233,7 @@ H5O_btreek_size(const H5F_t UNUSED *f, hbool_t UNUSED disable_shared, const void
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5O_btreek_debug(H5F_t UNUSED *f, hid_t UNUSED dxpl_id, const void *_mesg, FILE *stream,
+H5O_btreek_debug(H5F_t H5_ATTR_UNUSED *f, hid_t H5_ATTR_UNUSED dxpl_id, const void *_mesg, FILE *stream,
     int indent, int fwidth)
 {
     const H5O_btreek_t *mesg = (const H5O_btreek_t *)_mesg;

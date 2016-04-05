@@ -20,7 +20,7 @@ endmacro (IDE_GENERATED_PROPERTIES)
 macro (IDE_SOURCE_PROPERTIES SOURCE_PATH HEADERS SOURCES)
   #  install (FILES ${HEADERS}
   #       DESTINATION include/R3D/${NAME}
-  #       COMPONENT Headers       
+  #       COMPONENT Headers
   #  )
 
   string (REPLACE "/" "\\\\" source_group_path ${SOURCE_PATH}  )
@@ -35,15 +35,9 @@ endmacro (IDE_SOURCE_PROPERTIES)
 
 #-------------------------------------------------------------------------------
 macro (TARGET_NAMING libtarget libtype)
-  if (WIN32)
-    if (${libtype} MATCHES "SHARED")
-      set_target_properties (${libtarget} PROPERTIES OUTPUT_NAME "${libtarget}dll")
-    endif (${libtype} MATCHES "SHARED")
-  else (WIN32)
-    if (${libtype} MATCHES "SHARED")
-      set_target_properties (${libtarget} PROPERTIES OUTPUT_NAME "${libtarget}${ARGN}")
-    endif (${libtype} MATCHES "SHARED")
-  endif (WIN32)
+  if (${libtype} MATCHES "SHARED")
+    set_target_properties (${libtarget} PROPERTIES OUTPUT_NAME "${libtarget}${ARGN}")
+  endif (${libtype} MATCHES "SHARED")
 endmacro (TARGET_NAMING)
 
 #-------------------------------------------------------------------------------
@@ -96,7 +90,7 @@ macro (HDF_SET_LIB_OPTIONS libtarget libname libtype)
       set (LIB_DEBUG_NAME "${libname}_debug")
     endif (WIN32)
   endif (${libtype} MATCHES "SHARED")
-  
+
   set_target_properties (${libtarget}
       PROPERTIES
       OUTPUT_NAME_DEBUG          ${LIB_DEBUG_NAME}
@@ -104,7 +98,7 @@ macro (HDF_SET_LIB_OPTIONS libtarget libname libtype)
       OUTPUT_NAME_MINSIZEREL     ${LIB_RELEASE_NAME}
       OUTPUT_NAME_RELWITHDEBINFO ${LIB_RELEASE_NAME}
   )
-  
+
   #----- Use MSVC Naming conventions for Shared Libraries
   if (MINGW AND ${libtype} MATCHES "SHARED")
     set_target_properties (${libtarget}
@@ -182,7 +176,7 @@ macro (TARGET_C_PROPERTIES wintarget libtype addcompileflags addlinkflags)
         PROPERTIES
             COMPILE_FLAGS "${addcompileflags}"
             LINK_FLAGS "${addlinkflags}"
-    ) 
+    )
   endif (MSVC)
 endmacro (TARGET_C_PROPERTIES)
 
@@ -193,7 +187,7 @@ macro (TARGET_MSVC_PROPERTIES wintarget libtype addcompileflags addlinkflags)
         PROPERTIES
             COMPILE_FLAGS "${addcompileflags}"
             LINK_FLAGS "${addlinkflags}"
-    ) 
+    )
   endif (MSVC)
 endmacro (TARGET_MSVC_PROPERTIES)
 
@@ -212,13 +206,13 @@ macro (TARGET_FORTRAN_WIN_PROPERTIES forttarget libtype addcompileflags addlinkf
           PROPERTIES
               COMPILE_FLAGS "/dll ${addcompileflags}"
               LINK_FLAGS "/SUBSYSTEM:CONSOLE ${addlinkflags}"
-      ) 
+      )
     else (${libtype} MATCHES "SHARED")
       set_target_properties (${forttarget}
           PROPERTIES
               COMPILE_FLAGS "${addcompileflags}"
               LINK_FLAGS "/SUBSYSTEM:CONSOLE ${addlinkflags}"
-      ) 
+      )
     endif (${libtype} MATCHES "SHARED")
   endif (MSVC)
 endmacro (TARGET_FORTRAN_WIN_PROPERTIES)
@@ -241,6 +235,8 @@ macro (HDF_README_PROPERTIES target_fortran)
       set (BINARY_PLATFORM "${BINARY_PLATFORM} 7")
     elseif (${CMAKE_SYSTEM_VERSION} MATCHES "6.2")
       set (BINARY_PLATFORM "${BINARY_PLATFORM} 8")
+    elseif (${CMAKE_SYSTEM_VERSION} MATCHES "6.3")
+      set (BINARY_PLATFORM "${BINARY_PLATFORM} 10")
     endif (${CMAKE_SYSTEM_VERSION} MATCHES "6.1")
     set (BINARY_PLATFORM "${BINARY_PLATFORM} ${MSVC_C_ARCHITECTURE_ID}")
     if (${CMAKE_C_COMPILER_VERSION} MATCHES "16.*")
@@ -251,6 +247,8 @@ macro (HDF_README_PROPERTIES target_fortran)
       set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2012")
     elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "18.*")
       set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2013")
+    elseif (${CMAKE_C_COMPILER_VERSION} MATCHES "19.*")
+      set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO 2015")
     else (${CMAKE_C_COMPILER_VERSION} MATCHES "16.*")
       set (BINARY_PLATFORM "${BINARY_PLATFORM}, using VISUAL STUDIO ${CMAKE_C_COMPILER_VERSION}")
     endif (${CMAKE_C_COMPILER_VERSION} MATCHES "16.*")
@@ -269,9 +267,15 @@ macro (HDF_README_PROPERTIES target_fortran)
   if (target_fortran)
     set (BINARY_PLATFORM "${BINARY_PLATFORM} / ${CMAKE_Fortran_COMPILER_ID} Fortran")
   endif (target_fortran)
-    
+
+  if (BUILD_SHARED_LIBS)
+    set (LIB_TYPE "Static and Shared")
+  else (BUILD_SHARED_LIBS)
+    set (LIB_TYPE "Static")
+  endif (BUILD_SHARED_LIBS)
+
   configure_file (
-      ${HDF_RESOURCES_DIR}/README.txt.cmake.in 
+      ${HDF_RESOURCES_DIR}/README.txt.cmake.in
       ${CMAKE_BINARY_DIR}/README.txt @ONLY
   )
 endmacro (HDF_README_PROPERTIES)

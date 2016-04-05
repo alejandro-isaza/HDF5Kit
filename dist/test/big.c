@@ -73,10 +73,10 @@
 
 /* Define Small, Large, Extra Large, Huge File which 
  * corrspond to less than 2GB, 2GB, 4GB, and tens of GB file size.
- * NOFILE stands for "no file" to be tested.
+ * NO_FILE stands for "no file" to be tested.
  */
-typedef enum fsizes_t { SFILE, LFILE, XLFILE, HUGEFILE, NOFILE} fsizes_t;
-fsizes_t file_size= NOFILE;
+typedef enum fsizes_t { SFILE, LFILE, XLFILE, HUGEFILE, NO_FILE} fsizes_t;
+fsizes_t file_size= NO_FILE;
 
 const char *FILENAME[] = {
         "big",
@@ -120,7 +120,7 @@ static hsize_t values_used[WRT_N];
 static hsize_t
 randll(hsize_t limit, int current_index)
 {
-    hsize_t	acc;
+    hsize_t	acc = 0;
     int 	overlap = 1;
     int 	i;
     int 	tries = 0;
@@ -210,7 +210,7 @@ static fsizes_t
 supports_big(void)
 {
     int		fd = -1;
-    fsizes_t    fsize = NOFILE;
+    fsizes_t    fsize = NO_FILE;
 
     if((fd=HDopen("y.h5", O_RDWR|O_TRUNC|O_CREAT, 0666)) < 0)
         goto error;
@@ -377,9 +377,9 @@ writer (char* filename, hid_t fapl, fsizes_t testsize, int wrt_n)
         size2[0] /= 32;
         break;
 
-    case NOFILE:
+    case NO_FILE:
         /* what to do?? */
-        HDfprintf(stdout, "Unexpected file size of NOFILE\n");
+        HDfprintf(stdout, "Unexpected file size of NO_FILE\n");
         goto error;
         break;
 
@@ -599,7 +599,7 @@ test_sec2(hid_t fapl)
     fsizes_t	testsize;
 
     testsize = supports_big();
-    if(testsize == NOFILE) {
+    if(testsize == NO_FILE) {
         HDfprintf(stdout, "Test for sec2 is skipped because file system does not support big files.\n");
         goto quit;
     }
@@ -618,8 +618,8 @@ test_sec2(hid_t fapl)
 quit:
     /* End with normal return code */
     /* Clean up the test file */
-    if(h5_cleanup(FILENAME, fapl))
-        HDremove(DNAME);
+    h5_clean_files(FILENAME, fapl);
+    HDremove(DNAME);
     return 0;
 
 error:
@@ -634,7 +634,7 @@ test_stdio(hid_t fapl)
     fsizes_t	testsize;
 
     testsize = supports_big();
-    if(testsize == NOFILE) {
+    if(testsize == NO_FILE) {
         HDfprintf(stdout, "Test for stdio is skipped because file system does not support big files.\n");
         goto quit;
     }
@@ -655,8 +655,8 @@ test_stdio(hid_t fapl)
 quit:
     /* End with normal return code */
     /* Clean up the test file */
-    if(h5_cleanup(FILENAME, fapl))
-        HDremove(DNAME);
+    h5_clean_files(FILENAME, fapl);
+    HDremove(DNAME);
     HDfflush(stdout);
     return 0;
 
@@ -716,8 +716,8 @@ test_family(hid_t fapl)
 quit:
     /* End with normal return code */
     /* Clean up the test file */
-    if(h5_cleanup(FILENAME, fapl))
-        HDremove(DNAME);
+    h5_clean_files(FILENAME, fapl);
+    HDremove(DNAME);
     return 0;
 
 error:

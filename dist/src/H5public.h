@@ -93,11 +93,11 @@ extern "C" {
 
 /* Version numbers */
 #define H5_VERS_MAJOR	1	/* For major interface/format changes  	     */
-#define H5_VERS_MINOR	8	/* For minor interface/format changes  	     */
-#define H5_VERS_RELEASE	15	/* For tweaks, bug-fixes, or development     */
-#define H5_VERS_SUBRELEASE "patch1"	/* For pre-releases like snap0       */
+#define H5_VERS_MINOR	10	/* For minor interface/format changes  	     */
+#define H5_VERS_RELEASE	0	/* For tweaks, bug-fixes, or development     */
+#define H5_VERS_SUBRELEASE ""	/* For pre-releases like snap0       */
 				/* Empty string for real releases.           */
-#define H5_VERS_INFO    "HDF5 library version: 1.8.15-patch1"      /* Full version string */
+#define H5_VERS_INFO    "HDF5 library version: 1.10.0"      /* Full version string */
 
 #define H5check()	H5check_version(H5_VERS_MAJOR,H5_VERS_MINOR,	      \
 				        H5_VERS_RELEASE)
@@ -141,7 +141,20 @@ typedef int herr_t;
  * 	    printf("error determining whether data type is committed\n");
  *	}
  */
-typedef unsigned int hbool_t;
+#ifdef H5_HAVE_STDBOOL_H
+  #include <stdbool.h>
+#else /* H5_HAVE_STDBOOL_H */
+  #ifndef __cplusplus
+    #if defined(H5_SIZEOF_BOOL) && (H5_SIZEOF_BOOL != 0)
+      #define bool    _Bool
+    #else
+      #define bool    unsigned int
+    #endif
+    #define true    1
+    #define false   0
+  #endif /* __cplusplus */
+#endif /* H5_HAVE_STDBOOL_H */
+typedef bool hbool_t;
 typedef int htri_t;
 
 /* Define the ssize_t type if it not is defined */
@@ -176,6 +189,7 @@ H5_GCC_DIAG_ON(long-long)
 #else
 #   error "nothing appropriate for hsize_t"
 #endif
+#define HSIZE_UNDEF             ((hsize_t)(hssize_t)(-1))
 
 /*
  * File addresses have their own types.
@@ -331,6 +345,7 @@ H5_DLL herr_t H5get_libversion(unsigned *majnum, unsigned *minnum,
 				unsigned *relnum);
 H5_DLL herr_t H5check_version(unsigned majnum, unsigned minnum,
 			       unsigned relnum);
+H5_DLL herr_t H5is_library_threadsafe(hbool_t *is_ts);
 H5_DLL herr_t H5free_memory(void *mem);
 H5_DLL void *H5allocate_memory(size_t size, hbool_t clear);
 H5_DLL void *H5resize_memory(void *mem, size_t size);
@@ -338,5 +353,6 @@ H5_DLL void *H5resize_memory(void *mem, size_t size);
 #ifdef __cplusplus
 }
 #endif
-#endif
+#endif /* _H5public_H */
+ 
 

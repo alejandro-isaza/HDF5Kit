@@ -24,7 +24,8 @@
  *-------------------------------------------------------------------------
  */
 
-#define H5O_PACKAGE		/*suppress error about including H5Opkg	  */
+#include "H5Omodule.h"          /* This source code file is part of the H5O module */
+
 
 #include "H5private.h"		/* Generic Functions			*/
 #include "H5Eprivate.h"		/* Error handling		  	*/
@@ -95,12 +96,12 @@ H5FL_DEFINE_STATIC(H5O_ginfo_t);
  *-------------------------------------------------------------------------
  */
 static void *
-H5O_ginfo_decode(H5F_t UNUSED *f, hid_t UNUSED dxpl_id, H5O_t UNUSED *open_oh,
-    unsigned UNUSED mesg_flags, unsigned UNUSED *ioflags, const uint8_t *p)
+H5O_ginfo_decode(H5F_t H5_ATTR_UNUSED *f, hid_t H5_ATTR_UNUSED dxpl_id, H5O_t H5_ATTR_UNUSED *open_oh,
+    unsigned H5_ATTR_UNUSED mesg_flags, unsigned H5_ATTR_UNUSED *ioflags, const uint8_t *p)
 {
     H5O_ginfo_t         *ginfo = NULL;  /* Pointer to group information message */
     unsigned char       flags;          /* Flags for encoding group info */
-    void                *ret_value;     /* Return value */
+    void                *ret_value = NULL;      /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT
 
@@ -168,7 +169,7 @@ done:
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5O_ginfo_encode(H5F_t UNUSED *f, hbool_t UNUSED disable_shared, uint8_t *p, const void *_mesg)
+H5O_ginfo_encode(H5F_t H5_ATTR_UNUSED *f, hbool_t H5_ATTR_UNUSED disable_shared, uint8_t *p, const void *_mesg)
 {
     const H5O_ginfo_t  *ginfo = (const H5O_ginfo_t *) _mesg;
     unsigned char       flags;          /* Flags for encoding group info */
@@ -224,7 +225,7 @@ H5O_ginfo_copy(const void *_mesg, void *_dest)
 {
     const H5O_ginfo_t   *ginfo = (const H5O_ginfo_t *)_mesg;
     H5O_ginfo_t         *dest = (H5O_ginfo_t *)_dest;
-    void                *ret_value;     /* Return value */
+    void                *ret_value = NULL;      /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT
 
@@ -262,10 +263,10 @@ done:
  *-------------------------------------------------------------------------
  */
 static size_t
-H5O_ginfo_size(const H5F_t UNUSED *f, hbool_t UNUSED disable_shared, const void *_mesg)
+H5O_ginfo_size(const H5F_t H5_ATTR_UNUSED *f, hbool_t H5_ATTR_UNUSED disable_shared, const void *_mesg)
 {
     const H5O_ginfo_t   *ginfo = (const H5O_ginfo_t *)_mesg;
-    size_t ret_value;   /* Return value */
+    size_t ret_value = 0;       /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -324,7 +325,7 @@ H5O_ginfo_free(void *mesg)
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5O_ginfo_debug(H5F_t UNUSED *f, hid_t UNUSED dxpl_id, const void *_mesg, FILE * stream,
+H5O_ginfo_debug(H5F_t H5_ATTR_UNUSED *f, hid_t H5_ATTR_UNUSED dxpl_id, const void *_mesg, FILE * stream,
 	       int indent, int fwidth)
 {
     const H5O_ginfo_t       *ginfo = (const H5O_ginfo_t *) _mesg;

@@ -4,24 +4,16 @@
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 
-/* Define if your system generates wrong code for log2 routine. */
-/* #undef BAD_LOG2_CODE_GENERATED */
-
-/* Define if the memory buffers being written to disk should be cleared before
-   writing. */
-#define CLEAR_MEMORY 1
-
-/* Define if your system can handle converting denormalized floating-point
-   values. */
-#define CONVERT_DENORMAL_FLOAT 1
-
 /* Define if C++ compiler recognizes offsetof */
 /* #undef CXX_HAVE_OFFSETOF */
+
+/* Define if this is a debug build. */
+/* #undef DEBUG_BUILD */
 
 /* Define the default plugins path to compile */
 #define DEFAULT_PLUGINDIR "/usr/local/hdf5/lib/plugin"
 
-/* Define if `dev_t' is a scalar */
+/* Define if dev_t is a scalar */
 #define DEV_T_IS_SCALAR 1
 
 /* Define to dummy `main' function (if any) required to link to the Fortran
@@ -38,9 +30,41 @@
 /* As FC_FUNC, but for C identifiers containing underscores. */
 /* #undef FC_FUNC_ */
 
-/* Define if your system can handle overflow converting floating-point to
-   integer values. */
-#define FP_TO_INTEGER_OVERFLOW_WORKS 1
+/* Define if Fortran C_LONG_DOUBLE is different from C_DOUBLE */
+/* #undef FORTRAN_C_LONG_DOUBLE_IS_UNIQUE */
+
+/* Define if we have Fortran C_LONG_DOUBLE */
+/* #undef FORTRAN_HAVE_C_LONG_DOUBLE */
+
+/* Define if we have Fortran intrinsic C_SIZEOF */
+/* #undef FORTRAN_HAVE_C_SIZEOF */
+
+/* Define if we have Fortran intrinsic SIZEOF */
+/* #undef FORTRAN_HAVE_SIZEOF */
+
+/* Define if we have Fortran intrinsic STORAGE_SIZE */
+/* #undef FORTRAN_HAVE_STORAGE_SIZE */
+
+/* Determine the size of C long double */
+/* #undef FORTRAN_SIZEOF_LONG_DOUBLE */
+
+/* Define Fortran compiler ID */
+/* #undef Fortran_COMPILER_ID */
+
+/* Define valid Fortran INTEGER KINDs */
+/* #undef H5CONFIG_F_IKIND */
+
+/* Define number of valid Fortran INTEGER KINDs */
+/* #undef H5CONFIG_F_NUM_IKIND */
+
+/* Define number of valid Fortran REAL KINDs */
+/* #undef H5CONFIG_F_NUM_RKIND */
+
+/* Define valid Fortran REAL KINDs */
+/* #undef H5CONFIG_F_RKIND */
+
+/* Define valid Fortran REAL KINDs Sizeof */
+/* #undef H5CONFIG_F_RKIND_SIZEOF */
 
 /* Define to 1 if you have the `alarm' function. */
 #define HAVE_ALARM 1
@@ -85,6 +109,9 @@
 /* Define if library information should be embedded in the executables */
 #define HAVE_EMBEDDED_LIBINFO 1
 
+/* Define to 1 if you have the `fcntl' function. */
+#define HAVE_FCNTL 1
+
 /* Define to 1 if you have the <features.h> header file. */
 /* #undef HAVE_FEATURES_H */
 
@@ -93,6 +120,12 @@
 
 /* Define if support for szip filter is enabled */
 /* #undef HAVE_FILTER_SZIP */
+
+/* Determine if __float128 is available */
+/* #undef HAVE_FLOAT128 */
+
+/* Define to 1 if you have the `flock' function. */
+#define HAVE_FLOCK 1
 
 /* Define to 1 if you have the `fork' function. */
 #define HAVE_FORK 1
@@ -103,26 +136,11 @@
 /* Define to 1 if you have the `frexpl' function. */
 #define HAVE_FREXPL 1
 
-/* Define to 1 if you have the `fseeko' function. */
-#define HAVE_FSEEKO 1
-
-/* Define to 1 if you have the `fseeko64' function. */
-/* #undef HAVE_FSEEKO64 */
-
-/* Define to 1 if you have the `fstat64' function. */
-#define HAVE_FSTAT64 1
-
-/* Define to 1 if you have the `ftello' function. */
-#define HAVE_FTELLO 1
-
-/* Define to 1 if you have the `ftello64' function. */
-/* #undef HAVE_FTELLO64 */
-
-/* Define to 1 if you have the `ftruncate64' function. */
-/* #undef HAVE_FTRUNCATE64 */
-
 /* Define if the compiler understands the __FUNCTION__ keyword */
 #define HAVE_FUNCTION 1
+
+/* Determine if INTEGER*16 is available */
+/* #undef HAVE_Fortran_INTEGER_SIZEOF_16 */
 
 /* Define to 1 if you have the `GetConsoleScreenBufferInfo' function. */
 /* #undef HAVE_GETCONSOLESCREENBUFFERINFO */
@@ -142,10 +160,10 @@
 /* Define to 1 if you have the `gettimeofday' function. */
 #define HAVE_GETTIMEOFDAY 1
 
-/* Define to 1 if you have the `get_fpc_csr' function. */
-/* #undef HAVE_GET_FPC_CSR */
+/* Define if the compiler understands inline */
+#define HAVE_INLINE 1
 
-/* Define if library will contain instrumentation to detect correct
+/* Define if parallel library will contain instrumentation to detect correct
    optimization operation */
 /* #undef HAVE_INSTRUMENTED_LIBRARY */
 
@@ -170,14 +188,8 @@
 /* Define to 1 if you have the `mpe' library (-lmpe). */
 /* #undef HAVE_LIBMPE */
 
-/* Define to 1 if you have the `nsl' library (-lnsl). */
-/* #undef HAVE_LIBNSL */
-
 /* Define to 1 if you have the `pthread' library (-lpthread). */
 /* #undef HAVE_LIBPTHREAD */
-
-/* Define to 1 if you have the `socket' library (-lsocket). */
-/* #undef HAVE_LIBSOCKET */
 
 /* Define to 1 if you have the `sz' library (-lsz). */
 /* #undef HAVE_LIBSZ */
@@ -190,9 +202,6 @@
 
 /* Define to 1 if you have the `longjmp' function. */
 #define HAVE_LONGJMP 1
-
-/* Define to 1 if you have the `lseek64' function. */
-/* #undef HAVE_LSEEK64 */
 
 /* Define to 1 if you have the `lstat' function. */
 #define HAVE_LSTAT 1
@@ -209,10 +218,10 @@
 /* Define to 1 if you have the <mpe.h> header file. */
 /* #undef HAVE_MPE_H */
 
-/* Define if `MPI_Comm_c2f' and `MPI_Comm_f2c' exists */
+/* Define if MPI_Comm_c2f and MPI_Comm_f2c exist */
 /* #undef HAVE_MPI_MULTI_LANG_Comm */
 
-/* Define if `MPI_Info_c2f' and `MPI_Info_f2c' exists */
+/* Define if MPI_Info_c2f and MPI_Info_f2c exist */
 /* #undef HAVE_MPI_MULTI_LANG_Info */
 
 /* Define if we have parallel support */
@@ -220,6 +229,9 @@
 
 /* Define to 1 if you have the <pthread.h> header file. */
 /* #undef HAVE_PTHREAD_H */
+
+/* Define to 1 if you have the <quadmath.h> header file. */
+/* #undef HAVE_QUADMATH_H */
 
 /* Define to 1 if you have the `random' function. */
 #define HAVE_RANDOM 1
@@ -254,11 +266,11 @@
 /* Define to 1 if you have the `srandom' function. */
 #define HAVE_SRANDOM 1
 
-/* Define to 1 if you have the `stat64' function. */
-#define HAVE_STAT64 1
+/* Define if struct stat has the st_blocks field */
+/* #undef HAVE_STAT_ST_BLOCKS */
 
-/* Define if `struct stat' has the `st_blocks' field */
-#define HAVE_STAT_ST_BLOCKS 1
+/* Define to 1 if you have the <stdbool.h> header file. */
+#define HAVE_STDBOOL_H 1
 
 /* Define to 1 if you have the <stddef.h> header file. */
 #define HAVE_STDDEF_H 1
@@ -278,10 +290,10 @@
 /* Define to 1 if you have the <string.h> header file. */
 #define HAVE_STRING_H 1
 
-/* Define if `struct text_info' is defined */
+/* Define if struct text_info is defined */
 /* #undef HAVE_STRUCT_TEXT_INFO */
 
-/* Define if `struct videoconfig' is defined */
+/* Define if struct videoconfig is defined */
 /* #undef HAVE_STRUCT_VIDEOCONFIG */
 
 /* Define to 1 if you have the `symlink' function. */
@@ -290,14 +302,11 @@
 /* Define to 1 if you have the `system' function. */
 #define HAVE_SYSTEM 1
 
-/* Define to 1 if you have the <sys/fpu.h> header file. */
-/* #undef HAVE_SYS_FPU_H */
+/* Define to 1 if you have the <sys/file.h> header file. */
+#define HAVE_SYS_FILE_H 1
 
 /* Define to 1 if you have the <sys/ioctl.h> header file. */
 #define HAVE_SYS_IOCTL_H 1
-
-/* Define to 1 if you have the <sys/proc.h> header file. */
-/* #undef HAVE_SYS_PROC_H */
 
 /* Define to 1 if you have the <sys/resource.h> header file. */
 #define HAVE_SYS_RESOURCE_H 1
@@ -307,9 +316,6 @@
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #define HAVE_SYS_STAT_H 1
-
-/* Define to 1 if you have the <sys/sysinfo.h> header file. */
-/* #undef HAVE_SYS_SYSINFO_H */
 
 /* Define to 1 if you have the <sys/timeb.h> header file. */
 #define HAVE_SYS_TIMEB_H 1
@@ -326,7 +332,7 @@
 /* Define if we have thread safe support */
 /* #undef HAVE_THREADSAFE */
 
-/* Define if `timezone' is a global variable */
+/* Define if timezone is a global variable */
 #define HAVE_TIMEZONE 1
 
 /* Define if the ioctl TIOCGETD is defined */
@@ -338,7 +344,7 @@
 /* Define to 1 if you have the `tmpfile' function. */
 #define HAVE_TMPFILE 1
 
-/* Define if `tm_gmtoff' is a member of `struct tm' */
+/* Define if tm_gmtoff is a member of struct tm */
 #define HAVE_TM_GMTOFF 1
 
 /* Define to 1 if you have the <unistd.h> header file. */
@@ -368,11 +374,13 @@
 /* Define to 1 if you have the `_scrsize' function. */
 /* #undef HAVE__SCRSIZE */
 
-/* Define if your system can't handle converting floating-point values to long
-   long. */
-/* #undef HW_FP_TO_LLONG_NOT_WORKS */
+/* Define if the compiler understands __inline */
+#define HAVE___INLINE 1
 
-/* Define if HDF5's high-level library headers should be included in hdf5.h */
+/* Define if the compiler understands __inline__ */
+#define HAVE___INLINE__ 1
+
+/* Define if the high-level library headers should be included in hdf5.h */
 #define INCLUDE_HL 1
 
 /* Define if your system can convert long double to (unsigned) long long
@@ -391,9 +399,11 @@
    with special algorithm. */
 /* #undef LONG_TO_LDOUBLE_SPECIAL */
 
-/* Define to the sub-directory in which libtool stores uninstalled libraries.
-   */
+/* Define to the sub-directory where libtool stores uninstalled libraries. */
 #define LT_OBJDIR ".libs/"
+
+/* Define to enable internal memory allocation sanity checking. */
+/* #undef MEMORY_ALLOC_SANITY_CHECK */
 
 /* Define if the metadata trace file code is to be compiled in */
 /* #undef METADATA_TRACE_FILE */
@@ -414,7 +424,7 @@
 #define PACKAGE_NAME "HDF5"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "HDF5 1.8.15-patch1"
+#define PACKAGE_STRING "HDF5 1.10.0"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "hdf5"
@@ -423,10 +433,19 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.8.15-patch1"
+#define PACKAGE_VERSION "1.10.0"
+
+/* Determine the maximum decimal precision in C */
+#define PAC_C_MAX_REAL_PRECISION 21
+
+/* Define Fortran Maximum Real Decimal Precision */
+/* #undef PAC_FC_MAX_REAL_PRECISION */
 
 /* Width for printf() for type `long long' or `__int64', use `ll' */
 #define PRINTF_LL_WIDTH "l"
+
+/* The size of `bool', as computed by sizeof. */
+#define SIZEOF_BOOL 1
 
 /* The size of `char', as computed by sizeof. */
 #define SIZEOF_CHAR 1
@@ -476,15 +495,6 @@
 /* The size of `int_least8_t', as computed by sizeof. */
 #define SIZEOF_INT_LEAST8_T 1
 
-/* The size of `off64_t', as computed by sizeof. */
-#define SIZEOF_OFF64_T 0
-
-/* The size of `off_t', as computed by sizeof. */
-#define SIZEOF_OFF_T 8
-
-
-#ifdef __LP64__
-
 /* The size of `long', as computed by sizeof. */
 #define SIZEOF_LONG 8
 
@@ -494,40 +504,20 @@
 /* The size of `long long', as computed by sizeof. */
 #define SIZEOF_LONG_LONG 8
 
+/* The size of `off_t', as computed by sizeof. */
+#define SIZEOF_OFF_T 8
+
 /* The size of `ptrdiff_t', as computed by sizeof. */
 #define SIZEOF_PTRDIFF_T 8
+
+/* The size of `short', as computed by sizeof. */
+#define SIZEOF_SHORT 2
 
 /* The size of `size_t', as computed by sizeof. */
 #define SIZEOF_SIZE_T 8
 
 /* The size of `ssize_t', as computed by sizeof. */
 #define SIZEOF_SSIZE_T 8
-
-#else
-
-/* The size of `long', as computed by sizeof. */
-#define SIZEOF_LONG 4
-
-/* The size of `long double', as computed by sizeof. */
-#define SIZEOF_LONG_DOUBLE 16
-
-/* The size of `long long', as computed by sizeof. */
-#define SIZEOF_LONG_LONG 8
-
-/* The size of `ptrdiff_t', as computed by sizeof. */
-#define SIZEOF_PTRDIFF_T 4
-
-/* The size of `size_t', as computed by sizeof. */
-#define SIZEOF_SIZE_T 4
-
-/* The size of `ssize_t', as computed by sizeof. */
-#define SIZEOF_SSIZE_T 4
-
-#endif
-
-
-/* The size of `short', as computed by sizeof. */
-#define SIZEOF_SHORT 2
 
 /* The size of `uint16_t', as computed by sizeof. */
 #define SIZEOF_UINT16_T 2
@@ -568,6 +558,12 @@
 /* The size of `unsigned', as computed by sizeof. */
 #define SIZEOF_UNSIGNED 4
 
+/* The size of `_Quad', as computed by sizeof. */
+#define SIZEOF__QUAD 0
+
+/* The size of `__float128', as computed by sizeof. */
+#define SIZEOF___FLOAT128 0
+
 /* The size of `__int64', as computed by sizeof. */
 #define SIZEOF___INT64 0
 
@@ -579,7 +575,7 @@
 
 /* Define if your system supports pthread_attr_setscope(&attribute,
    PTHREAD_SCOPE_SYSTEM) call. */
-#define SYSTEM_SCOPE_THREADS 1
+/* #undef SYSTEM_SCOPE_THREADS */
 
 /* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
 #define TIME_WITH_SYS_TIME 1
@@ -587,13 +583,16 @@
 /* Define using v1.6 public API symbols by default */
 /* #undef USE_16_API_DEFAULT */
 
+/* Define using v1.8 public API symbols by default */
+/* #undef USE_18_API_DEFAULT */
+
 /* Define if a memory checking tool will be used on the library, to cause
    library to be very picky about memory operations and also disable the
    internal free list manager code. */
 /* #undef USING_MEMCHECKER */
 
 /* Version number of package */
-#define VERSION "1.8.15-patch1"
+#define VERSION "1.10.0"
 
 /* Data accuracy is prefered to speed during data conversions */
 #define WANT_DATA_ACCURACY 1
@@ -622,12 +621,6 @@
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef const */
 
-/* Define to `__inline__' or `__inline' if that's what the C compiler
-   calls it, or to nothing if 'inline' is not supported under any name.  */
-#ifndef __cplusplus
-/* #undef inline */
-#endif
-
 /* Define to `long int' if <sys/types.h> does not define. */
 /* #undef off_t */
 
@@ -639,7 +632,3 @@
 
 /* Define to `long' if <sys/types.h> does not define. */
 /* #undef ssize_t */
-
-#if defined(__cplusplus) && defined(inline)
-#undef inline
-#endif

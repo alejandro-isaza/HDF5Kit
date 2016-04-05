@@ -62,7 +62,7 @@ static void
 H5TS_key_destructor(void *key_val)
 {
     /* Use HDfree here instead of H5MM_xfree(), to avoid calling the H5CS routines */
-    if(key_val!=NULL)
+    if(key_val != NULL)
         HDfree(key_val);
 }
 
@@ -91,8 +91,9 @@ H5TS_key_destructor(void *key_val)
 void
 H5TS_pthread_first_thread_init(void)
 {
-    H5_g.H5_libinit_g = FALSE;
-    
+    H5_g.H5_libinit_g = FALSE;  /* Library hasn't been initialized */
+    H5_g.H5_libterm_g = FALSE;  /* Library isn't being shutdown */
+
 #ifdef H5_HAVE_WIN32_API
 # ifdef PTW32_STATIC_LIB
     pthread_win32_process_attach_np();
@@ -254,19 +255,18 @@ H5TS_cancel_count_inc(void)
 
     if (!cancel_counter) {
         /*
-   * First time thread calls library - create new counter and associate
+         * First time thread calls library - create new counter and associate
          * with key
          */
-  cancel_counter = (H5TS_cancel_t *)H5MM_calloc(sizeof(H5TS_cancel_t));
+        cancel_counter = (H5TS_cancel_t *)HDcalloc(1, sizeof(H5TS_cancel_t));
 
-  if (!cancel_counter) {
-      H5E_push_stack(NULL, "H5TS_cancel_count_inc",
-         __FILE__, __LINE__, H5E_ERR_CLS_g, H5E_RESOURCE, H5E_NOSPACE, "memory allocation failed");
-      return FAIL;
-  }
+        if (!cancel_counter) {
+            H5E_push_stack(NULL, "H5TS_cancel_count_inc", __FILE__, __LINE__,
+                H5E_ERR_CLS_g, H5E_RESOURCE, H5E_NOSPACE, "memory allocation failed");
+            return FAIL;
+        }
 
-        ret_value = pthread_setspecific(H5TS_cancel_key_g,
-          (void *)cancel_counter);
+        ret_value = pthread_setspecific(H5TS_cancel_key_g, (void *)cancel_counter);
     }
 
     if (cancel_counter->cancel_count == 0)

@@ -20,7 +20,7 @@
  * Purpose:	Test unlinking operations.
  */
 
-#define H5G_PACKAGE		/*suppress error about including H5Gpkg	  */
+#define H5G_FRIEND		/*suppress error about including H5Gpkg	  */
 
 /* Define this macro to indicate that the testing APIs should be available */
 #define H5G_TESTING
@@ -2443,7 +2443,7 @@ main(void)
     hid_t	fapl, fapl2, file;
     int	nerrors = 0;
     char	filename[1024];
-    hbool_t new_format;
+    unsigned new_format;
 
     /* Metadata cache parameters */
     int mdc_nelmts;

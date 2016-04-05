@@ -137,9 +137,7 @@ error:
 int
 main(int argc, char* argv[])
 {
-    hid_t fapl1, fapl2;
     H5E_auto2_t func;
-
     char	name[1024];
     const char *envval = NULL;
 
@@ -151,13 +149,6 @@ main(int argc, char* argv[])
     MPI_Comm_size(comm, &mpi_size);
     MPI_Comm_rank(comm, &mpi_rank);
 
-    fapl1 = H5Pcreate(H5P_FILE_ACCESS);
-    H5Pset_fapl_mpio(fapl1, comm, info);
-
-    fapl2 = H5Pcreate(H5P_FILE_ACCESS);
-    H5Pset_fapl_mpio(fapl2, comm, info);
-
-
     if(mpi_rank == 0)
 	TESTING("H5Fflush (part2 with flush)");
 
@@ -166,6 +157,14 @@ main(int argc, char* argv[])
     if (envval == NULL)
         envval = "nomatch";
     if (HDstrcmp(envval, "core") && HDstrcmp(envval, "split")) {
+        hid_t fapl1, fapl2;
+
+        fapl1 = H5Pcreate(H5P_FILE_ACCESS);
+        H5Pset_fapl_mpio(fapl1, comm, info);
+
+        fapl2 = H5Pcreate(H5P_FILE_ACCESS);
+        H5Pset_fapl_mpio(fapl2, comm, info);
+
 	/* Check the case where the file was flushed */
 	h5_fixname(FILENAME[0], fapl1, name, sizeof name);
 	if(check_file(name, fapl1))
@@ -201,8 +200,8 @@ main(int argc, char* argv[])
 	H5Eset_auto2(H5E_DEFAULT, func, NULL);
 
 
-	h5_cleanup(&FILENAME[0], fapl1);
-	h5_cleanup(&FILENAME[1], fapl2);
+	h5_clean_files(&FILENAME[0], fapl1);
+	h5_clean_files(&FILENAME[1], fapl2);
     }
     else
     {
@@ -216,7 +215,4 @@ main(int argc, char* argv[])
     error:
         return 1;
 }
-
-
-
 

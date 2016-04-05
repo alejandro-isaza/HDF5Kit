@@ -74,6 +74,8 @@ MAJOR, H5E_ERROR, Error API
 MAJOR, H5E_SLIST, Skip Lists
 MAJOR, H5E_FSPACE, Free Space Manager
 MAJOR, H5E_SOHM, Shared Object Header Messages
+MAJOR, H5E_EARRAY, Extensible Array
+MAJOR, H5E_FARRAY, Fixed Array
 MAJOR, H5E_PLUGIN, Plugin for dynamically loaded library
 MAJOR, H5E_NONE_MAJOR, No error
 
@@ -156,6 +158,7 @@ MINOR, ATOM, H5E_NOIDS, Out of IDs for group
 # Cache related errors
 MINOR, CACHE, H5E_CANTFLUSH, Unable to flush data from cache
 MINOR, CACHE, H5E_CANTSERIALIZE, Unable to serialize data from cache
+MINOR, CACHE, H5E_CANTTAG, Unable to tag metadata in the cache
 MINOR, CACHE, H5E_CANTLOAD, Unable to load metadata into cache
 MINOR, CACHE, H5E_PROTECT, Protected metadata error
 MINOR, CACHE, H5E_NOTCACHED, Metadata not currently cached
@@ -169,6 +172,12 @@ MINOR, CACHE, H5E_CANTMARKDIRTY, Unable to mark a pinned entry as dirty
 MINOR, CACHE, H5E_CANTDIRTY, Unable to mark metadata as dirty
 MINOR, CACHE, H5E_CANTEXPUNGE, Unable to expunge a metadata cache entry
 MINOR, CACHE, H5E_CANTRESIZE, Unable to resize a metadata cache entry
+MINOR, CACHE, H5E_CANTDEPEND, Unable to create a flush dependency
+MINOR, CACHE, H5E_CANTUNDEPEND, Unable to destroy a flush dependency
+MINOR, CACHE, H5E_CANTNOTIFY, Unable to notify object about action
+MINOR, CACHE, H5E_LOGFAIL, Failure in the cache logging framework
+MINOR, CACHE, H5E_CANTCORK, Unable to cork an object
+MINOR, CACHE, H5E_CANTUNCORK, Unable to uncork an object
 
 # B-tree related errors
 MINOR, BTREE, H5E_NOTFOUND, Object not found
@@ -211,6 +220,7 @@ MINOR, DSPACE, H5E_CANTSELECT, Can't select hyperslab
 MINOR, DSPACE, H5E_CANTNEXT, Can't move to next iterator location
 MINOR, DSPACE, H5E_BADSELECT, Invalid selection
 MINOR, DSPACE, H5E_CANTCOMPARE, Can't compare objects
+MINOR, DSPACE, H5E_CANTAPPEND, Can't append object
 
 # Property list errors
 MINOR, PLIST, H5E_CANTGET, Can't get value

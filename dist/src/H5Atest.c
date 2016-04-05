@@ -28,7 +28,7 @@
 /* Module Setup */
 /****************/
 
-#define H5A_PACKAGE		/*suppress error about including H5Apkg  */
+#include "H5Amodule.h"          /* This source code file is part of the H5A module */
 #define H5A_TESTING		/*suppress warning about H5A testing funcs*/
 
 
@@ -95,7 +95,7 @@ htri_t
 H5A_is_shared_test(hid_t attr_id)
 {
     H5A_t	*attr;                  /* Attribute object for ID */
-    htri_t	ret_value;              /* Return value */
+    htri_t	ret_value = FAIL;       /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT
 
@@ -140,7 +140,7 @@ H5A_get_shared_rc_test(hid_t attr_id, hsize_t *ref_count)
     HDassert(H5O_msg_is_shared(H5O_ATTR_ID, attr));
 
     /* Retrieve ref count for shared or shareable attribute */
-    if(H5SM_get_refcount(attr->oloc.file, H5AC_ind_dxpl_id, H5O_ATTR_ID,
+    if(H5SM_get_refcount(attr->oloc.file, H5AC_ind_read_dxpl_id, H5O_ATTR_ID,
             &attr->sh_loc, ref_count) < 0)
         HGOTO_ERROR(H5E_ATTR, H5E_CANTGET, FAIL, "can't retrieve shared message ref count")
 

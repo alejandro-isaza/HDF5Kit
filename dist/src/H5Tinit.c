@@ -17,7 +17,7 @@
  * access to either file, you may request a copy from help@hdfgroup.org.     *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
- * Created:		Oct  1, 2015
+ * Created:		Apr  4, 2016
  *			Alejandro Isaza <al@Alejandros-MacBook-Pro.local>
  *
  * Purpose:		This machine-generated source code contains
@@ -69,7 +69,7 @@
 /* Module Setup */
 /****************/
 
-#define H5T_PACKAGE /*suppress error about including H5Tpkg.h*/
+#include "H5Tmodule.h"          /* This source code file is part of the H5T module */
 
 
 /***********/
@@ -125,7 +125,7 @@
 
 
 /*-------------------------------------------------------------------------
- * Function:	H5TN_init_interface
+ * Function:	H5T__init_native
  *
  * Purpose:	Initialize pre-defined native datatypes from code generated
  *              during the library configuration by H5detect.
@@ -139,12 +139,12 @@
  *-------------------------------------------------------------------------
  */
 herr_t
-H5TN_init_interface(void)
+H5T__init_native(void)
 {
     H5T_t	*dt = NULL;
     herr_t	ret_value = SUCCEED;
 
-    FUNC_ENTER_NOAPI(FAIL)
+    FUNC_ENTER_PACKAGE
 
    /*
     *    0
@@ -237,7 +237,7 @@ H5TN_init_interface(void)
         HGOTO_ERROR(H5E_DATATYPE, H5E_NOSPACE, FAIL, "datatype allocation failed")
     dt->shared->state = H5T_STATE_IMMUTABLE;
     dt->shared->type = H5T_INTEGER;
-    dt->shared->size = 4;
+    dt->shared->size = sizeof(int);
     dt->shared->u.atomic.order = H5T_ORDER_LE;
     dt->shared->u.atomic.offset = 0;
     dt->shared->u.atomic.prec = 32;
@@ -258,7 +258,7 @@ H5TN_init_interface(void)
         HGOTO_ERROR(H5E_DATATYPE, H5E_NOSPACE, FAIL, "datatype allocation failed")
     dt->shared->state = H5T_STATE_IMMUTABLE;
     dt->shared->type = H5T_INTEGER;
-    dt->shared->size = 4;
+    dt->shared->size = sizeof(unsigned int);
     dt->shared->u.atomic.order = H5T_ORDER_LE;
     dt->shared->u.atomic.offset = 0;
     dt->shared->u.atomic.prec = 32;
@@ -964,7 +964,7 @@ done:
     } /* end if */
 
     FUNC_LEAVE_NOAPI(ret_value);
-} /* end H5TN_init_interface() */
+} /* end H5T__init_native() */
 
 /****************************************/
 /* ALIGNMENT and signal-handling status */

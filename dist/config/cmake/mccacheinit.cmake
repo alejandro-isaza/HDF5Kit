@@ -4,6 +4,10 @@
 # EXTERNAL cache entries
 ########################
 
+set (CMAKE_INSTALL_FRAMEWORK_PREFIX "Library/Frameworks" CACHE STRING "Frameworks installation directory" FORCE)
+
+set (HDF5_GENERATE_HEADERS ON CACHE BOOL "Rebuild Generated Files" FORCE)
+
 set (BUILD_SHARED_LIBS OFF CACHE BOOL "Build Shared Libraries" FORCE)
 
 set (BUILD_TESTING ON CACHE BOOL "Build HDF5 Unit Testing" FORCE)
@@ -15,8 +19,6 @@ set (HDF5_BUILD_CPP_LIB ON CACHE BOOL "Build HDF5 C++ Library" FORCE)
 set (HDF5_BUILD_EXAMPLES ON CACHE BOOL "Build HDF5 Library Examples" FORCE)
 
 set (HDF5_BUILD_FORTRAN ON CACHE BOOL "Build FORTRAN support" FORCE)
-
-set (HDF5_ENABLE_F2003 OFF CACHE BOOL "Enable FORTRAN 2003 Standard" FORCE)
 
 set (HDF5_BUILD_HL_LIB ON CACHE BOOL "Build HIGH Level HDF5 Library" FORCE)
 
@@ -48,11 +50,15 @@ set (HDF5_ENABLE_COVERAGE OFF CACHE BOOL "Enable code coverage for Libraries and
 
 set (HDF5_ENABLE_USING_MEMCHECKER ON CACHE BOOL "Indicate that a memory checker is used" FORCE)
 
+set (HDF5_MEMORY_ALLOC_SANITY_CHECK OFF CACHE BOOL "Indicate that internal memory allocation sanity checks are enabled" FORCE)
+
 set (HDF5_DISABLE_COMPILER_WARNINGS OFF CACHE BOOL "Disable compiler warnings" FORCE)
 
 set (HDF5_USE_FOLDERS ON CACHE BOOL "Enable folder grouping of projects in IDEs." FORCE)
 
 set (HDF5_USE_16_API_DEFAULT OFF CACHE BOOL "Use the HDF5 1.6.x API by default" FORCE)
+
+set (HDF5_USE_18_API_DEFAULT OFF CACHE BOOL "Use the HDF5 1.8.x API by default" FORCE)
 
 set (HDF5_ENABLE_THREADSAFE OFF CACHE BOOL "(WINDOWS)Enable Threadsafety" FORCE)
 

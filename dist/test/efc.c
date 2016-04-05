@@ -18,7 +18,7 @@
 
 #include "h5test.h"
 
-#define H5F_PACKAGE
+#define H5F_FRIEND		/*suppress error about including H5Fpkg	  */
 #include "H5Fpkg.h"
 #include "H5Iprivate.h"
 
@@ -3171,7 +3171,7 @@ main(void)
     /* Create property lists */
     fcpl_id = H5Pcreate(H5P_FILE_CREATE);
     fapl_id = h5_fileaccess();
-    dxpl_id = H5Pcreate(H5P_DATASET_XFER);
+    dxpl_id = H5AC_ind_read_dxpl_id;
 
     /* Patch filenames */
     h5_fixname(FILENAME[0], fapl_id, filename[0], sizeof(filename[0]));
@@ -3187,8 +3187,6 @@ main(void)
     nerrors += test_graph_cycle();
 
     /* Close property lists */
-    if(H5Pclose(dxpl_id) < 0)
-        TEST_ERROR
     if(H5Pclose(fcpl_id) < 0)
         TEST_ERROR
 
@@ -3200,7 +3198,7 @@ main(void)
 
     puts("All external file cache tests passed.");
 
-    h5_cleanup(FILENAME, fapl_id);
+    h5_clean_files(FILENAME, fapl_id);
 
     return 0;
 

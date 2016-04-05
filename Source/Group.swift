@@ -5,7 +5,7 @@
 // file LICENSE at the root of the source code distribution tree.
 
 public protocol GroupType {
-    var id: Int32 { get }
+    var id: hid_t { get }
 }
 
 public class Group: Object, GroupType {

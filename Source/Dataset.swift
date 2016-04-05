@@ -5,7 +5,7 @@
 // file LICENSE at the root of the source code distribution tree.
 
 public class Dataset: Object {
-    override init(id: Int32) {
+    override init(id: hid_t) {
         super.init(id: id)
     }
 

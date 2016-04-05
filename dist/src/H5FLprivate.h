@@ -138,7 +138,7 @@ typedef struct H5FL_reg_head_t {
 #else /* H5_NO_REG_FREE_LISTS */
 #include "H5MMprivate.h"
 /* Common macro for H5FL_DEFINE & H5FL_DEFINE_STATIC */
-#define H5FL_DEFINE_COMMON(t) int UNUSED H5FL_REG_NAME(t)
+#define H5FL_DEFINE_COMMON(t) int H5_ATTR_UNUSED H5FL_REG_NAME(t)
 
 #define H5FL_DEFINE(t)  H5_DLL H5FL_DEFINE_COMMON(t)
 #define H5FL_EXTERN(t)  H5_DLLVAR H5FL_DEFINE_COMMON(t)
@@ -208,7 +208,7 @@ typedef struct H5FL_blk_head_t {
 
 #else /* H5_NO_BLK_FREE_LISTS */
 /* Common macro for H5FL_BLK_DEFINE & H5FL_BLK_DEFINE_STATIC */
-#define H5FL_BLK_DEFINE_COMMON(t) int UNUSED H5FL_BLK_NAME(t)
+#define H5FL_BLK_DEFINE_COMMON(t) int H5_ATTR_UNUSED H5FL_BLK_NAME(t)
 
 #define H5FL_BLK_DEFINE(t)      H5_DLL H5FL_BLK_DEFINE_COMMON(t)
 #define H5FL_BLK_EXTERN(t)      H5_DLLVAR H5FL_BLK_DEFINE_COMMON(t)
@@ -330,14 +330,14 @@ typedef struct H5FL_seq_head_t {
 #define H5FL_SEQ_CALLOC(t,elem) (t *)H5FL_seq_calloc(&(H5FL_SEQ_NAME(t)),elem H5FL_TRACK_INFO)
 
 /* Free a sequence of type 't' */
-#define H5FL_SEQ_FREE(t,obj) H5FL_seq_free(&(H5FL_SEQ_NAME(t)),obj)
+#define H5FL_SEQ_FREE(t,obj) (t *)H5FL_seq_free(&(H5FL_SEQ_NAME(t)),obj)
 
 /* Re-allocate a sequence of type 't' */
 #define H5FL_SEQ_REALLOC(t,obj,new_elem) (t *)H5FL_seq_realloc(&(H5FL_SEQ_NAME(t)),obj,new_elem H5FL_TRACK_INFO)
 
 #else /* H5_NO_SEQ_FREE_LISTS */
 /* Common macro for H5FL_SEQ_DEFINE & H5FL_SEQ_DEFINE_STATIC */
-#define H5FL_SEQ_DEFINE_COMMON(t) int UNUSED H5FL_SEQ_NAME(t)
+#define H5FL_SEQ_DEFINE_COMMON(t) int H5_ATTR_UNUSED H5FL_SEQ_NAME(t)
 
 #define H5FL_SEQ_DEFINE(t)      H5_DLL H5FL_SEQ_DEFINE_COMMON(t)
 #define H5FL_SEQ_EXTERN(t)      H5_DLLVAR H5FL_SEQ_DEFINE_COMMON(t)

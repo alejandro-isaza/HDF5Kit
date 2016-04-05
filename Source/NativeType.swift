@@ -39,7 +39,7 @@ public enum NativeType {
     }
 
     /// The raw value of the NativeType
-    public var rawValue: Swift.Int32 {
+    public var rawValue: hid_t {
         switch self {
         case Int: return H5T_NATIVE_LONG_g
         case UInt: return H5T_NATIVE_ULONG_g

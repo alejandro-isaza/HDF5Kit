@@ -21,7 +21,7 @@
  *              only within the H5HG package. Source files outside the
  *              H5HG package should include H5HGprivate.h instead.
  */
-#ifndef H5HG_PACKAGE
+#if !(defined H5HG_FRIEND || defined H5HG_MODULE)
 #error "Do not include this file outside the H5HG package!"
 #endif
 
@@ -116,9 +116,9 @@ H5FL_BLK_EXTERN(gheap_chunk);
 /****************************/
 
 typedef struct H5HG_obj_t {
-    int		nrefs;		/*reference count		*/
-    size_t		size;		/*total size of object		*/
-    uint8_t		*begin;		/*ptr to object into heap->chunk*/
+    int         nrefs;      /* reference count                  */
+    size_t      size;       /* total size of object             */
+    uint8_t     *begin;     /* ptr to object into heap->chunk   */
 } H5HG_obj_t;
 
 /* Forward declarations for fields */
@@ -143,7 +143,7 @@ struct H5HG_heap_t {
 /* Package Private Prototypes */
 /******************************/
 H5_DLL herr_t H5HG_free(H5HG_heap_t *heap);
-H5_DLL H5HG_heap_t *H5HG_protect(H5F_t *f, hid_t dxpl_id, haddr_t addr, H5AC_protect_t rw);
+H5_DLL H5HG_heap_t *H5HG_protect(H5F_t *f, hid_t dxpl_id, haddr_t addr, unsigned flags);
 
 #endif /* _H5HGpkg_H */
 

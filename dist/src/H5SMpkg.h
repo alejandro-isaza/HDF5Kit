@@ -21,7 +21,7 @@
  *              the H5SM shared object header messages package.  Source files
  *              outside the H5SM package should	include H5SMprivate.h instead.
  */
-#ifndef H5SM_PACKAGE
+#if !(defined H5SM_FRIEND || defined H5SM_MODULE)
 #error "Do not include this file outside the H5SM package!"
 #endif
 
@@ -268,9 +268,9 @@ H5_DLLVAR const H5B2_class_t H5SM_INDEX[1];
 H5_DLL ssize_t H5SM_get_index(const H5SM_master_table_t *table, unsigned type_id);
 
 /* Encode and decode routines, used for B-tree and cache encoding/decoding */
-H5_DLL herr_t H5SM_message_compare(const void *rec1, const void *rec2);
-H5_DLL herr_t H5SM_message_encode(uint8_t *raw, const void *native, void *ctx);
-H5_DLL herr_t H5SM_message_decode(const uint8_t *raw, void *native, void *ctx);
+H5_DLL herr_t H5SM__message_compare(const void *rec1, const void *rec2, int *result);
+H5_DLL herr_t H5SM__message_encode(uint8_t *raw, const void *native, void *ctx);
+H5_DLL herr_t H5SM__message_decode(const uint8_t *raw, void *native, void *ctx);
 
 /* H5B2_remove_t callback to add messages to a list index */
 H5_DLL herr_t H5SM_bt2_convert_to_list_op(const void * record, void *op_data);

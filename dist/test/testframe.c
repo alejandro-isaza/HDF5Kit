@@ -49,8 +49,6 @@ int TestVerbosity = VERBO_DEF;       /* Default Verbosity is Low */
 static int Summary = 0;		/* Show test summary. Default is no. */
 static int CleanUp = 1;		/* Do cleanup or not. Default is yes. */
 static int TestExpress = -1;	/* Do TestExpress or not. -1 means not set yet. */
-static H5E_auto_t	*PrintErrorStackFunc;
-static void		**PrintErrorStackData;
 static TestStruct Test[MAXNUMOFTESTS];
 static int    Index = 0;
 static const void *Test_parameters = NULL;
@@ -128,14 +126,12 @@ AddTest(const char *TheName, void (*TheCall) (void), void (*Cleanup) (void), con
  */
 void TestInit(const char *ProgName, void (*private_usage)(void), int (*private_parser)(int ac, char *av[]))
 {
-    /* Save error printing settings */
-    H5Eget_auto2(H5E_DEFAULT, PrintErrorStackFunc, PrintErrorStackData);
     /*
      * Turn off automatic error reporting since we do it ourselves.  Besides,
      * half the functions this test calls are private, so automatic error
      * reporting wouldn't do much good since it's triggered at the API layer.
      */
-    PrintErrorStackOff();
+    H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
 
     /*
      * Record the program name and private routines if provided.
@@ -217,6 +213,7 @@ void TestInfo(const char *ProgName)
  */
 void TestParseCmdLine(int argc, char *argv[])
 {
+    hbool_t skipped_all = FALSE;
     int ret_code;
 
     while (argv++, --argc > 0){
@@ -252,14 +249,20 @@ void TestParseCmdLine(int argc, char *argv[])
 	}
 	else if (((HDstrcmp(*argv, "-only") == 0) ||
 				    (HDstrcmp(*argv, "-o") == 0))) {
-	    if (argc > 0){
+	    if(argc > 0) {
 		int Loop;
+
 		--argc; ++argv;
+
 		/* Skip all tests, then activate only one. */
-		for (Loop = 0; Loop < Index; Loop++)
-		    Test[Loop].SkipFlag = 1;
+                if(!skipped_all) {
+                    for(Loop = 0; Loop < Index; Loop++)
+                        Test[Loop].SkipFlag = 1;
+                    skipped_all = TRUE;
+                } /* end if */
 		SetTest(*argv, ONLYTEST);
-	    }else{
+	    } /* end if */
+            else {
 		TestUsage();
 		exit(EXIT_FAILURE);
 	    }
@@ -552,6 +555,7 @@ TestErrPrintf(const char *format, ...)
 void SetTest(const char *testname, int action)
 {
     int Loop;
+
     switch (action){
 	case SKIPTEST:
 	    for (Loop = 0; Loop < Index; Loop++)
@@ -573,17 +577,12 @@ void SetTest(const char *testname, int action)
 	    break;
 	case ONLYTEST:
 	    for (Loop = 0; Loop < Index; Loop++) {
-		if (HDstrcmp(testname, Test[Loop].Name) != 0)
-		    Test[Loop].SkipFlag = 1;
-		else {
+		if (HDstrcmp(testname, Test[Loop].Name) == 0) {
 		    /* Found it. Set it to run. Break to skip the rest. */
 		    Test[Loop].SkipFlag = 0;
 		    break;
 		}
 	    }
-	    /* skip the rest */
-	    while (++Loop < Index)
-		Test[Loop].SkipFlag = 1;
 	    break;
 	default:
 	    /* error */
@@ -609,19 +608,3 @@ void TestAlarmOn(void)
     HDalarm((unsigned)alarm_sec);
 }
 
-
-/*
- * Enable error stack printing when errors occur.
- */
-void PrintErrorStackOn(void)
-{
-    H5Eset_auto2(H5E_DEFAULT, PrintErrorStackFunc, PrintErrorStackData);
-}
-
-/*
- * Disable error stack printing when errors occur.
- */
-void PrintErrorStackOff(void)
-{
-    H5Eset_auto2(H5E_DEFAULT, NULL, NULL);
-}

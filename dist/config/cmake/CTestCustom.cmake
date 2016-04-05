@@ -2,18 +2,18 @@ set (CTEST_CUSTOM_MAXIMUM_NUMBER_OF_WARNINGS 3000)
  
 set (CTEST_CUSTOM_WARNING_EXCEPTION
     ${CTEST_CUSTOM_WARNING_EXCEPTION}
-    "H5detect.c.[0-9]+.[ \t]*:[ \t]*warning C4090:"
-    "H5detect.c.[0-9]+.[ \t]*:[ \t]*warning:[ \t]*passing argument"
-    "H5detect.c[0-9 \t:]*warning:[ \t]*passing argument"
-    "note.*expected.*void.*but argument is of type.*volatile"
-    "H5Tconv.c[0-9 \t:]*warning:[ \t]*comparison is always false due to limited range of data type"
-    "H5Ztrans.c.[0-9]+.[ \t]*:[ \t]*warning C4244"
-    "SZIP.src.*:[ \t]*warning"
-    "POSIX name for this item is deprecated"
+#    "H5detect.c.[0-9]+.[ \t]*:[ \t]*warning C4090:"
+#    "H5detect.c.[0-9]+.[ \t]*:[ \t]*warning:[ \t]*passing argument"
+#    "H5detect.c[0-9 \t:]*warning:[ \t]*passing argument"
+#    "note.*expected.*void.*but argument is of type.*volatile"
+#    "H5Tconv.c[0-9 \t:]*warning:[ \t]*comparison is always false due to limited range of data type"
+#    "H5Ztrans.c.[0-9]+.[ \t]*:[ \t]*warning C4244"
+#    "SZIP.src.*:[ \t]*warning"
+#    "POSIX name for this item is deprecated"
     "disabling jobserver mode"
     "config.cmake.xlatefile.c"
-    "warning.*implicit declaration of function"
-    "note: expanded from macro"
+#    "warning.*implicit declaration of function"
+#    "note: expanded from macro"
 #    "fpp:[ \t]*warning:[ \t]*cannot remove H5_DEBUG_API - not a predefined macro"
 )
  
@@ -29,6 +29,7 @@ set (CTEST_CUSTOM_MEMCHECK_IGNORE
     H5TEST-clear-objects
     H5TEST-clear-cache-objects
     H5TEST-clear-cache_api-objects
+    H5TEST-clear-cache_tagging-objects
     H5TEST-clear-ttsafe-objects
     H5TEST-clear-err_compat-objects
     H5TEST-clear-error_test-objects

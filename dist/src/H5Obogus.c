@@ -28,7 +28,8 @@
  *-------------------------------------------------------------------------
  */
 
-#define H5O_PACKAGE		/*suppress error about including H5Opkg	  */
+#include "H5Omodule.h"          /* This source code file is part of the H5O module */
+
 
 #include "H5private.h"		/* Generic Functions			*/
 #include "H5Eprivate.h"		/* Error handling		  	*/
@@ -46,9 +47,9 @@ static herr_t H5O_bogus_debug(H5F_t *f, hid_t dxpl_id, const void *_mesg, FILE *
 			     int indent, int fwidth);
 
 /* This message derives from H5O message class */
-const H5O_msg_class_t H5O_MSG_BOGUS[1] = {{
-    H5O_BOGUS_ID,            	/*message id number             */
-    "bogus",                 	/*message name for debugging    */
+const H5O_msg_class_t H5O_MSG_BOGUS_VALID[1] = {{
+    H5O_BOGUS_VALID_ID,		/*message id number             */
+    "bogus valid",             	/*message name for debugging    */
     0,     	                /*native message size           */
     0,				/* messages are sharable?       */
     H5O_bogus_decode,        	/*decode message                */
@@ -69,6 +70,30 @@ const H5O_msg_class_t H5O_MSG_BOGUS[1] = {{
     H5O_bogus_debug         	/*debug the message             */
 }};
 
+/* This message derives from H5O message class */
+const H5O_msg_class_t H5O_MSG_BOGUS_INVALID[1] = {{
+    H5O_BOGUS_INVALID_ID, 	/*message id number             */
+    "bogus invalid",          	/*message name for debugging    */
+    0,                          /*native message size           */
+    0,                          /* messages are sharable?       */
+    H5O_bogus_decode,           /*decode message                */
+    H5O_bogus_encode,           /*encode message                */
+    NULL,                       /*copy the native value         */
+    H5O_bogus_size,             /*raw message size              */
+    NULL,                       /*free internal memory          */
+    NULL,                       /*free method                   */
+    NULL,                       /* file delete method           */
+    NULL,                       /* link method                  */
+    NULL,                       /*set share method              */
+    NULL,                       /*can share method              */
+    NULL,                       /* pre copy native value to file */
+    NULL,                       /* copy native value to file    */
+    NULL,                       /* post copy native value to file    */
+    NULL,                       /* get creation index           */
+    NULL,                       /* set creation index           */
+    H5O_bogus_debug             /*debug the message             */
+}};
+
 
 /*-------------------------------------------------------------------------
  * Function:    H5O_bogus_decode
@@ -87,8 +112,8 @@ const H5O_msg_class_t H5O_MSG_BOGUS[1] = {{
  *-------------------------------------------------------------------------
  */
 static void *
-H5O_bogus_decode(H5F_t *f, hid_t UNUSED dxpl_id, H5O_t UNUSED *open_oh,
-    unsigned UNUSED mesg_flags, unsigned UNUSED *ioflags, const uint8_t *p)
+H5O_bogus_decode(H5F_t *f, hid_t H5_ATTR_UNUSED dxpl_id, H5O_t H5_ATTR_UNUSED *open_oh,
+    unsigned H5_ATTR_UNUSED mesg_flags, unsigned H5_ATTR_UNUSED *ioflags, const uint8_t *p)
 {
     H5O_bogus_t *mesg = NULL;
     void *ret_value;            /* Return value */
@@ -135,7 +160,7 @@ done:
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5O_bogus_encode(H5F_t UNUSED *f, hbool_t UNUSED disable_shared, uint8_t *p, const void UNUSED *mesg)
+H5O_bogus_encode(H5F_t H5_ATTR_UNUSED *f, hbool_t H5_ATTR_UNUSED disable_shared, uint8_t *p, const void H5_ATTR_UNUSED *mesg)
 {
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -170,7 +195,7 @@ H5O_bogus_encode(H5F_t UNUSED *f, hbool_t UNUSED disable_shared, uint8_t *p, con
  *-------------------------------------------------------------------------
  */
 static size_t
-H5O_bogus_size(const H5F_t UNUSED *f, hbool_t UNUSED disable_shared, const void UNUSED *mesg)
+H5O_bogus_size(const H5F_t H5_ATTR_UNUSED *f, hbool_t H5_ATTR_UNUSED disable_shared, const void H5_ATTR_UNUSED *mesg)
 {
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -194,7 +219,7 @@ H5O_bogus_size(const H5F_t UNUSED *f, hbool_t UNUSED disable_shared, const void 
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5O_bogus_debug(H5F_t UNUSED *f, hid_t UNUSED dxpl_id, const void *_mesg, FILE *stream,
+H5O_bogus_debug(H5F_t H5_ATTR_UNUSED *f, hid_t H5_ATTR_UNUSED dxpl_id, const void *_mesg, FILE *stream,
 	       int indent, int fwidth)
 {
     const H5O_bogus_t	*mesg = (const H5O_bogus_t *)_mesg;

@@ -15,19 +15,19 @@
 
 /*
  * Purpose:     This program is run to generate an HDF5 data file with datasets
- *              that use the B-tree indexing method.
+ *              that use Fixed Array indexing method.
  *
  *              To test compatibility, compile and run this program
- *              which will generate a file called "btree_idx_1_8.h5".
- *              Move it to the test directory in the current branch.
+ *              which will generate a file called "fixed_idx.h5".
+ *              Move it to the test directory in the HDF5 v1.6/1.8 source tree.
  *              The test: test_idx_compatible() in dsets.c will read it.
  */
 #include <assert.h>
 #include "hdf5.h"
 
 const char *FILENAME[1] = {
-    "btree_idx_1_8.h5"	/* file with datasets that use B-tree indexing method */
-};
+    "fixed_idx.h5"	/* file with datasets that use Fixed Array indexing method */
+}; 
 
 #define DSET		"dset"
 #define DSET_FILTER	"dset_filter"
@@ -35,7 +35,7 @@ const char *FILENAME[1] = {
 /*
  * Function: gen_idx_file
  *
- * Purpose: Create a file with datasets that use B-tree indexing:
+ * Purpose: Create a file with datasets that use Fixed Array indexing:
  *   	one dataset: fixed dimension, chunked layout, w/o filters
  *     	one dataset: fixed dimension, chunked layout, w/ filters
  *
@@ -46,7 +46,7 @@ static void gen_idx_file(void)
     hid_t	fid;	            /* file id */
     hid_t   	sid;	            /* space id */
     hid_t	dcpl;	    	    /* dataset creation property id */
-    hid_t	did, did2; 	    	    /* dataset id */
+    hid_t	did, did2;    	    /* dataset id */
     hsize_t 	dims[1] = {10};     /* dataset dimension */
     hsize_t 	c_dims[1] = {2};    /* chunk dimension */
     herr_t  	status;             /* return status */
@@ -82,7 +82,7 @@ static void gen_idx_file(void)
     /* Create a 1D dataset */
     did  = H5Dcreate2(fid, DSET, H5T_NATIVE_INT, sid, H5P_DEFAULT, dcpl, H5P_DEFAULT);
     assert(did >= 0);
-
+    
     /* Write to the dataset */
     status = H5Dwrite(did, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf);
     assert(status >= 0);
@@ -95,16 +95,16 @@ static void gen_idx_file(void)
     /* Create and write the dataset */
     did2  = H5Dcreate2(fid, DSET_FILTER, H5T_NATIVE_INT, sid, H5P_DEFAULT, dcpl, H5P_DEFAULT);
     assert(did2 >= 0);
+
     status = H5Dwrite(did2, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, H5P_DEFAULT, buf);
     assert(status >= 0);
 
     /* Close the dataset */
     status = H5Dclose(did2);
     assert(status >= 0);
-
 #endif
 
-    /* Closing */
+    /* closing */
     status = H5Dclose(did);
     assert(status >= 0);
     status = H5Sclose(sid);
@@ -115,7 +115,6 @@ static void gen_idx_file(void)
     assert(status >= 0);
     status = H5Fclose(fid);
     assert(status >= 0);
-
 } /* gen_idx_file() */
 
 int main(void)
@@ -124,3 +123,4 @@ int main(void)
 
     return 0;
 }
+

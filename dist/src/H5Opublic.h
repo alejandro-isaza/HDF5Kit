@@ -182,6 +182,11 @@ H5_DLL herr_t H5Ovisit_by_name(hid_t loc_id, const char *obj_name,
     H5_index_t idx_type, H5_iter_order_t order, H5O_iterate_t op,
     void *op_data, hid_t lapl_id);
 H5_DLL herr_t H5Oclose(hid_t object_id);
+H5_DLL herr_t H5Oflush(hid_t obj_id);
+H5_DLL herr_t H5Orefresh(hid_t oid);
+H5_DLL herr_t H5Odisable_mdc_flushes(hid_t object_id);
+H5_DLL herr_t H5Oenable_mdc_flushes(hid_t object_id);
+H5_DLL herr_t H5Oare_mdc_flushes_disabled(hid_t object_id, hbool_t *are_disabled);
 
 /* Symbols defined for compatibility with previous versions of the HDF5 API.
  *
@@ -193,7 +198,7 @@ H5_DLL herr_t H5Oclose(hid_t object_id);
 
 /* Typedefs */
 
-/* A struct that's part of the H5G_stat_t routine (deprecated) */
+/* A struct that's part of the H5G_stat_t structure (deprecated) */
 typedef struct H5O_stat_t {
     hsize_t size;               /* Total size of object header in file */
     hsize_t free;               /* Free space within object header */
