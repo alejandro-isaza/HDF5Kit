@@ -16,6 +16,8 @@ public class File: GroupType {
     }
 
     public class func create(filePath: String, mode: CreateMode) -> File? {
+        H5open()
+
         var id: hid_t = -1
         filePath.withCString { filePath in
             id = H5Fcreate(filePath, mode.rawValue, 0, 0)
@@ -27,6 +29,8 @@ public class File: GroupType {
     }
 
     public class func open(filePath: String, mode: OpenMode) -> File? {
+        H5open()
+
         var id: hid_t = -1
         filePath.withCString { filePath in
             id = H5Fopen(filePath, mode.rawValue, 0)
