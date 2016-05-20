@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "HDF5Kit"
-  s.version      = "0.1.2"
+  s.version      = "0.1.3"
   s.summary      = "Swift wrapper for HDF5"
   s.homepage     = "https://github.com/aleph7/HDF5Kit"
   s.license      = "MIT"
