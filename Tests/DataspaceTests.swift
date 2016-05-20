@@ -12,7 +12,7 @@ class DataspaceTests: XCTestCase {
     func testDimensions() {
         let height = 10
         let width = 4
-        let dataspace = Dataspace(dims: [height, width])
+        let dataspace = Dataspace(dims: [height, width], maxDims: [-1, -1])
 
         XCTAssertEqual(dataspace.size, height * width)
         XCTAssertEqual(dataspace.dims, [height, width])
@@ -20,7 +20,7 @@ class DataspaceTests: XCTestCase {
         XCTAssertEqual(dataspace.selectionSize, height * width)
         XCTAssertEqual(dataspace.selectionDims, [height, width])
 
-        XCTAssertEqual(dataspace.maxDims, [height, width])
+        XCTAssertEqual(dataspace.maxDims, [-1, -1])
     }
 
     func testMaxDimensions() {

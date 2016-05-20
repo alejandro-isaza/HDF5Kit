@@ -25,7 +25,7 @@ public class Dataspace {
 
     /// Create a Dataspace
     public init(dims: [Int]) {
-        let dims64 = dims.map({ hsize_t($0) })
+        let dims64 = dims.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
         id = dims64.withUnsafeBufferPointer { pointer in
             return H5Screate_simple(Int32(dims.count), pointer.baseAddress, nil)
         }
@@ -37,8 +37,8 @@ public class Dataspace {
 
     /// Create a Dataspace for use in a chunked Dataset. No component of `maxDims` should be less than the corresponding element of `dims`. Elements of `maxDims` can have a value of -1, those dimension will have an unlimited size.
     public init(dims: [Int], maxDims: [Int]) {
-        let dims64 = dims.map({ hsize_t($0) })
-        let maxDims64 = maxDims.map({ hsize_t($0) })
+        let dims64 = dims.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
+        let maxDims64 = maxDims.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
         id = withExtendedLifetime((dims64, maxDims64)) {
             return H5Screate_simple(Int32(dims.count), dims64, maxDims64)
         }
@@ -70,7 +70,7 @@ public class Dataspace {
                 fatalError("Coulnd't get the dimensons of the Dataspace")
             }
         }
-        return dims.map({ Int($0) })
+        return dims.map({ Int(unsafeBitCast($0, hssize_t.self)) })
     }
 
     /// The maximum size of each dimension in the Dataspace
@@ -82,7 +82,7 @@ public class Dataspace {
                 fatalError("Coulnd't get the dimensons of the Dataspace")
             }
         }
-        return maxDims.map({ Int($0) })
+        return maxDims.map({ Int(unsafeBitCast($0, hssize_t.self)) })
     }
 
     // MARK: - Selection
@@ -116,10 +116,10 @@ public class Dataspace {
     /// - parameter count:  Determines how many blocks to select from the dataspace, in each dimension.
     /// - parameter block:  Determines the size of the element block selected from the dataspace. If the block parameter is set to `nil`, the block size defaults to a single element in each dimension (as if each value in the block array were set to 1).
     public func select(start start: [Int], stride: [Int]?, count: [Int]?, block: [Int]?) {
-        let start64 = start.map({ hsize_t($0) })
-        let stride64 = stride?.map({ hsize_t($0) })
-        let count64 = count?.map({ hsize_t($0) })
-        let block64 = block?.map({ hsize_t($0) })
+        let start64 = start.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
+        let stride64 = stride?.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
+        let count64 = count?.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
+        let block64 = block?.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
         withExtendedLifetime((start64, stride64, count64, block64)) {
             H5Sselect_hyperslab(id, H5S_SELECT_SET, start64,  pointerOrNil(stride64), pointerOrNil(count64), pointerOrNil(block64))
         }

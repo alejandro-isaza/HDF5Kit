@@ -31,7 +31,7 @@ public class Dataset: Object {
             return space.dims
         }
         set {
-            let array = newValue.map({ hsize_t($0) })
+            let array = newValue.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
             array.withUnsafeBufferPointer { pointer in
                 H5Dset_extent(id, pointer.baseAddress)
             }
@@ -50,7 +50,7 @@ public class Dataset: Object {
         chunkSize.withUnsafeMutableBufferPointer { (inout pointer: UnsafeMutableBufferPointer<hsize_t>) in
             H5Pget_chunk(plistId, Int32(rank), pointer.baseAddress)
         }
-        return chunkSize.map({ Int($0) })
+        return chunkSize.map({ Int(unsafeBitCast($0, hssize_t.self)) })
     }
 
     /// Read data using an optional memory Dataspace and an optional file Dataspace
@@ -91,7 +91,7 @@ extension GroupType {
         precondition(dataspace.dims.count == chunkDimensions.count)
 
         let plist = H5Pcreate(H5P_CLS_DATASET_CREATE_ID_g)
-        let chunkDimensions64 = chunkDimensions.map({ hsize_t($0) })
+        let chunkDimensions64 = chunkDimensions.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
         chunkDimensions64.withUnsafeBufferPointer { pointer in
             H5Pset_chunk(plist, Int32(chunkDimensions.count), pointer.baseAddress)
         }
