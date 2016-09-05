@@ -19,29 +19,29 @@ public class FloatDataset: Dataset {
         }
     }
 
-    public func read(slices: [HyperslabIndexType]) throws -> [Float] {
+    public func read(_ slices: [HyperslabIndexType]) throws -> [Float] {
         let filespace = space
         filespace.select(slices)
         return try read(memSpace: Dataspace(dims: filespace.selectionDims), fileSpace: filespace)
    }
 
-    public func write(data: [Float], to slices: [HyperslabIndexType]) throws {
+    public func write(_ data: [Float], to slices: [HyperslabIndexType]) throws {
         let filespace = space
         filespace.select(slices)
         try write(data, memSpace: Dataspace(dims: filespace.selectionDims), fileSpace: filespace)
     }
 
     /// Append data to the table
-    public func append(data: [Float], dimensions: [Int], axis: Int = 0) throws {
+    public func append(_ data: [Float], dimensions: [Int], axis: Int = 0) throws {
         let oldExtent = extent
         extent[axis] += dimensions[axis]
-        for (index, dim) in dimensions.enumerate() {
+        for (index, dim) in dimensions.enumerated() {
             if dim > oldExtent[index] {
                 extent[index] = dim
             }
         }
 
-        var start = [Int](count: oldExtent.count, repeatedValue: 0)
+        var start = [Int](repeating: 0, count: oldExtent.count)
         start[axis] = oldExtent[axis]
 
         let fileSpace = space
@@ -53,7 +53,7 @@ public class FloatDataset: Dataset {
     /// Read data using an optional memory Dataspace and an optional file Dataspace
     ///
     /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace
-    public func read(memSpace memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws -> [Float] {
+    public func read(memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws -> [Float] {
         let size: Int
         if let memspace = memSpace {
             size = memspace.size
@@ -63,9 +63,9 @@ public class FloatDataset: Dataset {
             size = space.selectionSize
         }
 
-        var result = [Float](count: size, repeatedValue: 0.0)
-        try result.withUnsafeMutableBufferPointer() { (inout pointer: UnsafeMutableBufferPointer) in
-            try readInto(pointer.baseAddress, memSpace: memSpace, fileSpace: fileSpace)
+        var result = [Float](repeating: 0.0, count: size)
+        try result.withUnsafeMutableBufferPointer() { (pointer: inout UnsafeMutableBufferPointer) in
+            try readInto(pointer.baseAddress!, memSpace: memSpace, fileSpace: fileSpace)
         }
         return result
     }
@@ -73,14 +73,14 @@ public class FloatDataset: Dataset {
     /// Read data using an optional memory Dataspace and an optional file Dataspace
     ///
     /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace and there is enough memory available for it
-    public func readInto(pointer: UnsafeMutablePointer<Float>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
-        try super.readInto(pointer, type: .Float, memSpace: memSpace, fileSpace: fileSpace)
+    public func readInto(_ pointer: UnsafeMutablePointer<Float>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
+        try super.readInto(pointer, type: .float, memSpace: memSpace, fileSpace: fileSpace)
     }
 
     /// Write data using an optional memory Dataspace and an optional file Dataspace
     ///
     /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace and the same as `data.count`
-    public func write(data: [Float], memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
+    public func write(_ data: [Float], memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
         let size: Int
         if let memspace = memSpace {
             size = memspace.size
@@ -92,15 +92,15 @@ public class FloatDataset: Dataset {
         precondition(data.count == size, "Data size doesn't match Dataspace dimensions")
 
         try data.withUnsafeBufferPointer() { bufferPointer in
-            try writeFrom(bufferPointer.baseAddress, memSpace: memSpace, fileSpace: fileSpace)
+            try writeFrom(bufferPointer.baseAddress!, memSpace: memSpace, fileSpace: fileSpace)
         }
     }
 
     /// Write data using an optional memory Dataspace and an optional file Dataspace
     ///
     /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace
-    public func writeFrom(pointer: UnsafePointer<Float>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
-        try super.writeFrom(pointer, type: .Float, memSpace: memSpace, fileSpace: fileSpace)
+    public func writeFrom(_ pointer: UnsafePointer<Float>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
+        try super.writeFrom(pointer, type: .float, memSpace: memSpace, fileSpace: fileSpace)
     }
 }
 
@@ -109,7 +109,7 @@ public class FloatDataset: Dataset {
 
 extension GroupType {
     /// Create a FloatDataset
-    public func createFloatDataset(name: String, dataspace: Dataspace) -> FloatDataset? {
+    public func createFloatDataset(_ name: String, dataspace: Dataspace) -> FloatDataset? {
         guard let datatype = Datatype(type: Float.self) else {
             return nil
         }
@@ -120,15 +120,15 @@ extension GroupType {
     }
 
     /// Create a chunked FloatDataset
-    public func createFloatDataset(name: String, dataspace: Dataspace, chunkDimensions: [Int]) -> FloatDataset? {
+    public func createFloatDataset(_ name: String, dataspace: Dataspace, chunkDimensions: [Int]) -> FloatDataset? {
         guard let datatype = Datatype(type: Float.self) else {
             return nil
         }
         precondition(dataspace.dims.count == chunkDimensions.count)
 
         let plist = H5Pcreate(H5P_CLS_DATASET_CREATE_ID_g)
-        let chunkDimensions64 = chunkDimensions.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
-        chunkDimensions64.withUnsafeBufferPointer { pointer in
+        let chunkDimensions64 = chunkDimensions.map({ unsafeBitCast(hssize_t($0), to: hsize_t.self) })
+        chunkDimensions64.withUnsafeBufferPointer { (pointer) -> Void in
             H5Pset_chunk(plist, Int32(chunkDimensions.count), pointer.baseAddress)
         }
         defer {
@@ -142,7 +142,7 @@ extension GroupType {
     }
 
     /// Create a Float Dataset and write data
-    public func createAndWriteDataset(name: String, dims: [Int], data: [Float]) throws -> FloatDataset {
+    public func createAndWriteDataset(_ name: String, dims: [Int], data: [Float]) throws -> FloatDataset {
         let space = Dataspace.init(dims: dims)
         let set = createFloatDataset(name, dataspace: space)!
         try set.write(data)
@@ -150,7 +150,7 @@ extension GroupType {
     }
 
     /// Open an existing FloatDataset
-    public func openFloatDataset(name: String) -> FloatDataset? {
+    public func openFloatDataset(_ name: String) -> FloatDataset? {
         let datasetID = name.withCString{ name in
             return H5Dopen2(id, name, 0)
         }

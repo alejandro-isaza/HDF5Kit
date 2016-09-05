@@ -45,7 +45,7 @@ class HyperslabTests: XCTestCase {
         var file = createFile(filePath)
         
         let createDims = [7, 7]
-        let size = createDims.reduce(1, combine: *)
+        let size = createDims.reduce(1, *)
         let data = (0..<size).map { Double($0) }
         
         // write a 7x7 dataset
@@ -81,7 +81,7 @@ class HyperslabTests: XCTestCase {
         var file = createFile(filePath)
 
         let createDims = [7, 7]
-        let size = createDims.reduce(1, combine: *)
+        let size = createDims.reduce(1, *)
         let data = (0..<size).map { String($0) }
 
         // write a 7x7 dataset
@@ -119,7 +119,7 @@ class HyperslabTests: XCTestCase {
         var file = createFile(filePath)
 
         let createDims = [7, 7]
-        let size = createDims.reduce(1, combine: *)
+        let size = createDims.reduce(1, *)
         let data = (0..<size).map { String($0) }
 
         // write a 7x7 dataset
@@ -136,6 +136,7 @@ class HyperslabTests: XCTestCase {
         }
 
         let actual = dataset[1...3, 2...5]
+        XCTAssertEqual(actual.count, 12)
         XCTAssertEqual(data[9...12], actual[0...3])
     }
   
@@ -144,7 +145,7 @@ class HyperslabTests: XCTestCase {
         var file = createFile(filePath)
         
         let createDims = [7, 7]
-        let size = createDims.reduce(1, combine: *)
+        let size = createDims.reduce(1, *)
         let data = (0..<size).map { Double($0) }
         
         // write a 7x7 dataset

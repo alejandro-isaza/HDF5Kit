@@ -5,18 +5,18 @@
 // file LICENSE at the root of the source code distribution tree.
 
 public enum DataClass: Int32 {
-    case NoClass   = -1  // error
-    case Integer   = 0   // integer types
-    case Float     = 1   // floating-point types
-    case Time      = 2   // date and time types
-    case String    = 3   // character string types
-    case BitField  = 4   // bit field types
-    case Opaque    = 5   // opaque types
-    case Compound  = 6   // compound types
-    case Reference = 7   // reference types
-    case Enum      = 8	 // enumeration types
-    case VarLength = 9	 // Variable-Length types
-    case Array     = 10	 // Array types
+    case noClass   = -1  // error
+    case integer   = 0   // integer types
+    case float     = 1   // floating-point types
+    case time      = 2   // date and time types
+    case string    = 3   // character string types
+    case bitField  = 4   // bit field types
+    case opaque    = 5   // opaque types
+    case compound  = 6   // compound types
+    case reference = 7   // reference types
+    case `enum`    = 8	 // enumeration types
+    case varLength = 9	 // Variable-Length types
+    case array     = 10	 // Array types
 }
 
 
@@ -56,11 +56,11 @@ public class Datatype : Object, Equatable {
     }
 
     public class func createDouble() -> Datatype {
-        return Datatype(nativeType: .Double)
+        return Datatype(nativeType: .double)
     }
 
     public class func createInt() -> Datatype {
-        return Datatype(nativeType: .Int)
+        return Datatype(nativeType: .int)
     }
 
     public class func createString() -> Datatype {
@@ -75,29 +75,29 @@ public class Datatype : Object, Equatable {
 
     public var nativeType: NativeType? {
         let type = Datatype(id: H5Tget_native_type(id, H5T_DIR_ASCEND))
-        if H5Tequal(type.id, NativeType.Int.rawValue) > 0 { return .Int }
-        if H5Tequal(type.id, NativeType.UInt.rawValue) > 0 { return .UInt }
-        if H5Tequal(type.id, NativeType.Float.rawValue) > 0 { return .Float }
-        if H5Tequal(type.id, NativeType.Double.rawValue) > 0 { return .Double }
-        if H5Tequal(type.id, NativeType.Int8.rawValue) > 0 { return .Int8 }
-        if H5Tequal(type.id, NativeType.UInt8.rawValue) > 0 { return .UInt8 }
-        if H5Tequal(type.id, NativeType.Int16.rawValue) > 0 { return .Int16 }
-        if H5Tequal(type.id, NativeType.UInt16.rawValue) > 0 { return .UInt16 }
-        if H5Tequal(type.id, NativeType.Int32.rawValue) > 0 { return .Int32 }
-        if H5Tequal(type.id, NativeType.UInt32.rawValue) > 0 { return .UInt32 }
-        if H5Tequal(type.id, NativeType.Int64.rawValue) > 0 { return .Int64 }
-        if H5Tequal(type.id, NativeType.UInt64.rawValue) > 0 { return .UInt64 }
-        if H5Tequal(type.id, NativeType.Opaque.rawValue) > 0 { return .Opaque }
+        if H5Tequal(type.id, NativeType.int.rawValue) > 0 { return .int }
+        if H5Tequal(type.id, NativeType.uint.rawValue) > 0 { return .uint }
+        if H5Tequal(type.id, NativeType.float.rawValue) > 0 { return .float }
+        if H5Tequal(type.id, NativeType.double.rawValue) > 0 { return .double }
+        if H5Tequal(type.id, NativeType.int8.rawValue) > 0 { return .int8 }
+        if H5Tequal(type.id, NativeType.uint8.rawValue) > 0 { return .uint8 }
+        if H5Tequal(type.id, NativeType.int16.rawValue) > 0 { return .int16 }
+        if H5Tequal(type.id, NativeType.uint16.rawValue) > 0 { return .uint16 }
+        if H5Tequal(type.id, NativeType.int32.rawValue) > 0 { return .int32 }
+        if H5Tequal(type.id, NativeType.uint32.rawValue) > 0 { return .uint32 }
+        if H5Tequal(type.id, NativeType.int64.rawValue) > 0 { return .int64 }
+        if H5Tequal(type.id, NativeType.uint64.rawValue) > 0 { return .uint64 }
+        if H5Tequal(type.id, NativeType.opaque.rawValue) > 0 { return .opaque }
         return nil
     }
 
     public enum Order: Int32 {
-        case Error        = -1
-        case LittleEndian = 0
-        case BigEndian    = 1
-        case Vax          = 2
-        case Mixed        = 3
-        case Nonde        = 4
+        case error        = -1
+        case littleEndian = 0
+        case bigEndian    = 1
+        case vax          = 2
+        case mixed        = 3
+        case nonde        = 4
     }
 
     /// The byte order of the Datatype

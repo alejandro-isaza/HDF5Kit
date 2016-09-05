@@ -5,15 +5,15 @@
 // terms governing use, modification, and redistribution, is contained in the
 // file LICENSE at the root of the source code distribution tree.
 
-postfix operator .. {}
+postfix operator ..
 
-prefix operator .. {}
+prefix operator ..
 
-public postfix func .. (lhs: Int) -> Range<Int> {
+public postfix func .. (lhs: Int) -> ClosedRange<Int> {
     return lhs...HyperslabIndex.all
 }
 
-public prefix func .. (rhs: Int) -> Range<Int> {
+public prefix func .. (rhs: Int) -> ClosedRange<Int> {
     return 0...rhs
 }
 
@@ -81,9 +81,9 @@ extension Int: HyperslabIndexType {
     }
 }
 
-extension Range: HyperslabIndexType {
+extension ClosedRange: HyperslabIndexType {
     public var start: Int {
-        return unsafeBitCast(startIndex, Int.self)
+        return unsafeBitCast(lowerBound, to: Int.self)
     }
 
     public var stride: Int {
@@ -91,10 +91,10 @@ extension Range: HyperslabIndexType {
     }
 
     public var blockCount: Int {
-        if unsafeBitCast(endIndex, Int.self) == HyperslabIndex.all + 1 {
+        if unsafeBitCast(upperBound, to: Int.self) == HyperslabIndex.all {
             return HyperslabIndex.all
         }
-        return unsafeBitCast(endIndex, Int.self) - start
+        return unsafeBitCast(upperBound, to: Int.self) - start + 1
     }
 
     public var blockSize: Int {
@@ -102,3 +102,23 @@ extension Range: HyperslabIndexType {
     }
 }
 
+extension Range: HyperslabIndexType {
+    public var start: Int {
+        return unsafeBitCast(lowerBound, to: Int.self)
+    }
+
+    public var stride: Int {
+        return 1
+    }
+
+    public var blockCount: Int {
+        if unsafeBitCast(upperBound, to: Int.self) == HyperslabIndex.all + 1 {
+            return HyperslabIndex.all
+        }
+        return unsafeBitCast(upperBound, to: Int.self) - start
+    }
+
+    public var blockSize: Int {
+        return 1
+    }
+}

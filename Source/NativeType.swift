@@ -5,84 +5,84 @@
 // file LICENSE at the root of the source code distribution tree.
 
 public enum NativeType {
-    case Int
-    case UInt
-    case Float
-    case Double
-    case Int8
-    case UInt8
-    case Int16
-    case UInt16
-    case Int32
-    case UInt32
-    case Int64
-    case UInt64
-    case Opaque
+    case int
+    case uint
+    case float
+    case double
+    case int8
+    case uint8
+    case int16
+    case uint16
+    case int32
+    case uint32
+    case int64
+    case uint64
+    case opaque
 
     /// Return the Swift type corresponding to the NativeType
     public var type: Any.Type {
         switch self {
-        case Int: return Swift.Int.self
-        case UInt: return Swift.UInt.self
-        case Float: return Swift.Float.self
-        case Double: return Swift.Double.self
-        case Int8: return Swift.Int8.self
-        case UInt8: return Swift.UInt8.self
-        case Int16: return Swift.Int16.self
-        case UInt16: return Swift.UInt16.self
-        case Int32: return Swift.Int32.self
-        case UInt32: return Swift.UInt32.self
-        case Int64: return Swift.Int64.self
-        case UInt64: return Swift.UInt64.self
-        case Opaque: return Swift.Any.self
+        case .int: return Swift.Int.self
+        case .uint: return Swift.UInt.self
+        case .float: return Swift.Float.self
+        case .double: return Swift.Double.self
+        case .int8: return Swift.Int8.self
+        case .uint8: return Swift.UInt8.self
+        case .int16: return Swift.Int16.self
+        case .uint16: return Swift.UInt16.self
+        case .int32: return Swift.Int32.self
+        case .uint32: return Swift.UInt32.self
+        case .int64: return Swift.Int64.self
+        case .uint64: return Swift.UInt64.self
+        case .opaque: return Any.self
         }
     }
 
     /// The raw value of the NativeType
     public var rawValue: hid_t {
         switch self {
-        case Int: return H5T_NATIVE_LONG_g
-        case UInt: return H5T_NATIVE_ULONG_g
-        case Float: return H5T_NATIVE_FLOAT_g
-        case Double: return H5T_NATIVE_DOUBLE_g
-        case Int8: return H5T_NATIVE_INT8_g
-        case UInt8: return H5T_NATIVE_UINT8_g
-        case Int16: return H5T_NATIVE_INT16_g
-        case UInt16: return H5T_NATIVE_UINT16_g
-        case Int32: return H5T_NATIVE_INT32_g
-        case UInt32: return H5T_NATIVE_UINT32_g
-        case Int64: return H5T_NATIVE_INT64_g
-        case UInt64: return H5T_NATIVE_UINT64_g
-        case Opaque: return H5T_NATIVE_OPAQUE_g
+        case .int: return H5T_NATIVE_LONG_g
+        case .uint: return H5T_NATIVE_ULONG_g
+        case .float: return H5T_NATIVE_FLOAT_g
+        case .double: return H5T_NATIVE_DOUBLE_g
+        case .int8: return H5T_NATIVE_INT8_g
+        case .uint8: return H5T_NATIVE_UINT8_g
+        case .int16: return H5T_NATIVE_INT16_g
+        case .uint16: return H5T_NATIVE_UINT16_g
+        case .int32: return H5T_NATIVE_INT32_g
+        case .uint32: return H5T_NATIVE_UINT32_g
+        case .int64: return H5T_NATIVE_INT64_g
+        case .uint64: return H5T_NATIVE_UINT64_g
+        case .opaque: return H5T_NATIVE_OPAQUE_g
         }
     }
 
     /// Create a NativeType from a Swift type
     public init?(type: Any.Type) {
         if type == Swift.Int.self {
-            self = .Int
+            self = .int
         } else if type == Swift.UInt.self {
-            self = .UInt
+            self = .uint
         } else if type == Swift.Float.self {
-            self = .Float
+            self = .float
         } else if type == Swift.Double.self {
-            self = .Double
+            self = .double
         } else if type == Swift.Int8.self {
-            self = .Int8
+            self = .int8
         } else if type == Swift.UInt8.self {
-            self = .UInt8
+            self = .uint8
         } else if type == Swift.Int16.self {
-            self = .Int16
+            self = .int16
         } else if type == Swift.UInt16.self {
-            self = .UInt16
+            self = .uint16
         } else if type == Swift.Int32.self {
-            self = .Int32
+            self = .int32
         } else if type == Swift.UInt32.self {
-            self = .UInt32
+            self = .uint32
         } else if type == Swift.Int64.self {
-            self = .Int64
+            self = .int64
         } else if type == Swift.UInt64.self {
-            self = .UInt64
+            self = .uint64
         } else {
             return nil
         }

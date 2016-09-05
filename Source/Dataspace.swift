@@ -25,7 +25,7 @@ public class Dataspace {
 
     /// Create a Dataspace
     public init(dims: [Int]) {
-        let dims64 = dims.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
+        let dims64 = dims.map({ unsafeBitCast(hssize_t($0), to: hsize_t.self) })
         id = dims64.withUnsafeBufferPointer { pointer in
             return H5Screate_simple(Int32(dims.count), pointer.baseAddress, nil)
         }
@@ -37,8 +37,8 @@ public class Dataspace {
 
     /// Create a Dataspace for use in a chunked Dataset. No component of `maxDims` should be less than the corresponding element of `dims`. Elements of `maxDims` can have a value of -1, those dimension will have an unlimited size.
     public init(dims: [Int], maxDims: [Int]) {
-        let dims64 = dims.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
-        let maxDims64 = maxDims.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
+        let dims64 = dims.map({ unsafeBitCast(hssize_t($0), to: hsize_t.self) })
+        let maxDims64 = maxDims.map({ unsafeBitCast(hssize_t($0), to: hsize_t.self) })
         id = withExtendedLifetime((dims64, maxDims64)) {
             return H5Screate_simple(Int32(dims.count), dims64, maxDims64)
         }
@@ -64,25 +64,25 @@ public class Dataspace {
     /// The size of each dimension in the Dataspace
     public var dims: [Int] {
         let rank = Int(H5Sget_simple_extent_ndims(id))
-        var dims = [hsize_t](count: rank, repeatedValue: 0)
+        var dims = [hsize_t](repeating: 0, count: rank)
         dims.withUnsafeMutableBufferPointer { pointer in
             guard H5Sget_simple_extent_dims(id, pointer.baseAddress, nil) >= 0 else {
                 fatalError("Coulnd't get the dimensons of the Dataspace")
             }
         }
-        return dims.map({ Int(unsafeBitCast($0, hssize_t.self)) })
+        return dims.map({ Int(unsafeBitCast($0, to: hssize_t.self)) })
     }
 
     /// The maximum size of each dimension in the Dataspace
     public var maxDims: [Int] {
         let rank = Int(H5Sget_simple_extent_ndims(id))
-        var maxDims = [hsize_t](count: rank, repeatedValue: 0)
+        var maxDims = [hsize_t](repeating: 0, count: rank)
         maxDims.withUnsafeMutableBufferPointer { pointer in
             guard H5Sget_simple_extent_dims(id, nil, pointer.baseAddress) >= 0 else {
                 fatalError("Coulnd't get the dimensons of the Dataspace")
             }
         }
-        return maxDims.map({ Int(unsafeBitCast($0, hssize_t.self)) })
+        return maxDims.map({ Int(unsafeBitCast($0, to: hssize_t.self)) })
     }
 
     // MARK: - Selection
@@ -115,32 +115,32 @@ public class Dataspace {
     /// - parameter stride: Chooses array locations from the dataspace with each value in the stride array determining how many elements to move in each dimension. Stride values of 0 are not allowed. If the stride parameter is `nil`, a contiguous hyperslab is selected (as if each value in the stride array were set to 1).
     /// - parameter count:  Determines how many blocks to select from the dataspace, in each dimension.
     /// - parameter block:  Determines the size of the element block selected from the dataspace. If the block parameter is set to `nil`, the block size defaults to a single element in each dimension (as if each value in the block array were set to 1).
-    public func select(start start: [Int], stride: [Int]?, count: [Int]?, block: [Int]?) {
-        let start64 = start.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
-        let stride64 = stride?.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
-        let count64 = count?.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
-        let block64 = block?.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
-        withExtendedLifetime((start64, stride64, count64, block64)) {
+    public func select(start: [Int], stride: [Int]?, count: [Int]?, block: [Int]?) {
+        let start64 = start.map({ unsafeBitCast(hssize_t($0), to: hsize_t.self) })
+        let stride64 = stride?.map({ unsafeBitCast(hssize_t($0), to: hsize_t.self) })
+        let count64 = count?.map({ unsafeBitCast(hssize_t($0), to: hsize_t.self) })
+        let block64 = block?.map({ unsafeBitCast(hssize_t($0), to: hsize_t.self) })
+        withExtendedLifetime((start64, stride64, count64, block64)) { () -> Void in
             H5Sselect_hyperslab(id, H5S_SELECT_SET, start64,  pointerOrNil(stride64), pointerOrNil(count64), pointerOrNil(block64))
         }
         selectionDims = count ?? dims
     }
 
     /// Select a hyperslab region.
-    public func select(slices: HyperslabIndexType...) {
+    public func select(_ slices: HyperslabIndexType...) {
         select(slices)
     }
 
     /// Select a hyperslab region.
-    public func select(slices: [HyperslabIndexType]) {
+    public func select(_ slices: [HyperslabIndexType]) {
         let dims = self.dims
         let rank = dims.count
-        var start = [Int](count: rank, repeatedValue: 0)
-        var stride = [Int](count: rank, repeatedValue: 1)
-        var count = [Int](count: rank, repeatedValue: 0)
-        var block = [Int](count: rank, repeatedValue: 1)
+        var start = [Int](repeating: 0, count: rank)
+        var stride = [Int](repeating: 1, count: rank)
+        var count = [Int](repeating: 0, count: rank)
+        var block = [Int](repeating: 1, count: rank)
 
-        for (index, slice) in slices.enumerate() {
+        for (index, slice) in slices.enumerated() {
             start[index] = slice.start
             stride[index] = slice.stride
             if slice.blockCount != HyperslabIndex.all {
@@ -155,15 +155,15 @@ public class Dataspace {
     }
 
     /// This function allows the same shaped selection to be moved to different locations within a dataspace without requiring it to be redefined.
-    public func offset(offset: [Int]) {
+    public func offset(_ offset: [Int]) {
         let offset64 = offset.map({ hssize_t($0) })
-        offset64.withUnsafeBufferPointer { pointer in
+        offset64.withUnsafeBufferPointer { (pointer) -> Void in
             H5Soffset_simple(id, pointer.baseAddress)
         }
     }
 }
 
-func pointerOrNil(array: [hsize_t]?) -> UnsafePointer<hsize_t> {
+func pointerOrNil(_ array: [hsize_t]?) -> UnsafePointer<hsize_t>? {
     if let array = array {
         return UnsafePointer(array)
     }

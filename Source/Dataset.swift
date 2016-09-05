@@ -4,7 +4,7 @@
 // terms governing use, modification, and redistribution, is contained in the
 // file LICENSE at the root of the source code distribution tree.
 
-public class Dataset: Object {
+open class Dataset: Object {
     override init(id: hid_t) {
         super.init(id: id)
     }
@@ -12,7 +12,7 @@ public class Dataset: Object {
     /// The address in the file of the dataset or `nil` if the offset is undefined. That address is expressed as the offset in bytes from the beginning of the file.
     public var offset: Int? {
         let offset = H5Dget_offset(id)
-        guard offset != unsafeBitCast(Int64(-1), UInt64.self) else {
+        guard offset != unsafeBitCast(Int64(-1), to: UInt64.self) else {
             return nil
         }
         return Int(offset)
@@ -31,8 +31,8 @@ public class Dataset: Object {
             return space.dims
         }
         set {
-            let array = newValue.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
-            array.withUnsafeBufferPointer { pointer in
+            let array = newValue.map({ unsafeBitCast(hssize_t($0), to: hsize_t.self) })
+            array.withUnsafeBufferPointer { (pointer) -> Void in
                 H5Dset_extent(id, pointer.baseAddress)
             }
         }
@@ -46,30 +46,30 @@ public class Dataset: Object {
         }
 
         let rank = space.dims.count
-        var chunkSize = [hsize_t](count: rank, repeatedValue: 0)
-        chunkSize.withUnsafeMutableBufferPointer { (inout pointer: UnsafeMutableBufferPointer<hsize_t>) in
+        var chunkSize = [hsize_t](repeating: 0, count: rank)
+        chunkSize.withUnsafeMutableBufferPointer { (pointer: inout UnsafeMutableBufferPointer<hsize_t>) -> Void in
             H5Pget_chunk(plistId, Int32(rank), pointer.baseAddress)
         }
-        return chunkSize.map({ Int(unsafeBitCast($0, hssize_t.self)) })
+        return chunkSize.map({ Int(unsafeBitCast($0, to: hssize_t.self)) })
     }
 
     /// Read data using an optional memory Dataspace and an optional file Dataspace
     ///
     /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace and there is enough memory available for it
-    public func readInto(pointer: UnsafeMutablePointer<Void>, type: NativeType, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
+    open func readInto(_ pointer: UnsafeMutableRawPointer, type: NativeType, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
         let status = H5Dread(id, type.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, pointer)
         if status < 0 {
-            throw Error.IOError
+            throw Error.ioError
         }
     }
 
     /// Write data using an optional memory Dataspace and an optional file Dataspace
     ///
     /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace
-    public func writeFrom(pointer: UnsafePointer<Void>, type: NativeType, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
+    open func writeFrom(_ pointer: UnsafeRawPointer, type: NativeType, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
         let status = H5Dwrite(id, type.rawValue, memSpace?.id ?? 0, fileSpace?.id ?? 0, 0, pointer);
         if status < 0 {
-            throw Error.IOError
+            throw Error.ioError
         }
     }
 }
@@ -79,7 +79,7 @@ public class Dataset: Object {
 
 extension GroupType {
     /// Create a Dataset
-    public func createDataset(name: String, datatype: Datatype, dataspace: Dataspace) -> Dataset {
+    public func createDataset(_ name: String, datatype: Datatype, dataspace: Dataspace) -> Dataset {
         let datasetID = name.withCString{ name in
             return H5Dcreate2(id, name, datatype.id, dataspace.id, 0, 0, 0)
         }
@@ -87,12 +87,12 @@ extension GroupType {
     }
 
     /// Create a chunked Dataset
-    public func createDataset(name: String, datatype: Datatype, dataspace: Dataspace, chunkDimensions: [Int]) -> Dataset? {
+    public func createDataset(_ name: String, datatype: Datatype, dataspace: Dataspace, chunkDimensions: [Int]) -> Dataset? {
         precondition(dataspace.dims.count == chunkDimensions.count)
 
         let plist = H5Pcreate(H5P_CLS_DATASET_CREATE_ID_g)
-        let chunkDimensions64 = chunkDimensions.map({ unsafeBitCast(hssize_t($0), hsize_t.self) })
-        chunkDimensions64.withUnsafeBufferPointer { pointer in
+        let chunkDimensions64 = chunkDimensions.map({ unsafeBitCast(hssize_t($0), to: hsize_t.self) })
+        chunkDimensions64.withUnsafeBufferPointer { (pointer) -> Void in
             H5Pset_chunk(plist, Int32(chunkDimensions.count), pointer.baseAddress)
         }
         defer {
@@ -106,7 +106,7 @@ extension GroupType {
     }
 
     /// Open an existing Dataset
-    public func openDataset(name: String) -> Dataset? {
+    public func openDataset(_ name: String) -> Dataset? {
         let datasetID = name.withCString{ name in
             return H5Dopen2(id, name, 0)
         }

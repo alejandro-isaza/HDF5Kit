@@ -10,7 +10,7 @@ public protocol GroupType {
 
 public class Group: Object, GroupType {
     /// Create a group
-    public func createGroup(name: String) -> Group {
+    public func createGroup(_ name: String) -> Group {
         let groupID = name.withCString{
             return H5Gcreate2(id, $0, 0, 0, 0)
         }
@@ -18,7 +18,7 @@ public class Group: Object, GroupType {
     }
 
     /// Open an existing group
-    public func openGroup(name: String) -> Group? {
+    public func openGroup(_ name: String) -> Group? {
         let groupID = name.withCString{
             return H5Gopen2(id, $0, 0)
         }
@@ -35,7 +35,7 @@ public class Group: Object, GroupType {
 
      - parameter name the path to the object relative to self
      */
-    public func open(name: String) -> Object {
+    public func open(_ name: String) -> Object {
         let oid = name.withCString{ H5Oopen(id, $0, 0) }
         return Object(id: oid)
     }
@@ -49,9 +49,9 @@ public class Group: Object, GroupType {
 
         for i in 0..<count {
             let size = H5Gget_objname_by_idx(id, i, nil, 0)
-            var name = [Int8](count: size + 1, repeatedValue: 0)
+            var name = [Int8](repeating: 0, count: size + 1)
             H5Gget_objname_by_idx(id, i, &name, size + 1)
-            names.append(String.fromCString(name)!)
+            names.append(String(cString: name))
         }
 
         return names

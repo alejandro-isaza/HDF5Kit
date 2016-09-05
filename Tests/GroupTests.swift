@@ -11,7 +11,7 @@ class GroupTests: XCTestCase {
 
     func testName() {
         let filePath = tempFilePath()
-        guard let file = File.create(filePath, mode: .Truncate) else {
+        guard let file = File.create(filePath, mode: .truncate) else {
             fatalError("Failed to create file")
         }
         let group = file.createGroup("group")
@@ -23,12 +23,12 @@ class GroupTests: XCTestCase {
 
     func testObjectNames() {
         let filePath = tempFilePath()
-        guard let file = File.create(filePath, mode: .Truncate) else {
+        guard let file = File.create(filePath, mode: .truncate) else {
             fatalError("Failed to create file")
         }
         let group = file.createGroup("group")
-        group.createGroup("subGroup")
-        group.createDoubleDataset("data", dataspace: Dataspace(dims: [10]))
+        let _ = group.createGroup("subGroup")
+        let _ = group.createDoubleDataset("data", dataspace: Dataspace(dims: [10]))
 
         let groupNames = group.objectNames()
         XCTAssert(groupNames.contains("data"))

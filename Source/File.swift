@@ -6,16 +6,16 @@
 
 public class File: GroupType {
     public enum CreateMode: UInt32 {
-        case Truncate  = 0x02 // Overwrite existing files
-        case Exclusive = 0x04 // Fail if file already exists
+        case truncate  = 0x02 // Overwrite existing files
+        case exclusive = 0x04 // Fail if file already exists
     }
 
     public enum OpenMode: UInt32 {
-        case ReadOnly  = 0x00
-        case ReadWrite = 0x01
+        case readOnly  = 0x00
+        case readWrite = 0x01
     }
 
-    public class func create(filePath: String, mode: CreateMode) -> File? {
+    public class func create(_ filePath: String, mode: CreateMode) -> File? {
         H5open()
 
         var id: hid_t = -1
@@ -28,7 +28,7 @@ public class File: GroupType {
         return File(id: id)
     }
 
-    public class func open(filePath: String, mode: OpenMode) -> File? {
+    public class func open(_ filePath: String, mode: OpenMode) -> File? {
         H5open()
 
         var id: hid_t = -1
@@ -60,7 +60,7 @@ public class File: GroupType {
     }
 
     /// Create a group
-    public func createGroup(name: String) -> Group {
+    public func createGroup(_ name: String) -> Group {
         let groupID = name.withCString{
             return H5Gcreate2(id, $0, 0, 0, 0)
         }
@@ -68,7 +68,7 @@ public class File: GroupType {
     }
 
     /// Open an existing group
-    public func openGroup(name: String) -> Group? {
+    public func openGroup(_ name: String) -> Group? {
         let groupID = name.withCString{
             return H5Gopen2(id, $0, 0)
         }
@@ -85,7 +85,7 @@ public class File: GroupType {
 
      - parameter name the path to the object
      */
-    public func open(name: String) -> Object {
+    public func open(_ name: String) -> Object {
         let oid = name.withCString{ H5Oopen(id, $0, 0) }
         return Object(id: oid)
     }

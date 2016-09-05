@@ -4,7 +4,7 @@
 // terms governing use, modification, and redistribution, is contained in the
 // file LICENSE at the root of the source code distribution tree.
 
-public class Object {
+open class Object {
     public internal(set) var id: hid_t = -1
 
     init(id: hid_t) {
@@ -29,9 +29,9 @@ public class Object {
             return ""
         }
 
-        var name = [Int8](count: size + 1, repeatedValue: 0)
+        var name = [Int8](repeating: 0, count: size + 1)
         H5Iget_name(id, &name, size + 1)
-        return String.fromCString(name) ?? ""
+        return String(cString: name)
     }
 }
 

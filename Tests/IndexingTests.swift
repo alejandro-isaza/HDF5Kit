@@ -11,7 +11,7 @@ import HDF5Kit
 class IndexingTests: XCTestCase {
     static let datasetName = "MyData"
     static let datasetDims = [3, 3]
-    static let datasetSize = datasetDims.reduce(1, combine: *)
+    static let datasetSize = datasetDims.reduce(1, *)
     static let datasetDoubleData = (0..<datasetSize).map { Double($0) }
     static let datasetIntData = (0..<datasetSize).map { $0 }
     static let datasetStringData = (0..<datasetSize).map { String($0) }
