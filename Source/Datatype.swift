@@ -55,6 +55,16 @@ public class Datatype : Object, Equatable {
         self.init(id: id)
     }
 
+    /// The size of the `Datatype`.
+    public var size: Int {
+        get {
+            return H5Tget_size(id)
+        }
+        set {
+            H5Tset_size(id, newValue)
+        }
+    }
+
     public class func createDouble() -> Datatype {
         return Datatype(nativeType: .double)
     }
@@ -65,8 +75,9 @@ public class Datatype : Object, Equatable {
 
     public class func createString() -> Datatype {
         let id = H5Tcopy(H5T_C_S1_g)
-        H5Tset_size(id, -1)
-        return Datatype(id: id)
+        let type = Datatype(id: id)
+        type.size = -1
+        return type
     }
 
     public var `class`: DataClass {

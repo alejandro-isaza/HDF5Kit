@@ -114,8 +114,7 @@ public class StringDataset: Dataset {
 
         string.withCString{ stringPointer in
             array.withUnsafeMutableBufferPointer{ arrayPointer in
-                let mutableStringPointer = UnsafeMutablePointer<Int8>(mutating: stringPointer)
-                arrayPointer.baseAddress?.initialize(from: mutableStringPointer, count: length + 1)
+                arrayPointer.baseAddress?.initialize(from: stringPointer, count: length + 1)
             }
         }
         return array

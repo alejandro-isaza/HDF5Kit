@@ -65,7 +65,7 @@ public class IntDataset: Dataset {
 
         var result = [Int](repeating: 0, count: size)
         try result.withUnsafeMutableBufferPointer() { (pointer: inout UnsafeMutableBufferPointer) in
-            try readInto(pointer.baseAddress!, memSpace: memSpace, fileSpace: fileSpace)
+            try read(into: pointer.baseAddress!, memSpace: memSpace, fileSpace: fileSpace)
         }
         return result
     }
@@ -73,8 +73,8 @@ public class IntDataset: Dataset {
     /// Read data using an optional memory Dataspace and an optional file Dataspace
     ///
     /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace and there is enough memory available for it
-    public func readInto(_ pointer: UnsafeMutablePointer<Int>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
-        try super.readInto(pointer, type: .int, memSpace: memSpace, fileSpace: fileSpace)
+    public func read(into pointer: UnsafeMutablePointer<Int>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
+        try super.read(into: pointer, type: .int, memSpace: memSpace, fileSpace: fileSpace)
     }
 
     /// Write data using an optional memory Dataspace and an optional file Dataspace
@@ -92,15 +92,15 @@ public class IntDataset: Dataset {
         precondition(data.count == size, "Data size doesn't match Dataspace dimensions")
 
         try data.withUnsafeBufferPointer() { bufferPointer in
-            try writeFrom(bufferPointer.baseAddress!, memSpace: memSpace, fileSpace: fileSpace)
+            try write(from: bufferPointer.baseAddress!, memSpace: memSpace, fileSpace: fileSpace)
         }
     }
 
     /// Write data using an optional memory Dataspace and an optional file Dataspace
     ///
     /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace
-    public func writeFrom(_ pointer: UnsafePointer<Int>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
-        try super.writeFrom(pointer, type: .int, memSpace: memSpace, fileSpace: fileSpace)
+    public func write(from pointer: UnsafePointer<Int>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
+        try super.write(from: pointer, type: .int, memSpace: memSpace, fileSpace: fileSpace)
     }
 }
 

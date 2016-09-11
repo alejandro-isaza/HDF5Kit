@@ -65,7 +65,7 @@ public class FloatDataset: Dataset {
 
         var result = [Float](repeating: 0.0, count: size)
         try result.withUnsafeMutableBufferPointer() { (pointer: inout UnsafeMutableBufferPointer) in
-            try readInto(pointer.baseAddress!, memSpace: memSpace, fileSpace: fileSpace)
+            try read(into: pointer.baseAddress!, memSpace: memSpace, fileSpace: fileSpace)
         }
         return result
     }
@@ -73,8 +73,8 @@ public class FloatDataset: Dataset {
     /// Read data using an optional memory Dataspace and an optional file Dataspace
     ///
     /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace and there is enough memory available for it
-    public func readInto(_ pointer: UnsafeMutablePointer<Float>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
-        try super.readInto(pointer, type: .float, memSpace: memSpace, fileSpace: fileSpace)
+    public func read(into pointer: UnsafeMutablePointer<Float>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
+        try super.read(into: pointer, type: .float, memSpace: memSpace, fileSpace: fileSpace)
     }
 
     /// Write data using an optional memory Dataspace and an optional file Dataspace
@@ -92,15 +92,15 @@ public class FloatDataset: Dataset {
         precondition(data.count == size, "Data size doesn't match Dataspace dimensions")
 
         try data.withUnsafeBufferPointer() { bufferPointer in
-            try writeFrom(bufferPointer.baseAddress!, memSpace: memSpace, fileSpace: fileSpace)
+            try write(from: bufferPointer.baseAddress!, memSpace: memSpace, fileSpace: fileSpace)
         }
     }
 
     /// Write data using an optional memory Dataspace and an optional file Dataspace
     ///
     /// - precondition: The `selectionSize` of the memory Dataspace is the same as for the file Dataspace
-    public func writeFrom(_ pointer: UnsafePointer<Float>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
-        try super.writeFrom(pointer, type: .float, memSpace: memSpace, fileSpace: fileSpace)
+    public func write(from pointer: UnsafePointer<Float>, memSpace: Dataspace? = nil, fileSpace: Dataspace? = nil) throws {
+        try super.write(from: pointer, type: .float, memSpace: memSpace, fileSpace: fileSpace)
     }
 }
 
@@ -113,7 +113,7 @@ extension GroupType {
         guard let datatype = Datatype(type: Float.self) else {
             return nil
         }
-        let datasetID = name.withCString{ name in
+        let datasetID = name.withCString { name in
             return H5Dcreate2(id, name, datatype.id, dataspace.id, 0, 0, 0)
         }
         return FloatDataset(id: datasetID)

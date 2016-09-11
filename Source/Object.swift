@@ -22,16 +22,15 @@ open class Object {
         return File(id: fileID)
     }
 
-    public var name: String {
-        let size = H5Iget_name(id, nil, 0)
-        print(size)
-        if size <= 0 {
+    open var name: String {
+        let count = H5Iget_name(id, nil, 0)
+        if count <= 0 {
             return ""
         }
 
-        var name = [Int8](repeating: 0, count: size + 1)
-        H5Iget_name(id, &name, size + 1)
-        return String(cString: name)
+        let pointer = UnsafeMutablePointer<CChar>.allocate(capacity: count + 1)
+        H5Iget_name(id, pointer, count + 1)
+        return String(cString: pointer)
     }
 }
 
