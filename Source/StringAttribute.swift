@@ -6,12 +6,18 @@
 
 open class StringAttribute: Attribute {
 
-    public func read() throws -> String {
-        let space = self.space
-        let count = space.size
+    public func read() throws -> [String] {
+        if type.isVariableLengthString {
+            return try readVariableLength()
+        } else {
+            return try readFixedLength()
+        }
+    }
 
-        var data = [UnsafePointer<CChar>?](repeating: nil, count: Int(count))
+    func readVariableLength() throws -> [String] {
+        let count = self.space.selectionSize
         let type = Datatype.createString()
+        var data = [UnsafePointer<CChar>?](repeating: nil, count: count)
         try data.withUnsafeMutableBufferPointer { pointer in
             let status = H5Aread(id, type.id, pointer.baseAddress)
             if status < 0 {
@@ -19,7 +25,49 @@ open class StringAttribute: Attribute {
             }
         }
 
-        return String(cString: data[0]!)
+        var strings = [String]()
+        strings.reserveCapacity(count)
+
+        for pointer in data {
+            if let pointer = pointer {
+                strings.append(String(cString: pointer))
+            } else {
+                strings.append("")
+            }
+        }
+
+        H5Dvlen_reclaim(type.id, space.id, 0, &data)
+        return strings
+    }
+
+    func readFixedLength() throws -> [String] {
+        let count = self.space.size
+        let size = Int(H5Aget_storage_size(id))
+
+        var data = [CChar](repeating: 0, count: size + 1)
+        let type = Datatype.createString(size: space.size)
+        try data.withUnsafeMutableBufferPointer { pointer in
+            let status = H5Aread(id, type.id, pointer.baseAddress)
+            if status < 0 {
+                throw Error.ioError
+            }
+        }
+
+        var strings = [String]()
+        strings.reserveCapacity(count)
+
+        var index = 0
+        for _ in 0..<count {
+            data.withUnsafeBufferPointer { pointer in
+                let string = String(cString: pointer.baseAddress! + index)
+                strings.append(string)
+                index += string.lengthOfBytes(using: .ascii)
+                while index <= size && pointer[index] == 0 {
+                    index += 1
+                }
+            }
+        }
+        return strings
     }
 
     public func write(_ data: String) throws {

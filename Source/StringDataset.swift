@@ -47,22 +47,32 @@ public class StringDataset: Dataset {
 
     /// Read string data using an optional file Dataspace
     public func read(fileSpace: Dataspace? = nil) throws -> [String] {
-        let size: Int
-        if let fileSpace = fileSpace {
-            size = fileSpace.selectionSize
+        if type.isVariableLengthString {
+            return try readVariableLength(fileSpace: fileSpace)
         } else {
-            size = self.space.selectionSize
+            return try readFixedLength(fileSpace: fileSpace)
+        }
+    }
+
+    func readVariableLength(fileSpace: Dataspace? = nil) throws -> [String] {
+        let count: Int
+        if let fileSpace = fileSpace {
+            count = fileSpace.selectionSize
+        } else {
+            count = self.space.selectionSize
         }
 
         let type = Datatype.createString()
-        var data = [UnsafePointer<CChar>?](repeating: nil, count: Int(size))
-        let memspace = Dataspace(dims: [size])
-        guard H5Dread(id, type.id, memspace.id, fileSpace?.id ?? 0, 0, &data) >= 0 else {
-            return []
+        var data = [UnsafePointer<CChar>?](repeating: nil, count: count)
+        let memspace = Dataspace(dims: [count])
+        let status = H5Dread(id, type.id, memspace.id, fileSpace?.id ?? 0, 0, &data)
+        if status < 0 {
+            throw Error.ioError
         }
 
         var strings = [String]()
-        strings.reserveCapacity(size)
+        strings.reserveCapacity(count)
+
         for pointer in data {
             if let pointer = pointer {
                 strings.append(String(cString: pointer))
@@ -71,7 +81,43 @@ public class StringDataset: Dataset {
             }
         }
 
-        H5Dvlen_reclaim(type.id, memspace.id, 0, &data);
+        H5Dvlen_reclaim(type.id, memspace.id, 0, &data)
+        return strings
+    }
+
+    func readFixedLength(fileSpace: Dataspace? = nil) throws -> [String] {
+        let count: Int
+        if let fileSpace = fileSpace {
+            count = fileSpace.selectionSize
+        } else {
+            count = self.space.selectionSize
+        }
+        let size = Int(H5Aget_storage_size(id))
+
+        var data = [CChar](repeating: 0, count: size + 1)
+        let type = Datatype.createString(size: space.size)
+        let memspace = Dataspace(dims: [count])
+        try data.withUnsafeMutableBufferPointer { pointer in
+            let status = H5Dread(id, type.id, memspace.id, fileSpace?.id ?? 0, 0, &data)
+            if status < 0 {
+                throw Error.ioError
+            }
+        }
+
+        var strings = [String]()
+        strings.reserveCapacity(count)
+
+        var index = 0
+        for _ in 0..<count {
+            data.withUnsafeBufferPointer { pointer in
+                let string = String(cString: pointer.baseAddress! + index)
+                strings.append(string)
+                index += string.lengthOfBytes(using: .ascii)
+                while index <= size && pointer[index] == 0 {
+                    index += 1
+                }
+            }
+        }
         return strings
     }
 

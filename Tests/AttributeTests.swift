@@ -64,7 +64,7 @@ class AttributeTests: XCTestCase {
         do {
             let writeData = "ABCD"
             try attribute.write(writeData)
-            XCTAssertEqual(try attribute.read(), writeData)
+            XCTAssertEqual(try attribute.read(), [writeData])
         } catch {
             XCTFail()
         }

@@ -73,10 +73,10 @@ public class Datatype : Object, Equatable {
         return Datatype(nativeType: .int)
     }
 
-    public class func createString() -> Datatype {
+    public class func createString(size: Int = -1) -> Datatype {
         let id = H5Tcopy(H5T_C_S1_g)
         let type = Datatype(id: id)
-        type.size = -1
+        type.size = size
         return type
     }
 
@@ -119,6 +119,11 @@ public class Datatype : Object, Equatable {
         set {
             H5Tset_order(id, H5T_order_t(newValue.rawValue))
         }
+    }
+
+    /// Determines whether datatype is a variable-length string.
+    public var isVariableLengthString: Bool {
+        return H5Tis_variable_str(id) != 0
     }
 }
 
