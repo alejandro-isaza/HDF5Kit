@@ -93,9 +93,10 @@ public class StringDataset: Dataset {
             count = self.space.selectionSize
         }
         let size = Int(H5Aget_storage_size(id))
+        let stringSize = size / count
 
-        var data = [CChar](repeating: 0, count: size + 1)
-        let type = Datatype.createString(size: space.size)
+        var data = [CChar](repeating: 0, count: size)
+        let type = Datatype.createString(size: stringSize + 1)
         let memspace = Dataspace(dims: [count])
         try data.withUnsafeMutableBufferPointer { pointer in
             let status = H5Dread(id, type.id, memspace.id, fileSpace?.id ?? 0, 0, &data)

@@ -43,9 +43,10 @@ open class StringAttribute: Attribute {
     func readFixedLength() throws -> [String] {
         let count = self.space.size
         let size = Int(H5Aget_storage_size(id))
+        let stringSize = size / count
 
-        var data = [CChar](repeating: 0, count: size + 1)
-        let type = Datatype.createString(size: space.size)
+        var data = [CChar](repeating: 0, count: size)
+        let type = Datatype.createString(size: stringSize + 1)
         try data.withUnsafeMutableBufferPointer { pointer in
             let status = H5Aread(id, type.id, pointer.baseAddress)
             if status < 0 {
