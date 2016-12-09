@@ -4,6 +4,10 @@
 // terms governing use, modification, and redistribution, is contained in the
 // file LICENSE at the root of the source code distribution tree.
 
+#if SWIFT_PACKAGE
+    import CHDF5
+#endif
+
 public class File: GroupType {
     public enum CreateMode: UInt32 {
         case truncate  = 0x02 // Overwrite existing files

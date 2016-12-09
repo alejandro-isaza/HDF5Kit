@@ -4,6 +4,10 @@
 // terms governing use, modification, and redistribution, is contained in the
 // file LICENSE at the root of the source code distribution tree.
 
+#if SWIFT_PACKAGE
+    import CHDF5
+#endif
+
 public enum DataClass: Int32 {
     case noClass   = -1  // error
     case integer   = 0   // integer types

@@ -1,8 +1,12 @@
- // Copyright © 2016 Alejandro Isaza.
+// Copyright © 2016 Alejandro Isaza.
 //
 // This file is part of HDF5Kit. The full HDF5Kit copyright notice, including
 // terms governing use, modification, and redistribution, is contained in the
 // file LICENSE at the root of the source code distribution tree.
+
+ #if SWIFT_PACKAGE
+    import CHDF5
+ #endif
 
 open class StringAttribute: Attribute {
 

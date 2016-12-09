@@ -4,6 +4,10 @@
 // terms governing use, modification, and redistribution, is contained in the
 // file LICENSE at the root of the source code distribution tree.
 
+#if SWIFT_PACKAGE
+    import CHDF5
+#endif
+
 open class Attribute {
     public internal(set) var id: hid_t = -1
 

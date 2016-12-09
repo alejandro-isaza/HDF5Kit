@@ -7,12 +7,10 @@ xcuserdata/
 *.xccheckout
 *.xcscmblueprint
 
-# Object files
-*.o
-*.lo
-.deps/
-.libs/
-.build/
-
 # Carthage
 Carthage/
+
+# Swift Package Manager
+#
+Packages/
+.build/
