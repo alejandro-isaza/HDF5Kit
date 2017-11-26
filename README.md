@@ -1,6 +1,6 @@
 # HDF5Kit
 
-![Swift 3.0 compatible](https://img.shields.io/badge/Swift-3.0-orange.svg)
+![Swift 4.0 compatible](https://img.shields.io/badge/Swift-4.0-orange.svg)
 <!-- [![Build Status](https://travis-ci.org/aleph7/HDF5Kit.svg?branch=master)](https://travis-ci.org/aleph7/HDF5Kit) -->
 
 This is a Swift wrapper for the [HDF5](https://www.hdfgroup.org) file format. HDF5 is used in the scientific comunity for managing large volumes of data. The objective is to make it easy to read and write HDF5 files from Swift, including playgrounds.
