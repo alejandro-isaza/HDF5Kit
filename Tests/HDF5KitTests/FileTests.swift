@@ -38,7 +38,7 @@ class FileTests: XCTestCase {
         let dims = [width, height]
         let dataspace = Dataspace(dims: dims)
         XCTAssertEqual(Int(dataspace.size), width * height)
-        XCTAssertEqual(dataspace.dims.map{ Int(unsafeBitCast($0, to: hssize_t.self)) }, dims)
+        XCTAssertEqual(dataspace.dims.map{ Int(hssize_t($0)) }, dims)
 
         let dataset = file.createDoubleDataset(datasetName, dataspace: dataspace)!
         XCTAssertNil(dataset.offset)

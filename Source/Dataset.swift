@@ -12,7 +12,7 @@ open class Dataset: Object {
     /// The address in the file of the dataset or `nil` if the offset is undefined. That address is expressed as the offset in bytes from the beginning of the file.
     public var offset: Int? {
         let offset = H5Dget_offset(id)
-        guard offset != unsafeBitCast(Int64(-1), to: UInt64.self) else {
+        guard offset != UInt64(bitPattern: Int64(-1)) else {
             return nil
         }
         return Int(offset)
@@ -31,7 +31,7 @@ open class Dataset: Object {
             return space.dims
         }
         set {
-            let array = newValue.map({ unsafeBitCast(hssize_t($0), to: hsize_t.self) })
+            let array = newValue.map({ hsize_t(bitPattern: hssize_t($0)) })
             array.withUnsafeBufferPointer { (pointer) -> Void in
                 H5Dset_extent(id, pointer.baseAddress)
             }
@@ -50,7 +50,7 @@ open class Dataset: Object {
         chunkSize.withUnsafeMutableBufferPointer { (pointer: inout UnsafeMutableBufferPointer<hsize_t>) -> Void in
             H5Pget_chunk(plistId, Int32(rank), pointer.baseAddress)
         }
-        return chunkSize.map({ Int(unsafeBitCast($0, to: hssize_t.self)) })
+        return chunkSize.map({ Int(hssize_t(bitPattern: $0)) })
     }
 
     /// Read data using an optional memory Dataspace and an optional file Dataspace
@@ -91,7 +91,7 @@ extension GroupType {
         precondition(dataspace.dims.count == chunkDimensions.count)
 
         let plist = H5Pcreate(H5P_CLS_DATASET_CREATE_ID_g)
-        let chunkDimensions64 = chunkDimensions.map({ unsafeBitCast(hssize_t($0), to: hsize_t.self) })
+        let chunkDimensions64 = chunkDimensions.map({ hsize_t(bitPattern: hssize_t($0)) })
         chunkDimensions64.withUnsafeBufferPointer { (pointer) -> Void in
             H5Pset_chunk(plist, Int32(chunkDimensions.count), pointer.baseAddress)
         }

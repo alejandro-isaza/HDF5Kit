@@ -131,7 +131,7 @@ extension GroupType {
         precondition(dataspace.dims.count == chunkDimensions.count)
 
         let plist = H5Pcreate(H5P_CLS_DATASET_CREATE_ID_g)
-        let chunkDimensions64 = chunkDimensions.map({ unsafeBitCast(hssize_t($0), to: hsize_t.self) })
+        let chunkDimensions64 = chunkDimensions.map({ hsize_t(bitPattern: hssize_t($0)) })
         chunkDimensions64.withUnsafeBufferPointer { (pointer) -> Void in
             H5Pset_chunk(plist, Int32(chunkDimensions.count), pointer.baseAddress)
         }
