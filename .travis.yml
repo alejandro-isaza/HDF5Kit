@@ -1,4 +1,10 @@
 language: objective-c
-xcode_project: HDF5Kit.xcodeproj
-xcode_scheme: HDF5Kit-OSX
-osx_image: xcode8
+osx_image: xcode9.1
+
+script:
+  - set -o pipefail
+  - xcodebuild clean test -project HDF5Kit.xcodeproj -scheme "HDF5Kit-OSX"
+  - xcodebuild clean test -project HDF5Kit.xcodeproj -scheme "HDF5Kit-iOS" -destination 'platform=iOS Simulator,name=iPhone 7'
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
