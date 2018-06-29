@@ -102,11 +102,9 @@ public class StringDataset: Dataset {
         var data = [CChar](repeating: 0, count: size)
         let type = Datatype.createString(size: stringSize + 1)
         let memspace = Dataspace(dims: [count])
-        try data.withUnsafeMutableBufferPointer { pointer in
-            let status = H5Dread(id, type.id, memspace.id, fileSpace?.id ?? 0, 0, &data)
-            if status < 0 {
-                throw Error.ioError
-            }
+        let status = H5Dread(id, type.id, memspace.id, fileSpace?.id ?? 0, 0, &data)
+        if status < 0 {
+            throw Error.ioError
         }
 
         var strings = [String]()
