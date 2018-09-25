@@ -2223,11 +2223,11 @@
 					};
 					61B3149C1BBDBA3100F63C45 = {
 						CreatedOnToolsVersion = 7.0.1;
-						LastSwiftMigration = 0810;
+						LastSwiftMigration = 1000;
 					};
 					61B314A61BBDBA3200F63C45 = {
 						CreatedOnToolsVersion = 7.0.1;
-						LastSwiftMigration = 0810;
+						LastSwiftMigration = 1000;
 					};
 				};
 			};
@@ -3159,6 +3159,7 @@
 				PRODUCT_NAME = HDF5Kit;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -3179,6 +3180,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.venturemedia.HDF5Kit;
 				PRODUCT_NAME = HDF5Kit;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -3191,6 +3193,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.venturemedia.HDF5KitTests;
 				PRODUCT_NAME = HDF5KitTests;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -3203,6 +3206,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.venturemedia.HDF5KitTests;
 				PRODUCT_NAME = HDF5KitTests;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
