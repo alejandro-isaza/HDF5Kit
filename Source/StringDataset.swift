@@ -100,28 +100,23 @@ public class StringDataset: Dataset {
         let stringSize = size / count
 
         var data = [CChar](repeating: 0, count: size)
-        let type = Datatype.createString(size: stringSize + 1)
+        let type = Datatype.createString(size: stringSize)
         let memspace = Dataspace(dims: [count])
         let status = H5Dread(id, type.id, memspace.id, fileSpace?.id ?? 0, 0, &data)
         if status < 0 {
             throw Error.ioError
         }
 
-        var strings = [String]()
-        strings.reserveCapacity(count)
-
-        var index = 0
-        for _ in 0..<count {
-            data.withUnsafeBufferPointer { pointer in
+        return data.withUnsafeBufferPointer { pointer in
+            var strings = [String]()
+            strings.reserveCapacity(count)
+            for idx in 0..<count {
+                let index = idx * type.size
                 let string = String(cString: pointer.baseAddress! + index)
                 strings.append(string)
-                index += string.lengthOfBytes(using: .ascii)
-                while index <= size && pointer[index] == 0 {
-                    index += 1
-                }
             }
+            return strings
         }
-        return strings
     }
 
     /// Write string data using an optional file Dataspace
