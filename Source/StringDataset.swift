@@ -96,7 +96,7 @@ public class StringDataset: Dataset {
         } else {
             count = self.space.selectionSize
         }
-        let size = Int(H5Aget_storage_size(id))
+        let size = Int(H5Dget_storage_size(id))
         let stringSize = size / count
 
         var data = [CChar](repeating: 0, count: size)
