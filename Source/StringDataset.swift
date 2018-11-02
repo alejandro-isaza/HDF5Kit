@@ -98,9 +98,13 @@ public class StringDataset: Dataset {
         }
         let size = Int(H5Dget_storage_size(id))
         let stringSize = size / count
+        
+        // Add one extra null byte per string entry to ensure zero
+        // padding when parsing to Swift string using String(cString:) below
+        let paddedStringSize = stringSize + 1
+        let type = Datatype.createString(size: paddedStringSize)
 
-        var data = [CChar](repeating: 0, count: size)
-        let type = Datatype.createString(size: stringSize)
+        var data = [CChar](repeating: 0, count: paddedStringSize * count)
         let memspace = Dataspace(dims: [count])
         let status = H5Dread(id, type.id, memspace.id, fileSpace?.id ?? 0, 0, &data)
         if status < 0 {
