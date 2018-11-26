@@ -3083,7 +3083,7 @@
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -3135,7 +3135,7 @@
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -3159,7 +3159,6 @@
 				PRODUCT_NAME = HDF5Kit;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -3180,7 +3179,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.venturemedia.HDF5Kit;
 				PRODUCT_NAME = HDF5Kit;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -3193,7 +3191,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.venturemedia.HDF5KitTests;
 				PRODUCT_NAME = HDF5KitTests;
-				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -3206,7 +3203,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.venturemedia.HDF5KitTests;
 				PRODUCT_NAME = HDF5KitTests;
-				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
