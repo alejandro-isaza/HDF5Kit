@@ -6,6 +6,7 @@
 
  #if SWIFT_PACKAGE
     import CHDF5
+    import Foundation
  #endif
 
 open class StringAttribute: Attribute {
