@@ -58,7 +58,19 @@ class AttributeTests: XCTestCase {
 
         let writeData = "ABCD😀"
         try attribute.write(writeData)
+        XCTAssertEqual(try attribute.read(), [writeData])
+    }
 
+    func testWriteReadFixedString() throws {
+        let filePath = tempFilePath()
+        guard let file = File.create(filePath, mode: .truncate) else {
+            fatalError("Failed to create file")
+        }
+        let group = file.createGroup("group")
+        let attribute = try XCTUnwrap(group.createFixedStringAttribute("attribute", size: 50))
+
+        let writeData = "ABCD😀"
+        try attribute.write(writeData)
         XCTAssertEqual(try attribute.read(), [writeData])
     }
 }

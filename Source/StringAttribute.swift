@@ -68,7 +68,7 @@ open class StringAttribute: Attribute {
                 let string = String(utf8String: pointer.baseAddress! + index)!
                 strings.append(string)
                 index += string.lengthOfBytes(using: .utf8)
-                while index <= size && pointer[index] == 0 {
+                while index < size && pointer[index] == 0 {
                     index += 1
                 }
             }
@@ -77,6 +77,14 @@ open class StringAttribute: Attribute {
     }
 
     public func write(_ data: String) throws {
+        if type.isVariableLengthString {
+            try writeVariable(data)
+        } else {
+            try writeFixed(data)
+        }
+    }
+
+    public func writeVariable(_ data: String) throws {
         let size = self.space.size
         precondition(1 == size, "Data size doesn't match Dataspace dimensions")
 
@@ -94,12 +102,30 @@ open class StringAttribute: Attribute {
         }
     }
 
+    public func writeFixed(_ data: String) throws {
+        let size = self.space.size
+        precondition(1 == size, "Data size doesn't match Dataspace dimensions")
+
+        let stringSize = self.type.size
+        var data = data
+        if stringSize != -1 && data.utf8.count < stringSize {
+            data.append(contentsOf: String(repeating: "\0", count: stringSize - data.utf8.count))
+        }
+
+        try data.utf8CString.withUnsafeBufferPointer { pointer in
+            let type = Datatype.createString(size: stringSize)
+            guard H5Awrite(id, type.id, pointer.baseAddress) >= 0 else {
+                throw Error.ioError
+            }
+        }
+    }
+
 }
 
 
 public extension GroupType {
     /// Creates a `String` attribute.
-    public func createStringAttribute(_ name: String) -> StringAttribute? {
+    func createStringAttribute(_ name: String) -> StringAttribute? {
         guard let datatype = Datatype(type: String.self) else {
             return nil
         }
@@ -110,8 +136,18 @@ public extension GroupType {
         return StringAttribute(id: attributeID)
     }
 
+    /// Creates a fixed-length `String` attribute.
+    func createFixedStringAttribute(_ name: String, size: Int) -> StringAttribute? {
+        let datatype = Datatype(dataClass: .string, size: size)
+        let dataspace = Dataspace(dims: [1])
+        let attributeID = name.withCString { name in
+            return H5Acreate2(id, name, datatype.id, dataspace.id, 0, 0)
+        }
+        return StringAttribute(id: attributeID)
+    }
+
     /// Opens a `String` attribute.
-    public func openStringAttribute(_ name: String) -> StringAttribute? {
+    func openStringAttribute(_ name: String) -> StringAttribute? {
         let attributeID = name.withCString{ name in
             return H5Aopen(id, name, 0)
         }

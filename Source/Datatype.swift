@@ -35,6 +35,9 @@ public class Datatype : Object, Equatable {
         guard id >= 0 else {
             fatalError("Failed to create Datatype")
         }
+        if dataClass == .string {
+            H5Tset_cset(id, H5T_CSET_UTF8)
+        }
         self.init(id: id)
     }
 
