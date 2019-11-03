@@ -35,7 +35,7 @@ open class StringAttribute: Attribute {
 
         for pointer in data {
             if let pointer = pointer {
-                strings.append(String(cString: pointer))
+                strings.append(String(utf8String: pointer)!)
             } else {
                 strings.append("")
             }
@@ -65,9 +65,9 @@ open class StringAttribute: Attribute {
         var index = 0
         for _ in 0..<count {
             data.withUnsafeBufferPointer { pointer in
-                let string = String(cString: pointer.baseAddress! + index)
+                let string = String(utf8String: pointer.baseAddress! + index)!
                 strings.append(string)
-                index += string.lengthOfBytes(using: .ascii)
+                index += string.lengthOfBytes(using: .utf8)
                 while index <= size && pointer[index] == 0 {
                     index += 1
                 }

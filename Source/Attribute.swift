@@ -29,7 +29,7 @@ open class Attribute {
 
         let pointer = UnsafeMutablePointer<CChar>.allocate(capacity: count + 1)
         H5Aget_name(id, count + 1, pointer)
-        return String(cString: pointer)
+        return String(utf8String: pointer)!
     }
 
     public var space: Dataspace {

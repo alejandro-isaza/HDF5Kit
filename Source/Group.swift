@@ -55,7 +55,7 @@ public class Group: Object, GroupType {
             let size = H5Gget_objname_by_idx(id, i, nil, 0)
             var name = [Int8](repeating: 0, count: size + 1)
             H5Gget_objname_by_idx(id, i, &name, size + 1)
-            names.append(String(cString: name))
+            names.append(String(utf8String: name)!)
         }
 
         return names

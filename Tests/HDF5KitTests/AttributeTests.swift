@@ -48,25 +48,17 @@ class AttributeTests: XCTestCase {
         }
     }
 
-    func testWriteReadString() {
+    func testWriteReadString() throws {
         let filePath = tempFilePath()
         guard let file = File.create(filePath, mode: .truncate) else {
             fatalError("Failed to create file")
         }
         let group = file.createGroup("group")
-        XCTAssertEqual(group.name, "/group")
+        let attribute = try XCTUnwrap(group.createStringAttribute("attribute"))
 
-        guard let attribute = group.createStringAttribute("attribute") else {
-            XCTFail()
-            return
-        }
+        let writeData = "ABCD😀"
+        try attribute.write(writeData)
 
-        do {
-            let writeData = "ABCD"
-            try attribute.write(writeData)
-            XCTAssertEqual(try attribute.read(), [writeData])
-        } catch {
-            XCTFail()
-        }
+        XCTAssertEqual(try attribute.read(), [writeData])
     }
 }

@@ -79,7 +79,7 @@ public class StringDataset: Dataset {
 
         for pointer in data {
             if let pointer = pointer {
-                strings.append(String(cString: pointer))
+                strings.append(String(utf8String: pointer)!)
             } else {
                 strings.append("")
             }
@@ -100,7 +100,7 @@ public class StringDataset: Dataset {
         let stringSize = size / count
         
         // Add one extra null byte per string entry to ensure zero
-        // padding when parsing to Swift string using String(cString:) below
+        // padding when parsing to Swift string using String(utf8String:) below
         let paddedStringSize = stringSize + 1
         let type = Datatype.createString(size: paddedStringSize)
 
@@ -116,7 +116,7 @@ public class StringDataset: Dataset {
             strings.reserveCapacity(count)
             for idx in 0..<count {
                 let index = idx * type.size
-                let string = String(cString: pointer.baseAddress! + index)
+                let string = String(utf8String: pointer.baseAddress! + index)!
                 strings.append(string)
             }
             return strings
@@ -192,6 +192,7 @@ extension GroupType {
         precondition(dataspace.dims.count == chunkDimensions.count)
 
         let plist = H5Pcreate(H5P_CLS_DATASET_CREATE_ID_g)
+        H5Pset_char_encoding(plist, H5T_CSET_UTF8)
         let chunkDimensions64 = chunkDimensions.map({ hsize_t(bitPattern: hssize_t($0)) })
         chunkDimensions64.withUnsafeBufferPointer { (pointer) -> Void in
             H5Pset_chunk(plist, Int32(chunkDimensions.count), pointer.baseAddress)

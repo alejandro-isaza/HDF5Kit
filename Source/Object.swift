@@ -34,7 +34,7 @@ open class Object {
 
         let pointer = UnsafeMutablePointer<CChar>.allocate(capacity: count + 1)
         H5Iget_name(id, pointer, count + 1)
-        return String(cString: pointer)
+        return String(utf8String: pointer)!
     }
 }
 

@@ -43,6 +43,7 @@ public class Datatype : Object, Equatable {
         let id: hid_t
         if type == String.self {
             id = H5Tcopy(H5T_C_S1_g)
+            H5Tset_cset(id, H5T_CSET_UTF8)
             H5Tset_size(id, -1)
         } else {
             guard let nativeType = NativeType(type: type) else {
@@ -79,6 +80,7 @@ public class Datatype : Object, Equatable {
 
     public class func createString(size: Int = -1) -> Datatype {
         let id = H5Tcopy(H5T_C_S1_g)
+        H5Tset_cset(id, H5T_CSET_UTF8)
         let type = Datatype(id: id)
         type.size = size
         return type
